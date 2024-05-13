@@ -501,8 +501,18 @@ class Client implements LoggerAwareInterface, Stringable
             ->withHeader('Sec-WebSocket-Version', '13');
 
         // Handle basic authentication.
-        if ($userinfo = $uri->getUserInfo()) {
-            $request = $request->withHeader('Authorization', 'Basic ' . base64_encode($userinfo));
+        $components = $uri->getComponents();
+        if (array_key_exists('user', $components)) {
+            $user = urldecode($components['user']);
+
+            if (array_key_exists('pass', $components)) {
+                $pass = $components['pass'];
+                $credentials = urldecode($user) . ':' . urldecode($pass);
+            } else {
+                $credentials = urldecode($user);
+            }
+
+            $request = $request->withHeader('Authorization', 'Basic ' . base64_encode($credentials));
         }
 
         // Add and override with headers.

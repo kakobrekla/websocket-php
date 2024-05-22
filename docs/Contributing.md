@@ -96,10 +96,11 @@ make coverage
 * rmeisler
 * Nickolay V
 * Shmyrev
-* Christoph Kempen,
+* Christoph Kempen
 * Marc Roberts
 * Antonio Mora
 * Simon Podlipsky
 * etrinh
 * zgrguric
 * axklim
+* Dejan Levec

@@ -6,6 +6,10 @@
 
  > PHP version `^8.0`
 
+### `2.2.3`
+
+ * URL-decoded user-info in headers (@dejanceltra)
+
 ### `2.2.2`
 
  * Fix so redirect to `https` uses `ssl` (ended up with `tcp` before) (@sirn-se)

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace WebSocket\Test\Client;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\StreamFactory;
 use Phrity\Net\Mock\Stack\{
@@ -131,17 +132,38 @@ class ConfigTest extends TestCase
         unset($client);
     }
 
-    public function testUriStringAuthorization(): void
+    public static function uriStringAuthorizationDataProvider(): array
+    {
+        $encoded = urlencode('7{v^pF8;uPK.6VWu');
+
+        return [
+            [
+                'usename:password',
+                'dXNlbmFtZTpwYXNzd29yZA==',
+            ],
+            [
+                'usename',
+                'dXNlbmFtZQ==',
+            ],
+            [
+                "{$encoded}:{$encoded}",
+                'N3t2XnBGODt1UEsuNlZXdTo3e3ZecEY4O3VQSy42Vld1',
+            ],
+        ];
+    }
+
+    #[DataProvider('uriStringAuthorizationDataProvider')]
+    public function testUriStringAuthorization(string $uriAuth, string $expectedCredentials): void
     {
         $this->expectStreamFactory();
-        $client = new Client('wss://usename:password@localhost:8000/my/mock/path');
+        $client = new Client("wss://{$uriAuth}@localhost:8000/my/mock/path");
         $client->setStreamFactory(new StreamFactory());
 
         $this->expectWsClientConnect(scheme: 'ssl');
         $this->expectWsClientPerformHandshake(
             'localhost:8000',
             '/my/mock/path',
-            "Authorization: Basic dXNlbmFtZTpwYXNzd29yZA==\r\n"
+            "Authorization: Basic {$expectedCredentials}\r\n"
         );
         $client->connect();
 

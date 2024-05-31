@@ -106,15 +106,13 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Set logger.
      * @param Psr\Log\LoggerInterface $logger Logger implementation
-     * @return self.
      */
-    public function setLogger(LoggerInterface $logger): self
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
         if ($this->connection) {
             $this->connection->setLogger($this->logger);
         }
-        return $this;
     }
 
     /**
@@ -238,9 +236,9 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Receive message.
      * Note that this operation will block reading.
-     * @return Message|null
+     * @return Message
      */
-    public function receive(): Message|null
+    public function receive(): Message
     {
         if (!$this->isConnected()) {
             $this->connect();

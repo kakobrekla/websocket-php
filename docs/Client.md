@@ -56,9 +56,9 @@ Other options are available runtime by calling configuration methods.
 ```php
 // Create client
 $client = new WebSocket\Client("wss://echo.websocket.org/");
+// Use a PSR-3 compatible logger
+$client->setLogger(Psr\Log\LoggerInterface $logger);
 $client
-    // Use a PSR-3 compatible logger
-    ->setLogger(Psr\Log\LoggerInterface $logger)
     // Specify timeout in seconds (default 60 seconds)
     ->setTimeout(300)
     // Specify frame size in bytes (default 4096 bytes)

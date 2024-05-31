@@ -2,6 +2,15 @@
 
 # Websocket: Changelog
 
+## `v3.0`
+
+ > PHP version `^8.1`
+
+### `3.0.0`
+
+ * Support `psr/log v3` (@sirn-se)
+ *
+
 ## `v2.2`
 
  > PHP version `^8.0`
@@ -82,6 +91,10 @@
 ## `v1.7`
 
  > PHP version `^7.4|^8.0`
+
+### `1.7.3`
+
+ * Fix dependency `psr/http-message` (@sirn-se)
 
 ### `1.7.2`
 

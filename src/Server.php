@@ -112,15 +112,13 @@ class Server implements LoggerAwareInterface, Stringable
     /**
      * Set logger.
      * @param Psr\Log\LoggerInterface $logger Logger implementation
-     * @return self
      */
-    public function setLogger(LoggerInterface $logger): self
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
         foreach ($this->connections as $connection) {
             $connection->setLogger($this->logger);
         }
-        return $this;
     }
 
     /**
@@ -391,8 +389,8 @@ class Server implements LoggerAwareInterface, Stringable
             $name = $stream->getRemoteName();
             $this->streams->attach($stream, $name);
             $connection = new Connection($stream, false, true, $this->isSsl());
+            $connection->setLogger($this->logger);
             $connection
-                ->setLogger($this->logger)
                 ->setFrameSize($this->frameSize)
                 ->setTimeout($this->timeout)
                 ;

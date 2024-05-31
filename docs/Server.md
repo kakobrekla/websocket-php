@@ -35,9 +35,9 @@ Other options are available runtime by calling configuration methods.
 ```php
 // Secure server on port 8080
 $server = new WebSocket\Server(ssl: true, port: 8080);
+// Use a PSR-3 compatible logger
+$server->setLogger(Psr\Log\LoggerInterface $logger)
 $server
-    // Use a PSR-3 compatible logger
-    ->setLogger(Psr\Log\LoggerInterface $logger)
     // Specify timeout in seconds (default 60 seconds)
     ->setTimeout(300)
     // Specify frame size in bytes (default 4096 bytes)

@@ -104,7 +104,7 @@ class ConfigTest extends TestCase
         $this->expectWsServerPerformHandshake();
         $server->start();
 
-        $this->assertSame($server, $server->setLogger(new NullLogger()));
+        $this->assertEmpty($server->setLogger(new NullLogger()));
         $this->expectSocketStreamSetTimeout()->addAssert(function ($method, $params) use ($server) {
             $this->assertEquals(300, $params[0]);
         });

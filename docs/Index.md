@@ -17,3 +17,7 @@
 * [Contributing](Contributing.md) - Contributors and requirements
 * [Examples](Examples.md) - Examples
 * [License](../LICENCE.md) - License
+
+## Migration
+
+* [v2 -> v3](Migrate_2_3.md) - How to migrate from v2 to v3

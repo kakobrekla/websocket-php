@@ -19,6 +19,7 @@ and is maintained by Sören Jensen, who has been maintaining the original since 
 * [Changelog](docs/Changelog.md) - The changelog of this repo
 * [Contributing](docs/Contributing.md) - Contributors and requirements
 * [Examples](docs/Examples.md) - Examples
+* [v2 -> v3](docs/Migrate_2_3.md) - How to migrate from v2 to v3
 
 ## Installing
 

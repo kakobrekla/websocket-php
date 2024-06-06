@@ -51,7 +51,7 @@ class Server implements LoggerAwareInterface, Stringable
     use SendMethodsTrait;
     use StringableTrait;
 
-    private const string GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
+    private const GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
     // Settings
     private int $port;

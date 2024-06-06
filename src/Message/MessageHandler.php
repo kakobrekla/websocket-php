@@ -25,7 +25,7 @@ class MessageHandler implements LoggerAwareInterface, Stringable
 {
     use StringableTrait;
 
-    private const int DEFAULT_SIZE = 4096;
+    private const DEFAULT_SIZE = 4096;
 
     private FrameHandler $frameHandler;
     private LoggerInterface $logger;

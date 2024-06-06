@@ -34,9 +34,9 @@ class HttpHandler implements LoggerAwareInterface, Stringable
 {
     use StringableTrait;
 
-    private $stream;
-    private $ssl;
-    private $logger;
+    private SocketStream $stream;
+    private bool $ssl;
+    private LoggerInterface $logger;
 
     public function __construct(SocketStream $stream, bool $ssl = false)
     {

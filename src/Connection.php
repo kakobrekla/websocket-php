@@ -51,19 +51,19 @@ class Connection implements LoggerAwareInterface, Stringable
     use SendMethodsTrait;
     use StringableTrait;
 
-    private $stream;
-    private $httpHandler;
-    private $messageHandler;
-    private $middlewareHandler;
-    private $logger;
-    private $frameSize = 4096;
-    private $timeout = 60;
-    private $localName;
-    private $remoteName;
-    private $handshakeRequest;
-    private $handshakeResponse;
-    private $meta = [];
-    private $closed = false;
+    private SocketStream $stream;
+    private HttpHandler $httpHandler;
+    private MessageHandler $messageHandler;
+    private MiddlewareHandler $middlewareHandler;
+    private LoggerInterface $logger;
+    private int $frameSize = 4096;
+    private int $timeout = 60;
+    private string $localName;
+    private string $remoteName;
+    private Request|null $handshakeRequest = null;
+    private Response|null $handshakeResponse = null;
+    private array $meta = [];
+    private bool $closed = false;
 
 
     /* ---------- Magic methods ------------------------------------------------------------------------------------ */

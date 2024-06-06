@@ -20,7 +20,7 @@ use RuntimeException;
  */
 class Response extends Message implements ResponseInterface
 {
-    private static $codes = [
+    private static array $codes = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -84,8 +84,8 @@ class Response extends Message implements ResponseInterface
         511 => 'Network Authentication Required',
     ];
 
-    private $code;
-    private $reason;
+    private int $code;
+    private string $reason;
 
     public function __construct(int $code = 200, string $reasonPhrase = '')
     {

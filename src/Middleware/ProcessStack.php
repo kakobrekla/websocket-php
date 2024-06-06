@@ -23,9 +23,9 @@ class ProcessStack implements Stringable
 {
     use StringableTrait;
 
-    private $connection;
-    private $messageHandler;
-    private $processors;
+    private Connection $connection;
+    private MessageHandler $messageHandler;
+    private array $processors;
 
     /**
      * Create ProcessStack.

@@ -13,5 +13,5 @@ namespace WebSocket\Message;
  */
 class Pong extends Message
 {
-    protected $opcode = 'pong';
+    protected string $opcode = 'pong';
 }

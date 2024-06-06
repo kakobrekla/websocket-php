@@ -13,8 +13,8 @@ namespace WebSocket\Exception;
  */
 class CloseException extends Exception
 {
-    protected $status;
-    protected $content;
+    protected int|null $status;
+    protected string $content;
 
     public function __construct(int|null $status = null, string $content = '')
     {

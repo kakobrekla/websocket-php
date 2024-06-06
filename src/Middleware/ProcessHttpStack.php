@@ -23,9 +23,9 @@ class ProcessHttpStack implements Stringable
 {
     use StringableTrait;
 
-    private $connection;
-    private $httpHandler;
-    private $processors;
+    private Connection $connection;
+    private HttpHandler $httpHandler;
+    private array $processors;
 
     /**
      * Create ProcessStack.

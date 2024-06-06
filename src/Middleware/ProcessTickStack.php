@@ -19,8 +19,8 @@ class ProcessTickStack implements Stringable
 {
     use StringableTrait;
 
-    private $connection;
-    private $processors;
+    private Connection $connection;
+    private array $processors;
 
     /**
      * Create ProcessStack.

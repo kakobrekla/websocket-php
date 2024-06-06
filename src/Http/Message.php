@@ -24,8 +24,8 @@ abstract class Message implements MessageInterface, Stringable
 {
     use StringableTrait;
 
-    protected $version = '1.1';
-    protected $headers = [];
+    protected string $version = '1.1';
+    protected array $headers = [];
 
     /**
      * Retrieves the HTTP protocol version as a string.

@@ -28,7 +28,7 @@ class PingInterval implements LoggerAwareInterface, ProcessOutgoingInterface, Pr
     use LoggerAwareTrait;
     use StringableTrait;
 
-    private $interval;
+    private int|null $interval;
 
     public function __construct(int|null $interval = null)
     {

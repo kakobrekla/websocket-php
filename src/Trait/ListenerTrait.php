@@ -15,7 +15,7 @@ use Closure;
  */
 trait ListenerTrait
 {
-    private $listeners = [];
+    private array $listeners = [];
 
     public function onConnect(Closure $closure): self
     {

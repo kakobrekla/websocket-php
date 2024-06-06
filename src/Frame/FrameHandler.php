@@ -30,10 +30,10 @@ class FrameHandler implements LoggerAwareInterface, Stringable
     use OpcodeTrait;
     use StringableTrait;
 
-    private $stream;
-    private $logger;
-    private $pushMasked;
-    private $pullMaskedRequired;
+    private SocketStream $stream;
+    private LoggerInterface $logger;
+    private bool $pushMasked;
+    private bool $pullMaskedRequired;
 
     public function __construct(SocketStream $stream, bool $pushMasked, bool $pullMaskedRequired)
     {

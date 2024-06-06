@@ -35,8 +35,8 @@ class FollowRedirect implements LoggerAwareInterface, ProcessHttpIncomingInterfa
     use LoggerAwareTrait;
     use StringableTrait;
 
-    private $limit;
-    private $attempts = 1;
+    private int $limit;
+    private int $attempts = 1;
 
     public function __construct(int $limit = 10)
     {

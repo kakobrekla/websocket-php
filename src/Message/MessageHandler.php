@@ -25,11 +25,11 @@ class MessageHandler implements LoggerAwareInterface, Stringable
 {
     use StringableTrait;
 
-    private const DEFAULT_SIZE = 4096;
+    private const int DEFAULT_SIZE = 4096;
 
-    private $frameHandler;
-    private $logger;
-    private $readBuffer;
+    private FrameHandler $frameHandler;
+    private LoggerInterface $logger;
+    private array|null $readBuffer = null;
 
     public function __construct(FrameHandler $frameHandler)
     {

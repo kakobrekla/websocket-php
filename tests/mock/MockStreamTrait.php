@@ -15,8 +15,8 @@ use Phrity\Net\Mock\Stack\StackItem;
  */
 trait MockStreamTrait
 {
-    private $stack = [];
-    private $last_ws_key;
+    private array $stack = [];
+    private string $last_ws_key = '';
 
 
     /* ---------- WebSocket Client combinded asserts --------------------------------------------------------------- */

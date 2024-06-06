@@ -18,9 +18,9 @@ class Frame implements Stringable
 {
     use StringableTrait;
 
-    private $opcode;
-    private $payload;
-    private $final;
+    private string $opcode;
+    private string $payload;
+    private bool $final;
 
     public function __construct(string $opcode, string $payload, bool $final)
     {

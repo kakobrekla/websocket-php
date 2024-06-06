@@ -21,9 +21,9 @@ abstract class Message implements Stringable
 {
     use StringableTrait;
 
-    protected $opcode;
-    protected $content;
-    protected $timestamp;
+    protected string $opcode;
+    protected string $content;
+    protected DateTimeInterface $timestamp;
 
     public function __construct(string $content = '')
     {

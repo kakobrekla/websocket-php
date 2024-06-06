@@ -20,9 +20,9 @@ use RuntimeException;
  */
 class Request extends Message implements RequestInterface
 {
-    private $target;
-    private $method;
-    private $uri;
+    private string $target = '';
+    private string $method;
+    private Uri $uri;
 
     public function __construct(string $method = 'GET', UriInterface|string|null $uri = null)
     {

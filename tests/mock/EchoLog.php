@@ -7,12 +7,17 @@
 
 namespace WebSocket\Test;
 
+use Psr\Log\{
+    LoggerInterface,
+    LoggerTrait
+};
+
 /**
  * Simple echo logger (only available when running in dev environment)
  */
-class EchoLog implements \Psr\Log\LoggerInterface
+class EchoLog implements LoggerInterface
 {
-    use \Psr\Log\LoggerTrait;
+    use LoggerTrait;
 
     public function log($level, $message, array $context = [])
     {

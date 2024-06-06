@@ -34,16 +34,16 @@ class MiddlewareHandler implements LoggerAwareInterface, Stringable
     use StringableTrait;
 
     // Processor collections
-    private $incoming = [];
-    private $outgoing = [];
-    private $httpIncoming = [];
-    private $httpOutgoing = [];
-    private $tick = [];
+    private array $incoming = [];
+    private array $outgoing = [];
+    private array $httpIncoming = [];
+    private array $httpOutgoing = [];
+    private array $tick = [];
 
     // Handlers
-    private $httpHandler;
-    private $messageHandler;
-    private $logger;
+    private HttpHandler $httpHandler;
+    private MessageHandler $messageHandler;
+    private LoggerInterface $logger;
 
     /**
      * Create MiddlewareHandler.

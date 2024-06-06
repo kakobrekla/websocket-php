@@ -37,8 +37,8 @@ class SubprotocolNegotiation implements
     use LoggerAwareTrait;
     use StringableTrait;
 
-    private $subprotocols;
-    private $require;
+    private array $subprotocols;
+    private bool $require;
 
     public function __construct(array $subprotocols, bool $require = false)
     {

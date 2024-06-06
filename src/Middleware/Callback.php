@@ -34,11 +34,11 @@ class Callback implements
     use LoggerAwareTrait;
     use StringableTrait;
 
-    private $incoming;
-    private $outgoing;
-    private $httpIncoming;
-    private $httpOutgoing;
-    private $tick;
+    private Closure|null $incoming;
+    private Closure|null $outgoing;
+    private Closure|null $httpIncoming;
+    private Closure|null $httpOutgoing;
+    private Closure|null $tick;
 
     public function __construct(
         Closure|null $incoming = null,

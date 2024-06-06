@@ -15,7 +15,7 @@ use WebSocket\Http\Response;
  */
 class HandshakeException extends Exception implements ConnectionLevelInterface
 {
-    private $response;
+    private Response $response;
 
     public function __construct(string $message, Response $response)
     {

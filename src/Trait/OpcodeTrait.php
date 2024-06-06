@@ -13,7 +13,7 @@ namespace WebSocket\Trait;
  */
 trait OpcodeTrait
 {
-    private static $opcodes = [
+    private static array $opcodes = [
         'continuation' => 0,
         'text'         => 1,
         'binary'       => 2,

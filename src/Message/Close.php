@@ -13,8 +13,8 @@ namespace WebSocket\Message;
  */
 class Close extends Message
 {
-    protected $opcode = 'close';
-    protected $status = null;
+    protected string $opcode = 'close';
+    protected int|null $status = null;
 
     public function __construct(int|null $status = null, string $content = '')
     {

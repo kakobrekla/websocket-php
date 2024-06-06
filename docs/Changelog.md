@@ -10,6 +10,7 @@
 
  * Support `psr/log v3` (@sirn-se)
  * Client `receive()` nevere return `null` (@sirn-se)
+ * Typed class properties (@sirn-se)
 
 ## `v2.2`
 

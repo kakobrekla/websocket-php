@@ -9,6 +9,7 @@ namespace WebSocket;
 
 use InvalidArgumentException;
 use Phrity\Net\{
+    StreamCollection,
     StreamFactory,
     Uri
 };
@@ -52,20 +53,20 @@ class Client implements LoggerAwareInterface, Stringable
     use StringableTrait;
 
     // Settings
-    private $logger;
-    private $timeout = 60;
-    private $frameSize = 4096;
-    private $persistent = false;
-    private $context = [];
-    private $headers = [];
+    private LoggerInterface $logger;
+    private int $timeout = 60;
+    private int $frameSize = 4096;
+    private bool $persistent = false;
+    private array $context = [];
+    private array $headers = [];
 
     // Internal resources
-    private $streamFactory;
-    private $socketUri;
-    private $connection;
-    private $middlewares = [];
-    private $streams;
-    private $running = false;
+    private StreamFactory $streamFactory;
+    private Uri $socketUri;
+    private Connection|null $connection = null;
+    private array $middlewares = [];
+    private StreamCollection|null $streams = null;
+    private bool $running = false;
 
 
     /* ---------- Magic methods ------------------------------------------------------------------------------------ */

@@ -15,7 +15,7 @@ MiddlewareHandler->setLogger(LoggerInterface $logger): void
 These methods now return `void` instead of `self.`
 This means method return can not be chained.
 
-The change make v3 complient with `psr/log v3`.
+The change makes v3 complient with `psr/log v3`.
 
 ## receive
 

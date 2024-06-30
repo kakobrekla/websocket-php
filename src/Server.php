@@ -213,6 +213,37 @@ class Server implements LoggerAwareInterface, Stringable
     }
 
     /**
+     * Get currently connected clients.
+     * @return array Connections
+     */
+    public function getConnections(): array
+    {
+        return $this->connections;
+    }
+
+    /**
+     * Get currently readable clients.
+     * @return array Connections
+     */
+    public function getReadableConnections(): array
+    {
+        return array_filter($this->connections, function (Connection $connection) {
+            return $connection->isReadable();
+        });
+    }
+
+    /**
+     * Get currently writable clients.
+     * @return array Connections
+     */
+    public function getWritableConnections(): array
+    {
+        return array_filter($this->connections, function (Connection $connection) {
+            return $connection->isWritable();
+        });
+    }
+
+    /**
      * Add a middleware.
      * @param WebSocket\Middleware\MiddlewareInterface $middleware
      * @return self
@@ -304,7 +335,7 @@ class Server implements LoggerAwareInterface, Stringable
                         if ($connection) {
                             $connection->close($e->getCloseStatus(), $e->getMessage());
                         }
-                        $this->logger->error("[server] sss {$e->getMessage()}");
+                        $this->logger->error("[server] {$e->getMessage()}");
                         $this->dispatch('error', [$this, $connection, $e]);
                     }
                 }

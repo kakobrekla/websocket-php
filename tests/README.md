@@ -14,15 +14,16 @@ make test
 
 ## Continuous integration
 
-GitHub Actions are run on PHP versions `7.4`, `8.0`, `8.1` and `8.2`.
+GitHub Actions are run on PHP versions `8.1`, `8.2`, `8.3` and `8.4`.
 
-Code coverage by [Coveralls](https://coveralls.io/github/Textalk/websocket-php).
+Code coverage by [Coveralls](https://coveralls.io/github/sirn-se/websocket-php).
 
 
 ## Test strategy
 
-Test set up overloads various stream and socket functions,
-and use "scripts" to define and mock input/output of these functions.
+Uses the [phrity/net-mock](https://packagist.org/packages/phrity/net-mock) library to mock
+stream operations, implementing `expect<method>` before methods that uses stream interactions
+are called.
 
-This set up negates the dependency on running servers,
+This set up negates the dependency on running actual servers,
 and allow testing various errors that might occur.

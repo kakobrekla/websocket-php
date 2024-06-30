@@ -6,6 +6,10 @@
 
  > PHP version `^8.1`
 
+### `3.1.0`
+
+ * Server `getConnections()`, `getReadableConnections()`, `getWritableConnections()` (@sirn-se)
+
 ### `3.0.0`
 
  * Support `psr/log v3` (@sirn-se)

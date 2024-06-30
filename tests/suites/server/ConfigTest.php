@@ -61,6 +61,9 @@ class ConfigTest extends TestCase
         $this->assertEquals('tcp', $server->getScheme());
         $this->assertFalse($server->isRunning());
         $this->assertEquals(0, $server->getConnectionCount());
+        $this->assertEmpty($server->getConnections());
+        $this->assertEmpty($server->getReadableConnections());
+        $this->assertEmpty($server->getWritableConnections());
 
         $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
         $this->expectStreamCollectionWaitRead()->addAssert(function ($method, $params) {
@@ -119,6 +122,11 @@ class ConfigTest extends TestCase
         $this->assertEquals('ssl', $server->getScheme());
         $this->assertFalse($server->isRunning());
         $this->assertEquals(1, $server->getConnectionCount());
+        $this->assertCount(1, $server->getConnections());
+        $this->expectSocketStreamIsReadable();
+        $this->assertCount(1, $server->getReadableConnections());
+        $this->expectSocketStreamIsWritable();
+        $this->assertCount(1, $server->getWritableConnections());
 
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();

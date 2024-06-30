@@ -49,7 +49,6 @@ echo "scheme:       {$server->getScheme()}\n";
 echo "timeout:      {$server->getTimeout()}s\n";
 echo "frame size:   {$server->getFrameSize()}b\n";
 echo "running:      {$server->isRunning()}\n";
-echo "connections:  {$server->getConnectionCount()}\n";
 echo "ssl:          {$server->isSsl()}\n";
 ```
 
@@ -170,11 +169,28 @@ $server->start();
 // Stop server - When called, server will no longer listen to incoming messages but will not disconnect clients
 $server->stop();
 
-//Disconnect server - Server will immediately stop and disconnect all clients without normal close procedure
+// Disconnect server - Server will immediately stop and disconnect all clients without normal close procedure
 $server->disconnect();
 ```
 
 To shut down server in an orderly fashion, you should first close all connected clients.
+
+
+## Server operations
+
+```php
+// Number of connected clients
+$server->getConnectionCount();
+
+// Get all current connections (may be in any state)
+$server->getConnections();
+
+// Get all readable connections
+$server->getReadableConnections();
+
+// Get all writable connections
+$server->getWritableConnections();
+```
 
 ## Connection control
 

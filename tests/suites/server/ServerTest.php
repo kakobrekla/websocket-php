@@ -466,6 +466,11 @@ class ServerTest extends TestCase
 
         // Should not have closed
         $this->assertEquals(1, $server->getConnectionCount());
+        $this->assertCount(1, $server->getConnections());
+        $this->expectSocketStreamIsReadable();
+        $this->assertCount(1, $server->getReadableConnections());
+        $this->expectSocketStreamIsWritable();
+        $this->assertCount(1, $server->getWritableConnections());
 
         $this->expectSocketStreamClose();
         $this->expectSocketServerClose();
@@ -510,6 +515,9 @@ class ServerTest extends TestCase
 
         // Should be closed
         $this->assertEquals(0, $server->getConnectionCount());
+        $this->assertEmpty($server->getConnections());
+        $this->assertEmpty($server->getReadableConnections());
+        $this->assertEmpty($server->getWritableConnections());
 
         $this->expectSocketServerClose();
         $server->disconnect();
@@ -551,6 +559,11 @@ class ServerTest extends TestCase
 
         // Should not have closed
         $this->assertEquals(1, $server->getConnectionCount());
+        $this->assertCount(1, $server->getConnections());
+        $this->expectSocketStreamIsReadable();
+        $this->assertCount(1, $server->getReadableConnections());
+        $this->expectSocketStreamIsWritable();
+        $this->assertCount(1, $server->getWritableConnections());
 
         $this->expectSocketStreamClose();
         $this->expectSocketServerClose();

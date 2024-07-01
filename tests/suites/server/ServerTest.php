@@ -32,6 +32,7 @@ use WebSocket\Exception\{
     ServerException
 };
 use WebSocket\Http\{
+    Response,
     ServerRequest
 };
 use WebSocket\Message\{
@@ -77,6 +78,12 @@ class ServerTest extends TestCase
         $this->assertInstanceOf(Stringable::class, $server);
         $this->assertEquals('WebSocket\Server(closed)', "{$server}");
 
+        $server->onHandshake(function ($server, $connection, $request, $response) {
+            $this->assertInstanceOf(Server::class, $server);
+            $this->assertInstanceOf(Connection::class, $connection);
+            $this->assertInstanceOf(ServerRequest::class, $request);
+            $this->assertInstanceOf(Response::class, $response);
+        });
         $server->onConnect(function ($server, $connection, $request) {
             $this->assertInstanceOf(Server::class, $server);
             $this->assertInstanceOf(Connection::class, $connection);
@@ -335,7 +342,7 @@ class ServerTest extends TestCase
         $server = new Server(8000);
         $server->setStreamFactory(new StreamFactory());
 
-        $server->onConnect(function ($server, $connection, $request) {
+        $server->onHandshake(function ($server, $connection, $request, $response) {
             $connection->disconnect();
             $server->stop();
         });
@@ -388,7 +395,7 @@ class ServerTest extends TestCase
         $server = new Server(8000);
         $server->setStreamFactory(new StreamFactory());
 
-        $server->onConnect(function ($server, $connection, $request) {
+        $server->onHandshake(function ($server, $connection, $request, $response) {
             $connection->disconnect();
             $server->start();
             $server->stop();

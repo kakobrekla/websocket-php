@@ -432,6 +432,12 @@ class Server implements LoggerAwareInterface, Stringable
             $request = $this->performHandshake($connection);
             $this->connections[$name] = $connection;
             $this->logger->info("[server] Accepted connection from {$name}.");
+            $this->dispatch('handshake', [
+                $this,
+                $connection,
+                $connection->getHandshakeRequest(),
+                $connection->getHandshakeResponse(),
+            ]);
             $this->dispatch('connect', [$this, $connection, $request]);
         } catch (Exception $e) {
             if ($connection) {

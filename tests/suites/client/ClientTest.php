@@ -32,6 +32,7 @@ use WebSocket\Exception\{
     ClientException
 };
 use WebSocket\Http\{
+    Request,
     Response
 };
 use WebSocket\Test\MockStreamTrait;
@@ -821,6 +822,13 @@ class ClientTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
 
+        $client->onHandshake(function ($client, $connection, $request, $response) {
+            $this->assertInstanceOf(Client::class, $client);
+            $this->assertInstanceOf(Connection::class, $connection);
+            $this->assertInstanceOf(Request::class, $request);
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertTrue($client->isRunning());
+        });
         $client->onConnect(function ($client, $connection, $response) {
             $this->assertInstanceOf(Client::class, $client);
             $this->assertInstanceOf(Connection::class, $connection);
@@ -959,7 +967,7 @@ class ClientTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
 
-        $client->onConnect(function ($client, $connection, $request) {
+        $client->onHandshake(function ($client, $connection, $request, $response) {
             $client->start();
             $client->stop();
         });

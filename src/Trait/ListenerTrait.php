@@ -17,6 +17,7 @@ trait ListenerTrait
 {
     private array $listeners = [];
 
+    /* @todo: Deprecate and remove in v4 */
     public function onConnect(Closure $closure): self
     {
         $this->listeners['connect'] = $closure;
@@ -26,6 +27,12 @@ trait ListenerTrait
     public function onDisconnect(Closure $closure): self
     {
         $this->listeners['disconnect'] = $closure;
+        return $this;
+    }
+
+    public function onHandshake(Closure $closure): self
+    {
+        $this->listeners['handshake'] = $closure;
         return $this;
     }
 

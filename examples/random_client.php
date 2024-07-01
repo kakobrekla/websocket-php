@@ -64,8 +64,8 @@ while (true) {
         }
 
         echo "# Listening on {$options['uri']}\n";
-        $client->onConnect(function ($client, $connection, $handshake) {
-            echo "> [{$connection->getRemoteName()}] Server connected {$handshake->getStatusCode()}\n";
+        $client->onHandshake(function ($server, $connection, $request, $response) {
+            echo "> [{$connection->getRemoteName()}] Server connected {$response->getStatusCode()}\n";
         })->onDisconnect(function ($client, $connection) {
             echo "> [{$connection->getRemoteName()}] Server disconnected\n";
         })->onText(function ($client, $connection, $message) {

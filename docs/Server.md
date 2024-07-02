@@ -42,6 +42,8 @@ $server
     ->setTimeout(300)
     // Specify frame size in bytes (default 4096 bytes)
     ->setFrameSize(1024)
+    // Set maximum number of allowed connections (default is unlimited)
+    ->setMaxConnections(10)
     ;
 
 echo "port:         {$server->getPort()}\n";

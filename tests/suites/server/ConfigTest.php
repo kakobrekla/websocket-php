@@ -113,6 +113,8 @@ class ConfigTest extends TestCase
         });
         $this->assertSame($server, $server->setTimeout(300));
         $this->assertSame($server, $server->setFrameSize(64));
+        $this->assertSame($server, $server->setMaxConnections(null));
+        $this->assertSame($server, $server->setMaxConnections(64));
         $this->assertSame($server, $server->addMiddleware(new Callback()));
 
         $this->assertEquals('WebSocket\Server(ssl://0.0.0.0:9000)', "{$server}");

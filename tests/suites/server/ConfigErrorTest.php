@@ -56,4 +56,13 @@ class ConfigErrorTest extends TestCase
         $server = new Server();
         $server->setFrameSize(0);
     }
+
+    public function testInvalidMaxConnections(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage("Invalid maxConnections '0' provided");
+        $server = new Server();
+        $server->setMaxConnections(0);
+    }
 }

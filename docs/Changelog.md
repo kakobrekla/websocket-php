@@ -10,6 +10,7 @@
 
  * Server `getConnections()`, `getReadableConnections()`, `getWritableConnections()` (@sirn-se)
  * `onHandshake(...)` listener (will deprecate `onConnect(...)`) (@sirn-se)
+ * Server `setMaxConnections(int|null)` (@sirn-se)
 
 ### `3.0.0`
 

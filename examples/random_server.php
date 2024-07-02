@@ -11,8 +11,10 @@
  *
  * Console options:
  *  --port <int> : The port to listen to, default 80
+ *  --ssl : Use SSL, default false
  *  --timeout <int> : Timeout in seconds, random default
  *  --framesize <int> : Frame size as bytes, random default
+ *  --connections <int> : Max number of connections, default unlimited
  *  --debug : Output log data (if logger is available)
  */
 
@@ -38,7 +40,7 @@ $options = array_merge([
     'port'      => 80,
     'timeout'   => rand(1, 60),
     'framesize' => rand(1, 4096) * 8,
-], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'debug']));
+], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'debug']));
 
 // Initiate server.
 try {
@@ -47,6 +49,7 @@ try {
         ->addMiddleware(new \WebSocket\Middleware\CloseHandler())
         ->addMiddleware(new \WebSocket\Middleware\PingResponder())
         ;
+    $server->setMaxConnections(1);
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
@@ -60,6 +63,10 @@ try {
     if (isset($options['framesize'])) {
         $server->setFrameSize($options['framesize']);
         echo "# Set frame size: {$options['framesize']}\n";
+    }
+    if (isset($options['connections'])) {
+        $server->setMaxConnections($options['connections']);
+        echo "# Set max connections: {$options['connections']}\n";
     }
 
     echo "# Listening on port {$server->getPort()}\n";
@@ -105,6 +112,6 @@ try {
                 break;
         }
     })->start();
-} catch (Throwable $e) {
+} catch (\Throwable $e) {
     echo "> ERROR: {$e->getMessage()}\n";
 }

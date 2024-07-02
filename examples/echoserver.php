@@ -14,6 +14,7 @@
  *  --ssl : Use SSL, default false
  *  --timeout <int> : Timeout in seconds, default 200 seconds
  *  --framesize <int> : Frame size in bytes, default 4096 bytes
+ *  --connections <int> : Max number of connections, default unlimited
  *  --debug : Output log data (if logger is available)
  */
 
@@ -28,7 +29,7 @@ echo "# Echo server! [phrity/websocket]\n";
 // Server options specified or default
 $options = array_merge([
     'port'  => 80,
-], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'debug']));
+], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'debug']));
 
 // Initiate server.
 try {
@@ -50,6 +51,10 @@ try {
     if (isset($options['framesize'])) {
         $server->setFrameSize($options['framesize']);
         echo "# Set frame size: {$options['framesize']}\n";
+    }
+    if (isset($options['connections'])) {
+        $server->setMaxConnections($options['connections']);
+        echo "# Set max connections: {$options['connections']}\n";
     }
 
     echo "# Listening on port {$server->getPort()}\n";
@@ -136,6 +141,6 @@ try {
     })->onError(function ($server, $connection, $exception) {
         echo "> Error: {$exception->getMessage()}\n";
     })->start();
-} catch (Throwable $e) {
+} catch (\Throwable $e) {
     echo "# ERROR: {$e->getMessage()}\n";
 }

@@ -658,4 +658,39 @@ class ServerTest extends TestCase
         $this->expectSocketStreamClose();
         unset($server);
     }
+
+    public function testMaxConnectionsOverflow(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+        $server->setMaxConnections(1);
+
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+        $this->expectWsSelectConnections(['@server']);
+        $this->expectSocketServerAccept();
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectSocketStreamGetRemoteName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectStreamCollectionAttach();
+        $this->expectSocketStreamGetLocalName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectSocketStreamGetRemoteName();
+        $this->expectSocketStreamSetTimeout();
+        $this->expectWsServerPerformHandshake();
+        $this->expectSocketStreamIsConnected();
+        $this->expectWsSelectConnections(['@server'])->addAssert(function () use ($server) {
+            $server->stop();
+        });
+
+        $server->start();
+        $this->assertEquals(1, $server->getConnectionCount());
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+        unset($server);
+    }
 }

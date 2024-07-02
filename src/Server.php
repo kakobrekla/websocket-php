@@ -67,6 +67,7 @@ class Server implements LoggerAwareInterface, Stringable
     private bool $running = false;
     private array $connections = [];
     private array $middlewares = [];
+    private int|null $maxConnections = null;
 
 
     /* ---------- Magic methods ------------------------------------------------------------------------------------ */
@@ -157,7 +158,7 @@ class Server implements LoggerAwareInterface, Stringable
      */
     public function setFrameSize(int $frameSize): self
     {
-        if ($frameSize < 1) {
+        if ($frameSize < 3) {
             throw new InvalidArgumentException("Invalid frameSize '{$frameSize}' provided");
         }
         $this->frameSize = $frameSize;
@@ -254,6 +255,20 @@ class Server implements LoggerAwareInterface, Stringable
         foreach ($this->connections as $connection) {
             $connection->addMiddleware($middleware);
         }
+        return $this;
+    }
+
+    /**
+     * Set maximum number of connections allowed, null means unlimited.
+     * @param int|null $maxConnections
+     * @return self
+     */
+    public function setMaxConnections(int|null $maxConnections): self
+    {
+        if ($maxConnections < 1) {
+            throw new InvalidArgumentException("Invalid maxConnections '{$maxConnections}' provided");
+        }
+        $this->maxConnections = $maxConnections;
         return $this;
     }
 
@@ -417,6 +432,10 @@ class Server implements LoggerAwareInterface, Stringable
     protected function acceptSocket(SocketServer $socket): void
     {
         try {
+            if (!is_null($this->maxConnections) && $this->getConnectionCount() >= $this->maxConnections) {
+                $this->logger->warning("[server] Denied connection, reached max {$this->maxConnections}");
+                return;
+            }
             $stream = $socket->accept();
             $name = $stream->getRemoteName();
             $this->streams->attach($stream, $name);

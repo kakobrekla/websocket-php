@@ -265,7 +265,7 @@ class Server implements LoggerAwareInterface, Stringable
      */
     public function setMaxConnections(int|null $maxConnections): self
     {
-        if ($maxConnections < 1) {
+        if ($maxConnections !== null && $maxConnections < 1) {
             throw new InvalidArgumentException("Invalid maxConnections '{$maxConnections}' provided");
         }
         $this->maxConnections = $maxConnections;

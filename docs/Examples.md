@@ -61,7 +61,7 @@ $client
     ->addMiddleware(new PingResponder())
     // Add ping interval middleware as heartbeat to keep connection open
     ->addMiddleware(new PingInterval(interval: 30))
-    ->onConnect(function (Client $client, Connection $connection, ResponseInterface $response) {
+    ->onHandshake(function (Client $client, Connection $connection, RequestInterface $request, ResponseInterface $response) {
         // Initial message, typically some authorization or configuration
         // This will be called everytime the client connect or reconnect
         $client->text($initial_message);

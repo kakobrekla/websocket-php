@@ -63,8 +63,8 @@ try {
     }
 
     echo "# Listening on port {$server->getPort()}\n";
-    $server->onConnect(function ($server, $connection, $handshake) {
-        echo "> [{$connection->getRemoteName()}] Client connected {$handshake->getUri()}\n";
+    $server->onHandshake(function ($server, $connection, $request, $response) {
+        echo "> [{$connection->getRemoteName()}] Client connected {$request->getUri()}\n";
     })->onDisconnect(function ($server, $connection) {
         echo "> [{$connection->getRemoteName()}] Client disconnected\n";
     })->onText(function ($server, $connection, $message) {

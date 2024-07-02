@@ -423,6 +423,12 @@ class Client implements LoggerAwareInterface, Stringable
             return;
         }
         $this->logger->info("[client] Client connected to {$this->socketUri}");
+        $this->dispatch('handshake', [
+            $this,
+            $this->connection,
+            $this->connection->getHandshakeRequest(),
+            $this->connection->getHandshakeResponse(),
+        ]);
         $this->dispatch('connect', [$this, $this->connection, $response]);
     }
 

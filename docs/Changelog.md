@@ -9,6 +9,7 @@
 ### `3.1.0`
 
  * Server `getConnections()`, `getReadableConnections()`, `getWritableConnections()` (@sirn-se)
+ * `onHandshake(...)` listener (will deprecate `onConnect(...)`) (@sirn-se)
 
 ### `3.0.0`
 

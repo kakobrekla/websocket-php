@@ -40,13 +40,13 @@ $client_or_server
 
 These listeners are called when the Client or Server connects and disconnects.
 
-* On Client, the `onConnect()` will receive a `Response` as last argument
-* On Server, the `onConnect()` will receive a `ServerRequest` as last argument
+* On Client, the `onHandshake()` will receive `Request` and `Response` as last arguments
+* On Server, the `onHandshake()` will receive `ServerRequest` and `Response` as last arguments
 
 ```php
 $client_or_server
-    // Called when a connection is established
-    ->onConnect(function (WebSocket\Client|WebSocket\Server $client_or_server WebSocket\Connection $connection, Psr\Http\Message\ServerRequestInterface|Psr\Http\Message\ResponseInterface $request_or_respone) {
+    // Called when a connection and handshake established
+    ->onHandshake(function (WebSocket\Client|WebSocket\Server $client_or_server WebSocket\Connection $connection, Psr\Http\Message\RequestInterface|Psr\Http\Message\ServerRequestInterface $request, Psr\Http\Message\ResponseInterface $respone) {
         // Act on connect
     })
     // Called when a connection is closed

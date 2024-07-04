@@ -171,6 +171,9 @@ $server->start();
 // Stop server - When called, server will no longer listen to incoming messages but will not disconnect clients
 $server->stop();
 
+// Orderly shutdown server - Will initate close procedure on all connected clients and stop running when all are disconnected
+$server->shutdown();
+
 // Disconnect server - Server will immediately stop and disconnect all clients without normal close procedure
 $server->disconnect();
 ```

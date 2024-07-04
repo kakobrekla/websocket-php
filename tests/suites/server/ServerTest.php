@@ -42,7 +42,10 @@ use WebSocket\Message\{
     Pong,
     Text
 };
-use WebSocket\Middleware\Callback;
+use WebSocket\Middleware\{
+    Callback,
+    CloseHandler
+};
 use WebSocket\Test\{
     MockStreamTrait,
     MockUri
@@ -384,6 +387,63 @@ class ServerTest extends TestCase
         $this->expectSocketStreamSetTimeout();
         $this->expectWsServerPerformHandshake();
         $this->expectSocketStreamClose();
+        $server->start();
+
+        unset($server);
+    }
+
+    public function testShutdown(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+        $server->addMiddleware(new CloseHandler());
+
+        $server->onHandshake(function ($server, $connection, $request, $response) {
+            $server->shutdown();
+        });
+
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+        $this->expectWsSelectConnections(['@server']);
+        // Accept connection
+        $this->expectSocketServerAccept();
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectSocketStreamGetRemoteName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectStreamCollectionAttach();
+        $this->expectSocketStreamGetLocalName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectSocketStreamGetRemoteName();
+        $this->expectSocketStreamSetTimeout();
+        $this->expectWsServerPerformHandshake();
+
+        $this->expectSocketStreamIsWritable();
+        $this->expectSocketStreamWrite();
+        $this->expectSocketStreamIsReadable();
+        $this->expectSocketStreamCloseWrite();
+        $this->expectSocketStreamGetMetadata();
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectWsSelectConnections(['fake-connection-1']);
+        $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
+            $this->assertEquals(2, $params[0]);
+        })->setReturn(function () {
+            return base64_decode('iIA=');
+        });
+        $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
+            $this->assertEquals(4, $params[0]);
+        })->setReturn(function () {
+            return base64_decode('RExLFw==');
+        });
+        $this->expectSocketStreamIsWritable();
+        $this->expectSocketStreamClose();
+        $this->expectSocketStreamIsConnected();
+        $this->expectStreamCollectionDetach();
+        $this->expectSocketServerClose();
+
         $server->start();
 
         unset($server);

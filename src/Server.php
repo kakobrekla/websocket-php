@@ -316,6 +316,10 @@ class Server implements LoggerAwareInterface, Stringable
             try {
                 // Clear closed connections
                 $this->detachUnconnected();
+                if (is_null($this->streams)) {
+                    $this->stop();
+                    return;
+                }
 
                 // Get streams with readable content
                 $readables = $this->streams->waitRead($this->timeout);
@@ -393,6 +397,36 @@ class Server implements LoggerAwareInterface, Stringable
 
 
     /* ---------- Connection management ---------------------------------------------------------------------------- */
+
+    /**
+     * Orderly shutdown of server.
+     * @param int $closeStatus Default is 1001 "Going away"
+     */
+    public function shutdown(int $closeStatus = 1001): void
+    {
+        $this->logger->info('[server] Shutting dowm');
+        if ($this->getConnectionCount() == 0) {
+            $this->disconnect();
+        }
+        // Store and reset settings, lock new connections, reset listeners
+        $max = $this->maxConnections;
+        $this->maxConnections = 0;
+        $listeners = $this->listeners;
+        $this->listeners = [];
+        // Track disconnects
+        $this->onDisconnect(function () use ($max, $listeners) {
+            if ($this->getConnectionCount() > 0) {
+                return;
+            }
+            $this->disconnect();
+            // Restore settings
+            $this->maxConnections = $max;
+            $this->listeners = $listeners;
+        });
+        // Close all current connections, listen to acks
+        $this->close($closeStatus);
+        $this->start();
+    }
 
     /**
      * Disconnect all connections and stop server.

@@ -439,7 +439,9 @@ class Server implements LoggerAwareInterface, Stringable
             $this->dispatch('disconnect', [$this, $connection]);
         }
         $this->connections = [];
-        $this->server->close();
+        if ($this->server) {
+            $this->server->close();
+        }
         $this->server = $this->streams = null;
         $this->logger->info('[server] Server disconnected');
     }

@@ -400,12 +400,15 @@ class ServerTest extends TestCase
         $server->addMiddleware(new CloseHandler());
 
         $server->onHandshake(function ($server, $connection, $request, $response) {
-            $server->shutdown();
+            if ($connection->getName() == 'fake-connection-2') {
+                $server->shutdown();
+            }
         });
 
         $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+
+        // Accept connection 1
         $this->expectWsSelectConnections(['@server']);
-        // Accept connection
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
@@ -419,7 +422,32 @@ class ServerTest extends TestCase
         $this->expectSocketStreamGetRemoteName();
         $this->expectSocketStreamSetTimeout();
         $this->expectWsServerPerformHandshake();
+        $this->expectSocketStreamIsConnected();
 
+        // Accept connection 2
+        $this->expectWsSelectConnections(['@server']);
+        $this->expectSocketServerAccept();
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectSocketStreamGetRemoteName()->setReturn(function () {
+            return 'fake-connection-2';
+        });
+        $this->expectStreamCollectionAttach();
+        $this->expectSocketStreamGetLocalName()->setReturn(function () {
+            return 'fake-connection-2';
+        });
+        $this->expectSocketStreamGetRemoteName();
+        $this->expectSocketStreamSetTimeout();
+        $this->expectWsServerPerformHandshake();
+
+        // Send close connection 1
+        $this->expectSocketStreamIsWritable();
+        $this->expectSocketStreamWrite();
+        $this->expectSocketStreamIsReadable();
+        $this->expectSocketStreamCloseWrite();
+        $this->expectSocketStreamGetMetadata();
+
+        // Send close connection 2
         $this->expectSocketStreamIsWritable();
         $this->expectSocketStreamWrite();
         $this->expectSocketStreamIsReadable();
@@ -427,7 +455,10 @@ class ServerTest extends TestCase
         $this->expectSocketStreamGetMetadata();
 
         $this->expectSocketStreamIsConnected();
-        $this->expectWsSelectConnections(['fake-connection-1']);
+        $this->expectSocketStreamIsConnected();
+        $this->expectWsSelectConnections(['fake-connection-1', 'fake-connection-2']);
+
+        // Receive close ack connection 1
         $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
             $this->assertEquals(2, $params[0]);
         })->setReturn(function () {
@@ -440,13 +471,48 @@ class ServerTest extends TestCase
         });
         $this->expectSocketStreamIsWritable();
         $this->expectSocketStreamClose();
+
+        // Receive close ack connection 2
+        $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
+            $this->assertEquals(2, $params[0]);
+        })->setReturn(function () {
+            return base64_decode('iIA=');
+        });
+        $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
+            $this->assertEquals(4, $params[0]);
+        })->setReturn(function () {
+            return base64_decode('RExLFw==');
+        });
+        $this->expectSocketStreamIsWritable();
+        $this->expectSocketStreamClose();
+
+        // Connection detacher
         $this->expectSocketStreamIsConnected();
         $this->expectStreamCollectionDetach();
+        $this->expectSocketStreamIsConnected();
+        $this->expectStreamCollectionDetach();
+
         $this->expectSocketServerClose();
 
         $server->start();
-
         unset($server);
+    }
+
+    public function testShutdownEmpty(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+        $server->addMiddleware(new CloseHandler());
+
+        $server->onTick(function ($server) {
+            $server->shutdown();
+        });
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+        $this->expectWsSelectConnections([]);
+        $this->expectSocketServerClose();
+
+        $server->start();
     }
 
     public function testAlreadyStarted(): void

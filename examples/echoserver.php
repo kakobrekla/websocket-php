@@ -98,6 +98,10 @@ try {
                 echo "< [{$connection->getRemoteName()}] Stop server\n";
                 $server->stop();
                 break;
+            case '@server-shutdown':
+                echo "< [{$connection->getRemoteName()}] Shutdown server\n";
+                $server->shutdown();
+                break;
             case '@server-close':
                 echo "< [{$connection->getRemoteName()}] Broadcast Close\n";
                 $server->send(new \WebSocket\Message\Close());

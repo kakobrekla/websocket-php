@@ -17,6 +17,7 @@
 * [Contributing](Contributing.md) - Contributors and requirements
 * [Examples](Examples.md) - Examples
 * [License](../LICENCE.md) - License
+* [Class synopsis](Class_Synopsis.md) - Public API of core classes
 
 ## Migration
 

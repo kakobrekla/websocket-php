@@ -13,6 +13,7 @@
  * Server `setMaxConnections(int|null)` (@sirn-se)
  * Server `shutdown()` orderly close server (@sirn-se)
  * `phrity/net-uri v2.1` for URI decoding (@sirn-se)
+ * Public class synopsis added to documentation (@sirn-se)
 
 ### `3.0.0`
 

@@ -27,7 +27,7 @@ $selected_subprotocol = $this->client->getMeta('subprotocolNegotiation.selected'
 
 When added on Server, it should be defined with a list of subprotocols that Server support.
 When Client request subprotocols, it will select the first requested protocol available in the list.
-The ClienServert MUST expect Client to send messages according to selected subprotocol.
+The ClientServer MUST expect Client to send messages according to selected subprotocol.
 
 ```php
 $server->addMiddleware(new WebSocket\Middleware\SubprotocolNegotiation([

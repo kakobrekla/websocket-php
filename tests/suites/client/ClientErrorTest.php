@@ -122,7 +122,7 @@ class ClientErrorTest extends TestCase
         unset($client);
     }
 
-    public function testRecieveBadOpcode(): void
+    public function testReceiveBadOpcode(): void
     {
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');

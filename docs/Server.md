@@ -3,7 +3,7 @@
 # Websocket: Server
 
 The library contains a multi-connection listening server based on coroutine runtime.
-It does not support full parallell processing through threads or separate processes.
+It does not support full parallel processing through threads or separate processes.
 
 ## Basic operation
 
@@ -29,7 +29,7 @@ $server
 ## Configuration
 
 The Server takes two arguments; port and ssl.
-By default ssl is false. If port is not specified, it will use 80 for non-secure and 443 for secure server.
+By default, ssl is false. If port is not specified, it will use 80 for non-secure and 443 for secure server.
 Other options are available runtime by calling configuration methods.
 
 ```php
@@ -129,7 +129,7 @@ $connection->send(new WebSocket\Message\Ping("My ping"));
 $connection->send(new WebSocket\Message\Text("My pong"));
 $connection->send(new WebSocket\Message\Close(1000, "Closing now"));
 ```
-The are also convenience methods available for all types.
+There are also convenience methods available for all types.
 ```php
 $connection->text("Server sends a message");
 $connection->binary($binary);

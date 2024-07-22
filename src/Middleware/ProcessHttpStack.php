@@ -41,7 +41,7 @@ class ProcessHttpStack implements Stringable
     }
 
     /**
-     * Process middleware for incoming htpp message.
+     * Process middleware for incoming http message.
      * @return Message
      */
     public function handleHttpIncoming(): Message
@@ -54,7 +54,7 @@ class ProcessHttpStack implements Stringable
     }
 
     /**
-     * Process middleware for outgoing htpp message.
+     * Process middleware for outgoing http message.
      * @param Message $message
      * @return Message
      */

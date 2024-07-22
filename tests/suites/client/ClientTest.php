@@ -724,7 +724,7 @@ class ClientTest extends TestCase
         unset($client);
     }
 
-    public function testConvenicanceMethods(): void
+    public function testConvenienceMethods(): void
     {
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');

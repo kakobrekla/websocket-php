@@ -17,7 +17,7 @@ use WebSocket\Message\{
 
 /**
  * WebSocket\Trait\SendMethodsTrait trait.
- * Conveniance send methods.
+ * Convenience send methods.
  */
 trait SendMethodsTrait
 {

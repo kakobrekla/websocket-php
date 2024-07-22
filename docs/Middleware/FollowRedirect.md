@@ -9,7 +9,7 @@ During handshake, it reacts to `3xx` HTTP status and reconnect the Client to pro
 
 ## Client
 
-Will follow redirect by setting new URI and reconnecy the Client if;
+Will follow redirect by setting new URI and reconnect the Client if;
 * Server response during handshake has a `3xx` status
 * Server response also includes a `Location` header
 * Maximum number of redirects has not been exceeded

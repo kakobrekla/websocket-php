@@ -95,5 +95,5 @@ $server
 
 ### License
 
-[ISC License](COPYING.md)
+[ISC License](LICENSE.md)
 

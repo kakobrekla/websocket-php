@@ -404,7 +404,7 @@ class Server implements LoggerAwareInterface, Stringable
      */
     public function shutdown(int $closeStatus = 1001): void
     {
-        $this->logger->info('[server] Shutting dowm');
+        $this->logger->info('[server] Shutting down');
         if ($this->getConnectionCount() == 0) {
             $this->disconnect();
         }

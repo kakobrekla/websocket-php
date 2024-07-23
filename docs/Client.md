@@ -157,7 +157,7 @@ $client->send(new WebSocket\Message\Ping("My ping"));
 $client->send(new WebSocket\Message\Text("My pong"));
 $client->send(new WebSocket\Message\Close(1000, "Closing now"));
 ```
-The are also convenience methods available for all types.
+There are also convenience methods available for all types.
 ```php
 $client->text("Server sends a message");
 $client->binary($binary);
@@ -178,7 +178,7 @@ if (!$client->isConnected()) {
 $client->disconnect();
 ```
 
-When connected, there are addintional info to retrieve.
+When connected, there are additional info to retrieve.
 
 ```php
 // View client name

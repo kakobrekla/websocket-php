@@ -39,7 +39,7 @@ info     | Received 'close' message []
 
 This setup will create Client that sends initial message to Server,
 and then subscribes to messages sent by Server.
-The `PingInterval` (possibly change interval) will keep conneciton open.
+The `PingInterval` (possibly change interval) will keep connection open.
 If something goes wrong, it will in most cases be able to re-connect and resume subscription.
 
 ```php
@@ -102,7 +102,7 @@ php examples/send.php --opcode text --debug "A text message" // Use runtime debu
 
 Source: [examples/echoserver.php](../examples/echoserver.php)
 
-A simple server that responds to recevied commands.
+A simple server that responds to received commands.
 
 Example use:
 ```

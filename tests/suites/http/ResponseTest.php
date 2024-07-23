@@ -123,6 +123,6 @@ class ResponseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("'.' is not a valid header field name.");
-        $response->withHeader('.', 'invaid name');
+        $response->withHeader('.', 'invalid name');
     }
 }

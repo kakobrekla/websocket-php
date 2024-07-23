@@ -3,7 +3,7 @@
 # Websocket: Listener
 
 Both [Client](Client.md) and [Server](Server.md) support registering listeners as callback functions.
-Listeners will be called when a message is received, a conneciton is opened and closed, and when an error occurs.
+Listeners will be called when a message is received, a connection is opened and closed, and when an error occurs.
 If you use the listener method `->start()` this will be the only way to act on incoming messages.
 
 ## Message listeners
@@ -75,11 +75,11 @@ $client_or_server
 Using above functions, your Client and Server will be able to receive incoming messages and take action accordingly.
 
 But what if your implementation need to process other data, and send unsolicited messages?
-The coroutine implementation will regulary call the `onTick()` method, depending on workload and configuration.
+The coroutine implementation will regularly call the `onTick()` method, depending on workload and configuration.
 
 ```php
 $client_or_server
-    // Regulary called, regardless of connections
+    // Regularly called, regardless of connections
     ->onTick(function (WebSocket\Client|WebSocket\Server $client_or_server) {
         // Do anything
     })

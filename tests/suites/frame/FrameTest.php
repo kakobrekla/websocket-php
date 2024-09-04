@@ -30,6 +30,9 @@ class FrameTest extends TestCase
         $this->assertInstanceOf(Frame::class, $frame);
         $this->assertInstanceOf(Stringable::class, $frame);
         $this->assertTrue($frame->isFinal());
+        $this->assertFalse($frame->getRsv1());
+        $this->assertFalse($frame->getRsv2());
+        $this->assertFalse($frame->getRsv3());
         $this->assertFalse($frame->isContinuation());
         $this->assertEquals('text', $frame->getOpcode());
         $this->assertEquals('Text message', $frame->getPayload());

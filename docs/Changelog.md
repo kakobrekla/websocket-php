@@ -2,7 +2,17 @@
 
 # Websocket: Changelog
 
-## `v3.0`
+## `v3.2`
+
+ > PHP version `^8.1`
+
+### `3.2.0`
+
+ * RSV flags on Frame (@sirn-se)
+ * Fixed various typos and broken links (@pieterocp)
+ * Deprecation warnings (@sirn-se)
+
+## `v3.1`
 
  > PHP version `^8.1`
 
@@ -14,6 +24,10 @@
  * Server `shutdown()` orderly close server (@sirn-se)
  * `phrity/net-uri v2.1` for URI decoding (@sirn-se)
  * Public class synopsis added to documentation (@sirn-se)
+
+## `v3.0`
+
+ > PHP version `^8.1`
 
 ### `3.0.0`
 

@@ -55,7 +55,9 @@ class FrameHandler implements LoggerAwareInterface, Stringable
         $data = $this->read(2);
         list ($byte_1, $byte_2) = array_values(unpack('C*', $data));
         $final = (bool)($byte_1 & 0b10000000); // Final fragment marker.
-        $rsv = $byte_1 & 0b01110000; // Unused bits, ignore
+        $rsv1 = (bool)($byte_1 & 0b01000000);
+        $rsv2 = (bool)($byte_1 & 0b00100000);
+        $rsv3 = (bool)($byte_1 & 0b00010000);
 
         // Parse opcode
         $opcode_int = $byte_1 & 0b00001111;
@@ -98,7 +100,7 @@ class FrameHandler implements LoggerAwareInterface, Stringable
             }
         }
 
-        $frame = new Frame($opcode, $payload, $final);
+        $frame = new Frame($opcode, $payload, $final, $rsv1, $rsv2, $rsv3);
         $this->logger->debug("[frame-handler] Pulled '{$opcode}' frame", [
             'opcode' => $frame->getOpcode(),
             'final' => $frame->isFinal(),
@@ -114,16 +116,17 @@ class FrameHandler implements LoggerAwareInterface, Stringable
     }
 
     // Push frame to stream
-    public function push(Frame $frame, bool|null $masked = null): int
+    public function push(Frame $frame): int
     {
-        $final = $frame->isFinal();
         $payload = $frame->getPayload();
-        $opcode = $frame->getOpcode();
         $payload_length = $frame->getPayloadLength();
 
         $data = '';
-        $byte_1 = $final ? 0b10000000 : 0b00000000; // Final fragment marker.
-        $byte_1 |= self::$opcodes[$opcode]; // Set opcode.
+        $byte_1 = $frame->isFinal() ? 0b10000000 : 0b00000000; // Final fragment marker.
+        $byte_1 |= $frame->getRsv1() ? 0b01000000 : 0b00000000; // RSV1 bit.
+        $byte_1 |= $frame->getRsv2() ? 0b00100000 : 0b00000000; // RSV2 bit.
+        $byte_1 |= $frame->getRsv3() ? 0b00010000 : 0b00000000; // RSV3 bit.
+        $byte_1 |= self::$opcodes[$frame->getOpcode()]; // Set opcode.
         $data .= pack('C', $byte_1);
 
         $byte_2 = $this->pushMasked ? 0b10000000 : 0b00000000; // Masking bit marker.

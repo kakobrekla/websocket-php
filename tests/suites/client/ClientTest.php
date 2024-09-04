@@ -21,6 +21,7 @@ use Phrity\Net\Mock\Stack\{
 };
 use Phrity\Net\StreamException;
 use Phrity\Net\Uri;
+use Phrity\Util\ErrorHandler;
 use Stringable;
 use WebSocket\{
     Client,
@@ -821,6 +822,7 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
+        $handler = new ErrorHandler();
 
         $client->onHandshake(function ($client, $connection, $request, $response) {
             $this->assertInstanceOf(Client::class, $client);
@@ -829,12 +831,19 @@ class ClientTest extends TestCase
             $this->assertInstanceOf(Response::class, $response);
             $this->assertTrue($client->isRunning());
         });
-        $client->onConnect(function ($client, $connection, $response) {
-            $this->assertInstanceOf(Client::class, $client);
-            $this->assertInstanceOf(Connection::class, $connection);
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertTrue($client->isRunning());
-            $client->stop();
+        $handler->withAll(function () use ($client) {
+            $client->onConnect(function ($client, $connection, $response) {
+                $this->assertInstanceOf(Client::class, $client);
+                $this->assertInstanceOf(Connection::class, $connection);
+                $this->assertInstanceOf(Response::class, $response);
+                $this->assertTrue($client->isRunning());
+                $client->stop();
+            });
+        }, function (array $errors) {
+            $this->assertEquals(
+                'onConnect() is deprecated and will be removed in v4. Use onHandshake() instead.',
+                $errors[0]->getMessage()
+            );
         });
         $client->onText(function ($client, $connection, $message) {
             $this->assertInstanceOf(Client::class, $client);

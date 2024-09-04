@@ -19,6 +19,7 @@ use Phrity\Net\Mock\Stack\{
     ExpectStreamFactoryTrait
 };
 use Phrity\Net\StreamException;
+use Phrity\Util\ErrorHandler;
 use Psr\Log\NullLogger;
 use Stringable;
 use WebSocket\{
@@ -78,6 +79,7 @@ class ServerTest extends TestCase
         $this->expectStreamFactory();
         $server = new Server(8000);
         $server->setStreamFactory(new StreamFactory());
+        $handler = new ErrorHandler();
         $this->assertInstanceOf(Stringable::class, $server);
         $this->assertEquals('WebSocket\Server(closed)', "{$server}");
 
@@ -87,11 +89,18 @@ class ServerTest extends TestCase
             $this->assertInstanceOf(ServerRequest::class, $request);
             $this->assertInstanceOf(Response::class, $response);
         });
-        $server->onConnect(function ($server, $connection, $request) {
-            $this->assertInstanceOf(Server::class, $server);
-            $this->assertInstanceOf(Connection::class, $connection);
-            $this->assertInstanceOf(ServerRequest::class, $request);
-            $server->stop();
+        $handler->withAll(function () use ($server) {
+            $server->onConnect(function ($server, $connection, $request) {
+                $this->assertInstanceOf(Server::class, $server);
+                $this->assertInstanceOf(Connection::class, $connection);
+                $this->assertInstanceOf(ServerRequest::class, $request);
+                $server->stop();
+            });
+        }, function (array $errors) {
+            $this->assertEquals(
+                'onConnect() is deprecated and will be removed in v4. Use onHandshake() instead.',
+                $errors[0]->getMessage()
+            );
         });
         $server->onText(function ($server, $connection, $message) {
             $this->assertInstanceOf(Server::class, $server);

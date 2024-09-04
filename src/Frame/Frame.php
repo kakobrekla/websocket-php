@@ -21,17 +21,44 @@ class Frame implements Stringable
     private string $opcode;
     private string $payload;
     private bool $final;
+    private bool $rsv1;
+    private bool $rsv2;
+    private bool $rsv3;
 
-    public function __construct(string $opcode, string $payload, bool $final)
-    {
+    public function __construct(
+        string $opcode,
+        string $payload,
+        bool $final,
+        bool $rsv1 = false,
+        bool $rsv2 = false,
+        bool $rsv3 = false
+    ) {
         $this->opcode = $opcode;
         $this->payload = $payload;
         $this->final = $final;
+        $this->rsv1 = $rsv1;
+        $this->rsv2 = $rsv2;
+        $this->rsv3 = $rsv3;
     }
 
     public function isFinal(): bool
     {
         return $this->final;
+    }
+
+    public function getRsv1(): bool
+    {
+        return $this->rsv1;
+    }
+
+    public function getRsv2(): bool
+    {
+        return $this->rsv2;
+    }
+
+    public function getRsv3(): bool
+    {
+        return $this->rsv3;
     }
 
     public function isContinuation(): bool

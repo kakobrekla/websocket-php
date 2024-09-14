@@ -59,6 +59,7 @@ class Server implements LoggerAwareInterface, Stringable
     private LoggerInterface $logger;
     private int $timeout = 60;
     private int $frameSize = 4096;
+    private array $context = [];
 
     // Internal resources
     private StreamFactory $streamFactory;
@@ -242,6 +243,17 @@ class Server implements LoggerAwareInterface, Stringable
         return array_filter($this->connections, function (Connection $connection) {
             return $connection->isWritable();
         });
+    }
+
+    /**
+     * Set connection context.
+     * @param array $context Context as array, see https://www.php.net/manual/en/context.php
+     * @return self
+     */
+    public function setContext(array $context): self
+    {
+        $this->context = $context;
+        return $this;
     }
 
     /**
@@ -455,6 +467,7 @@ class Server implements LoggerAwareInterface, Stringable
         try {
             $uri = new Uri("{$this->scheme}://0.0.0.0:{$this->port}");
             $this->server = $this->streamFactory->createSocketServer($uri);
+            $this->server->setContext($this->context);
             $this->streams = $this->streamFactory->createStreamCollection();
             $this->streams->attach($this->server, '@server');
             $this->logger->info("[server] Starting server on {$uri}.");

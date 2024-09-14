@@ -134,4 +134,27 @@ class ConfigTest extends TestCase
         $this->expectSocketStreamClose();
         unset($server);
     }
+
+    public function testContextOption(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $this->assertSame($server, $server->setStreamFactory(new StreamFactory()));
+        $this->assertSame($server, $server->setContext(['ssl' => ['verify_peer' => false]]));
+
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000, context: ['ssl' => ['verify_peer' => false]]);
+        $this->expectStreamCollectionWaitRead()->addAssert(function ($method, $params) {
+            $this->assertEquals(60, $params[0]);
+        });
+        $this->expectStreamCollection()->addAssert(function ($method, $params) use ($server) {
+            $this->assertTrue($server->isRunning());
+            $this->assertEquals(0, $server->getConnectionCount());
+            $server->stop();
+        });
+        $server->start();
+        $this->assertEquals('WebSocket\Server(tcp://0.0.0.0:8000)', "{$server}");
+        $this->assertFalse($server->isRunning());
+
+        unset($server);
+    }
 }

@@ -11,16 +11,10 @@ use Phrity\Net\{
     SocketStream,
     Uri
 };
-use Psr\Http\Message\{
-    MessageInterface,
-    RequestInterface,
-    ResponseInterface,
-    StreamInterface
-};
+use Psr\Http\Message\MessageInterface;
 use Psr\Log\{
     LoggerInterface,
     LoggerAwareInterface,
-    NullLogger
 };
 use RuntimeException;
 use Stringable;
@@ -29,6 +23,7 @@ use WebSocket\Trait\StringableTrait;
 /**
  * WebSocket\Http\HttpHandler class.
  * Reads and writes HTTP message to/from stream.
+ * @deprecated Remove LoggerAwareInterface in v4
  */
 class HttpHandler implements LoggerAwareInterface, Stringable
 {
@@ -36,18 +31,18 @@ class HttpHandler implements LoggerAwareInterface, Stringable
 
     private SocketStream $stream;
     private bool $ssl;
-    private LoggerInterface $logger;
 
     public function __construct(SocketStream $stream, bool $ssl = false)
     {
         $this->stream = $stream;
         $this->ssl = $ssl;
-        $this->setLogger(new NullLogger());
     }
 
+    /**
+     * @deprecated Remove in v4
+     */
     public function setLogger(LoggerInterface $logger): void
     {
-        $this->logger = $logger;
     }
 
     public function pull(): MessageInterface

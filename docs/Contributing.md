@@ -24,9 +24,10 @@ Base your patch on corresponding version branch, and target that version branch 
 
 | Version | Branch | PHP | Status |
 | --- | --- | --- | --- |
-| [`3.2`](https://github.com/sirn-se/websocket-php/tree/3.2.0) | `v3.2-main` | `^8.1` | Upcoming version |
-| [`3.1`](https://github.com/sirn-se/websocket-php/tree/3.1.0) | `v3.1-main` | `^8.1` | Current version |
-| [`3.0`](https://github.com/sirn-se/websocket-php/tree/3.0.0) | `v3.0-main` | `^8.1` | Bug fixes only |
+| [`3.3`](https://github.com/sirn-se/websocket-php/tree/3.3.0) | `v3.3-main` | `^8.1` | Upcoming version |
+| [`3.2`](https://github.com/sirn-se/websocket-php/tree/3.2.0) | `v3.2-main` | `^8.1` | Current version |
+| [`3.1`](https://github.com/sirn-se/websocket-php/tree/3.1.0) | `v3.1-main` | `^8.1` | Bug fixes only |
+| [`3.0`](https://github.com/sirn-se/websocket-php/tree/3.0.0) | - | `^8.1` | Not supported |
 | [`2.2`](https://github.com/sirn-se/websocket-php/tree/2.2.0) | `v2.2-main` | `^8.0` | Bug fixes only |
 | [`2.1`](https://github.com/sirn-se/websocket-php/tree/2.1.0) | - | `^8.0` | Not supported |
 | [`2.0`](https://github.com/sirn-se/websocket-php/tree/2.0.0) | - | `^8.0` | Not supported |

@@ -85,8 +85,9 @@ class WebSocket\Server implements Psr\Log\LoggerAwareInterface, Stringable
     public function setFrameSize(int $frameSize): self;
     public function getFrameSize(): int;
     public function getPort(): int;
-    public function getScheme(): string:
+    public function getScheme(): string;
     public function isSsl(): bool;
+    public function setContext(array $context): self;
     public function getConnectionCount(): int;
     public function getConnections(): array;
     public function getReadableConnections(): array;
@@ -185,7 +186,7 @@ class WebSocket\Connection implements Psr\Log\LoggerAwareInterface, Stringable
 ```php
 class WebSocket\Exception\BadOpcodeException extends WebSocket\Exception\Exception implements WebSocket\Exception\MessageLevelInterface
 {
-    public function __construct(string $message = '');
+    public function __construct(string $message = 'Bad Opcode');
 }
 ```
 
@@ -194,7 +195,7 @@ class WebSocket\Exception\BadOpcodeException extends WebSocket\Exception\Excepti
 ```php
 class WebSocket\Exception\BadUriException extends WebSocket\Exception\Exception
 {
-    parent::__construct($message ?: 'Bad URI');
+     public function __construct(string $message = 'Bad URI');
 }
 ```
 
@@ -254,7 +255,7 @@ class WebSocket\Exception\ConnectionTimeoutException extends WebSocket\Exception
 ### Exception
 
 ```php
-abstract class Exception extends RuntimeException
+abstract class WebSocket\Exception\Exception extends RuntimeException
 {
 }
 ```
@@ -306,7 +307,7 @@ class WebSocket\Frame\FrameHandler implements LoggerAwareInterface, Stringable
     public function __toString(): string;
     public function setLogger(Psr\Log\LoggerInterface $logger): void;
     public function pull(): WebSocket\Frame\Frame;
-    public function push(WebSocket\Frame\Frame $frame, bool|null $masked = null): int;
+    public function push(WebSocket\Frame\Frame $frame): int;
 }
 ```
 
@@ -315,9 +316,12 @@ class WebSocket\Frame\FrameHandler implements LoggerAwareInterface, Stringable
 ```php
 class WebSocket\Frame\Frame implements Stringable
 {
-    public function __construct(string $opcode, string $payload, bool $final);
+    public function __construct(string $opcode, string $payload, bool $final, bool $rsv1 = false, bool $rsv2 = false, bool $rsv3 = false);
     public function __toString(): string;
     public function isFinal(): bool;
+    public function getRsv1(): bool;
+    public function getRsv2(): bool;
+    public function getRsv3(): bool;
     public function isContinuation(): bool;
     public function getOpcode(): string;
     public function getPayload(): string;
@@ -334,7 +338,6 @@ class WebSocket\Http\HttpHandler implements LoggerAwareInterface, Stringable
 {
     public function __construct(Phrity\Net\SocketStream $stream, bool $ssl = false);
     public function __toString(): string;
-    public function setLogger(Psr\Log\LoggerInterface $logger): void;
     public function pull(): Psr\Http\Message\MessageInterface;
     public function push(Psr\Http\Message\MessageInterface $message): Psr\Http\Message\MessageInterface;
 }
@@ -417,8 +420,6 @@ class WebSocket\Message\Close extends WebSocket\Message\Message
     public function __construct(int|null $status = null, string $content = '');
     public function getCloseStatus(): int|null;
     public function setCloseStatus(int|null $status): void;
-    public function getPayload(): string;
-    public function setPayload(string $payload = ''): void;
 }
 ```
 

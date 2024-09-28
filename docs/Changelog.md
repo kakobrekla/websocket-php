@@ -11,7 +11,7 @@
  * Server `setContext()` method (@sirn-se)
  * RSV flags on Frame (@sirn-se)
  * Fixed various typos and broken links (@pieterocp)
- * `phrity/net-stream v2.1` for context support and select warning hanling (@sirn-se)
+ * `phrity/net-stream v2.1` for context support and select warning handling (@sirn-se)
  * Deprecation warnings (@sirn-se)
 
 ## `v3.1`

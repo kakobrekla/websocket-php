@@ -13,8 +13,8 @@ namespace WebSocket\Exception;
  */
 class BadOpcodeException extends Exception implements MessageLevelInterface
 {
-    public function __construct(string $message = '')
+    public function __construct(string $message = 'Bad Opcode')
     {
-        parent::__construct($message ?: 'Bad Opcode');
+        parent::__construct($message);
     }
 }

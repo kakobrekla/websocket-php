@@ -13,8 +13,8 @@ namespace WebSocket\Exception;
  */
 class BadUriException extends Exception
 {
-    public function __construct(string $message = '')
+    public function __construct(string $message = 'Bad URI')
     {
-        parent::__construct($message ?: 'Bad URI');
+        parent::__construct($message);
     }
 }

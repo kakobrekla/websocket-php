@@ -6,6 +6,12 @@
 
  > PHP version `^8.1`
 
+### `3.2.1`
+
+ * Fix missing return statement in server shutdown method (@sirn-se)
+ * Unit tests for php 8.5 (@sirn-se)
+ * Documentation broken links fixed (@sirn-se)
+
 ### `3.2.0`
 
  * Server `setContext()` method (@sirn-se)

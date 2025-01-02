@@ -102,7 +102,7 @@ $client
     ;
 ```
 
-Read more on [Middlewares](Middlewares.md).
+Read more on [Middlewares](Middleware.md).
 
 ## Listeners
 

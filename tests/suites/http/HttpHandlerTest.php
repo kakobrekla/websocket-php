@@ -189,7 +189,44 @@ class HttpHandlerTest extends TestCase
         fclose($temp);
     }
 
-    public function testPullError(): void
+    public function testFragmentedPullResponse(): void
+    {
+        $temp = tmpfile();
+
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $stream = new SocketStream($temp);
+        $handler = new HttpHandler($stream);
+        $this->assertInstanceOf(HttpHandler::class, $handler);
+
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "HTTP/1.1 2";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "00 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host:";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "test.com:123\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\n";
+        });
+        $response = $handler->pull();
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals('1.1', $response->getProtocolVersion());
+        $this->assertEquals(['Host' => ['test.com:123']], $response->getHeaders());
+        $this->assertTrue($response->hasHeader('Host'));
+
+        fclose($temp);
+    }
+
+    public function testPullInvalidHttpError(): void
     {
         $temp = tmpfile();
 
@@ -204,6 +241,27 @@ class HttpHandlerTest extends TestCase
         });
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Invalid Http request.");
+
+        $handler->pull();
+
+        fclose($temp);
+    }
+
+    public function testPullEmptyReadError(): void
+    {
+        $temp = tmpfile();
+
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $stream = new SocketStream($temp);
+        $handler = new HttpHandler($stream);
+        $this->assertInstanceOf(HttpHandler::class, $handler);
+
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return null;
+        });
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Could not read Http request.");
 
         $handler->pull();
 

@@ -48,6 +48,7 @@ class HttpHandler implements LoggerAwareInterface, Stringable
     public function pull(): MessageInterface
     {
         $status = $this->readLine();
+        $path = $version = null;
 
         // Pulling server request
         preg_match('!^(?P<method>[A-Z]+) (?P<path>[^ ]*) HTTP/(?P<version>[0-9/.]+)!', $status, $matches);
@@ -89,6 +90,9 @@ class HttpHandler implements LoggerAwareInterface, Stringable
         return $message;
     }
 
+    /**
+     * @param Message $message
+     */
     public function push(MessageInterface $message): MessageInterface
     {
         $data = implode("\r\n", $message->getAsArray()) . "\r\n\r\n";

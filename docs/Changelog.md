@@ -6,6 +6,10 @@
 
  > PHP version `^8.1`
 
+### `3.2.2`
+
+ * Adding `phpstan` for static analysis (@sirn-se)
+
 ### `3.2.1`
 
  * Fix missing return statement in server shutdown method (@sirn-se)

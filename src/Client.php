@@ -72,7 +72,7 @@ class Client implements LoggerAwareInterface, Stringable
     /* ---------- Magic methods ------------------------------------------------------------------------------------ */
 
     /**
-     * @param Psr\Http\Message\UriInterface|string $uri A ws/wss-URI
+     * @param UriInterface|string $uri A ws/wss-URI
      */
     public function __construct(UriInterface|string $uri)
     {
@@ -95,7 +95,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set stream factory to use.
-     * @param Phrity\Net\StreamFactory $streamFactory
+     * @param StreamFactory $streamFactory
      * @return self
      */
     public function setStreamFactory(StreamFactory $streamFactory): self
@@ -106,7 +106,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set logger.
-     * @param Psr\Log\LoggerInterface $logger Logger implementation
+     * @param LoggerInterface $logger Logger implementation
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -173,7 +173,7 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Set connection persistence.
      * @param bool $persistent True for persistent connection.
-     * @return self.
+     * @return self
      */
     public function setPersistent(bool $persistent): self
     {
@@ -206,7 +206,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Add a middleware.
-     * @param WebSocket\Middleware\MiddlewareInterface $middleware
+     * @param MiddlewareInterface $middleware
      * @return self
      */
     public function addMiddleware(MiddlewareInterface $middleware): self
@@ -429,7 +429,7 @@ class Client implements LoggerAwareInterface, Stringable
             $this->connection->getHandshakeRequest(),
             $this->connection->getHandshakeResponse(),
         ]);
-        $this->dispatch('connect', [$this, $this->connection, $response]);
+        $this->dispatch('connect', [$this, $this->connection, $this->connection->getHandshakeResponse()]);
     }
 
     /**
@@ -516,7 +516,9 @@ class Client implements LoggerAwareInterface, Stringable
         }
 
         try {
+            /** @var Request */
             $request = $this->connection->pushHttp($request);
+            /** @var Response */
             $response = $this->connection->pullHttp();
 
             if ($response->getStatusCode() != 101) {

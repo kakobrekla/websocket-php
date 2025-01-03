@@ -35,7 +35,6 @@ class ProcessTickStack implements Stringable
 
     /**
      * Process middleware for tick.
-     * @return Message
      */
     public function handleTick(): void
     {

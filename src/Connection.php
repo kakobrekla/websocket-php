@@ -96,7 +96,7 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Set logger.
-     * @param Psr\Log\LoggerInterface $logger Logger implementation
+     * @param LoggerInterface $logger Logger implementation
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -110,7 +110,7 @@ class Connection implements LoggerAwareInterface, Stringable
     /**
      * Set time out on connection.
      * @param int $seconds Timeout part in seconds
-     * @return self.
+     * @return self
      */
     public function setTimeout(int $seconds): self
     {
@@ -132,7 +132,7 @@ class Connection implements LoggerAwareInterface, Stringable
     /**
      * Set frame size.
      * @param int $frameSize Frame size in bytes.
-     * @return self.
+     * @return self
      */
     public function setFrameSize(int $frameSize): self
     {
@@ -152,7 +152,7 @@ class Connection implements LoggerAwareInterface, Stringable
     /**
      * Add a middleware.
      * @param MiddlewareInterface $middleware
-     * @return self.
+     * @return self
      */
     public function addMiddleware(MiddlewareInterface $middleware): self
     {
@@ -193,7 +193,7 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Close connection stream.
-     * @return self.
+     * @return self
      */
     public function disconnect(): self
     {
@@ -205,7 +205,7 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Close connection stream reading.
-     * @return self.
+     * @return self
      */
     public function closeRead(): self
     {
@@ -216,7 +216,7 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Close connection stream writing.
-     * @return self.
+     * @return self
      */
     public function closeWrite(): self
     {

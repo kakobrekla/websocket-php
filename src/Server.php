@@ -419,6 +419,7 @@ class Server implements LoggerAwareInterface, Stringable
         $this->logger->info('[server] Shutting down');
         if ($this->getConnectionCount() == 0) {
             $this->disconnect();
+            return;
         }
         // Store and reset settings, lock new connections, reset listeners
         $max = $this->maxConnections;

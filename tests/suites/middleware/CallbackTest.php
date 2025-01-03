@@ -120,7 +120,13 @@ class CallbackTest extends TestCase
             return $message;
         }));
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET /a/path?a=b HTTP/1.1\r\nHost: test.com:123\r\n\r\n";
+            return "GET /a/path?a=b HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.com:123\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $message = $connection->pullHttp();
         $this->assertEquals('POST', $message->getMethod());

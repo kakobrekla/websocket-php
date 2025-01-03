@@ -110,7 +110,10 @@ class HandshakeTest extends TestCase
         $this->expectWsClientConnect();
         $this->expectSocketStreamWrite();
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectException(HandshakeException::class);
         $this->expectExceptionMessage('Invalid status code 200.');
@@ -130,7 +133,13 @@ class HandshakeTest extends TestCase
         $this->expectWsClientConnect();
         $this->expectSocketStreamWrite();
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nInvalid upgrade\r\n\r\n";
+            return "HTTP/1.1 101 Switching Protocols\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\nInvalid upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectException(HandshakeException::class);
         $this->expectExceptionMessage('Connection to \'ws://localhost:8000/my/mock/path\' failed');
@@ -150,8 +159,16 @@ class HandshakeTest extends TestCase
         $this->expectWsClientConnect();
         $this->expectSocketStreamWrite();
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
-                . "Sec-WebSocket-Accept: BAD_KEY\r\n\r\n";
+            return "HTTP/1.1 101 Switching Protocols\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\nInvalid upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Accept: BAD_KEY\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectException(HandshakeException::class);
         $this->expectExceptionMessage('Server sent bad upgrade response');

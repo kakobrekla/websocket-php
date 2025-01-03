@@ -104,7 +104,22 @@ class HttpHandlerTest extends TestCase
         $this->assertInstanceOf(HttpHandler::class, $handler);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET /a/path?a=b HTTP/1.1\r\nA: \r\nA: 0\r\nA: B\r\nHost: test.com:123\r\n\r\n";
+            return "GET /a/path?a=b HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "A: \r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "A: 0\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "A: B\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.com:123\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $request = $handler->pull();
         $this->assertInstanceOf(ServerRequest::class, $request);
@@ -157,7 +172,13 @@ class HttpHandlerTest extends TestCase
         $this->assertInstanceOf(HttpHandler::class, $handler);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\nHost: test.com:123\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.com:123\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $response = $handler->pull();
         $this->assertInstanceOf(Response::class, $response);
@@ -179,7 +200,7 @@ class HttpHandlerTest extends TestCase
         $this->assertInstanceOf(HttpHandler::class, $handler);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "This is not a valid HTTP header\r\n\r\n";
+            return "This is not a valid HTTP header\r\n";
         });
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Invalid Http request.");

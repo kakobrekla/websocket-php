@@ -73,7 +73,13 @@ class SubprotocolNegotiationTest extends TestCase
         $this->assertNull($connection->getMeta('subprotocolNegotiation.selected'));
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\nSec-WebSocket-Protocol: sp-2\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-2\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $response = $connection->pullHttp();
         $this->assertEquals(['sp-2'], $response->getHeader('Sec-WebSocket-Protocol'));
@@ -118,7 +124,10 @@ class SubprotocolNegotiationTest extends TestCase
         $this->assertNull($connection->getMeta('subprotocolNegotiation.selected'));
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $response = $connection->pullHttp();
         $this->assertEquals([], $response->getHeader('Sec-WebSocket-Protocol'));
@@ -163,7 +172,10 @@ class SubprotocolNegotiationTest extends TestCase
         $this->assertNull($connection->getMeta('subprotocolNegotiation.selected'));
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite();
         $this->expectSocketStreamIsConnected();
@@ -191,10 +203,22 @@ class SubprotocolNegotiationTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: test.url\r\n"
-                . "Sec-WebSocket-Protocol: sp-11\r\n"
-                . "Sec-WebSocket-Protocol: sp-2\r\n"
-                . "Sec-WebSocket-Protocol: sp-33\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.url\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-11\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-2\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-33\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $request = $connection->pullHttp();
         $this->assertEquals(['sp-11', 'sp-2', 'sp-33'], $request->getHeader('Sec-WebSocket-Protocol'));
@@ -236,11 +260,24 @@ class SubprotocolNegotiationTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: test.url\r\n"
-                . "Sec-WebSocket-Protocol: sp-11\r\n"
-                . "Sec-WebSocket-Protocol: sp-22\r\n"
-                . "Sec-WebSocket-Protocol: sp-33\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
         });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.url\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-11\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-22\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-33\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
+        });
+
         $request = $connection->pullHttp();
         $this->assertEquals(['sp-11', 'sp-22', 'sp-33'], $request->getHeader('Sec-WebSocket-Protocol'));
         $this->assertNull($connection->getMeta('subprotocolNegotiation.selected'));
@@ -281,11 +318,24 @@ class SubprotocolNegotiationTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: test.url\r\n"
-                . "Sec-WebSocket-Protocol: sp-11\r\n"
-                . "Sec-WebSocket-Protocol: sp-22\r\n"
-                . "Sec-WebSocket-Protocol: sp-33\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
         });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.url\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-11\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-22\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Protocol: sp-33\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
+        });
+
         $request = $connection->pullHttp();
         $this->assertEquals(['sp-11', 'sp-22', 'sp-33'], $request->getHeader('Sec-WebSocket-Protocol'));
         $this->assertNull($connection->getMeta('subprotocolNegotiation.selected'));

@@ -47,15 +47,7 @@ class HttpHandler implements LoggerAwareInterface, Stringable
 
     public function pull(): MessageInterface
     {
-        $data = '';
-        do {
-            $buffer = $this->stream->readLine(1024);
-            $data .= $buffer;
-        } while (substr_count($data, "\r\n\r\n") == 0);
-
-        list ($head, $body) = explode("\r\n\r\n", $data);
-        $headers = array_filter(explode("\r\n", $head));
-        $status = array_shift($headers);
+        $status = $this->readLine();
 
         // Pulling server request
         preg_match('!^(?P<method>[A-Z]+) (?P<path>[^ ]*) HTTP/(?P<version>[0-9/.]+)!', $status, $matches);
@@ -77,7 +69,8 @@ class HttpHandler implements LoggerAwareInterface, Stringable
         }
 
         $message = $message->withProtocolVersion($version);
-        foreach ($headers as $header) {
+
+        while ($header = $this->readLine()) {
             $parts = explode(':', $header, 2);
             if (count($parts) == 2) {
                 if ($message->getheaderLine($parts[0]) === '') {
@@ -101,5 +94,18 @@ class HttpHandler implements LoggerAwareInterface, Stringable
         $data = implode("\r\n", $message->getAsArray()) . "\r\n\r\n";
         $this->stream->write($data);
         return $message;
+    }
+
+    private function readLine(): string
+    {
+        $data = '';
+        do {
+            $buffer = $this->stream->readLine(1024);
+            if (is_null($buffer)) {
+                throw new RuntimeException('Could not read Http request.');
+            }
+            $data .= $buffer;
+        } while (!str_ends_with($data, "\r\n"));
+        return trim($data);
     }
 }

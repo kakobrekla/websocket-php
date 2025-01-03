@@ -133,9 +133,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "POST / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "POST / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 405 Method Not Allowed\r\n\r\n", $params[0]);
@@ -167,9 +183,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Invalid\r\nUpgrade: websocket\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Invalid\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 426 Upgrade Required\r\n\r\n", $params[0]);
@@ -201,9 +233,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: Invalid\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: Invalid\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 426 Upgrade Required\r\n\r\n", $params[0]);
@@ -235,9 +283,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 12\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 12\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 426 Upgrade Required\r\nSec-WebSocket-Version: 13\r\n\r\n", $params[0]);
@@ -269,9 +333,22 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 426 Upgrade Required\r\n\r\n", $params[0]);
@@ -303,9 +380,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: jww=\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: jww=\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals("HTTP/1.1 426 Upgrade Required\r\n\r\n", $params[0]);
@@ -337,9 +430,25 @@ class HandshakeTest extends TestCase
             $server->stop();
         });
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "GET / HTTP/1.1\r\nHost: localhost\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 13\r\n\r\n";
+            return "GET / HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: localhost\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->setReturn(function () {
             throw new StreamException(StreamException::FAIL_WRITE);

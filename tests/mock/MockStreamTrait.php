@@ -95,9 +95,28 @@ trait MockStreamTrait
         $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
             $this->assertEquals(1024, $params[0]);
         })->setReturn(function (array $params) {
+            return "HTTP/1.1 101 Switching Protocols\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
             $ws_key_res = base64_encode(pack('H*', sha1($this->last_ws_key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
-            return "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade"
-            . "\r\nSec-WebSocket-Accept: {$ws_key_res}\r\n\r\n";
+            return "Sec-WebSocket-Accept: {$ws_key_res}\r\n\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "\r\n";
         });
     }
 
@@ -148,15 +167,54 @@ trait MockStreamTrait
     private function expectWsServerPerformHandshake(
         string $host = 'localhost:8000',
         string $path = '/my/mock/path',
-        string $headers = ''
+        array $headers = []
     ): void {
         $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
             $this->assertEquals(1024, $params[0]);
-        })->setReturn(function (array $params) use ($host, $path, $headers) {
-            return "GET {$path} HTTP/1.1\r\nHost: {$host}\r\nUser-Agent: websocket-client-php\r\n"
-            . "Connection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n"
-            . "Sec-WebSocket-Version: 13"
-            . "\r\n{$headers}\r\n";
+        })->setReturn(function (array $params) use ($path) {
+            return "GET {$path} HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) use ($host) {
+            return "Host: {$host}\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "User-Agent: websocket-client-php\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Connection: Upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        foreach ($headers as $header) {
+            $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+                $this->assertEquals(1024, $params[0]);
+            })->setReturn(function (array $params) use ($header) {
+                return "{$header}\r\n";
+            });
+        }
+        $this->expectSocketStreamReadLine()->addAssert(function (string $method, array $params): void {
+            $this->assertEquals(1024, $params[0]);
+        })->setReturn(function (array $params) {
+            return "\r\n";
         });
         $this->expectSocketStreamWrite()->addAssert(function (string $method, array $params): void {
             $expect = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"

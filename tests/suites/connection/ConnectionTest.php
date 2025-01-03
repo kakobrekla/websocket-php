@@ -150,7 +150,13 @@ class ConnectionTest extends TestCase
         $connection->pushHttp($request);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 200 OK\r\nHost: test.com\r\n\r\n";
+            return "HTTP/1.1 200 OK\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Host: test.com\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $response = $connection->pullHttp();
         $this->assertInstanceOf(Response::class, $response);

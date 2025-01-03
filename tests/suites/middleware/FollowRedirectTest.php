@@ -72,7 +72,13 @@ class FollowRedirectTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 301 Moved Permanently\r\nLocation: ws://redirect.to/new/target\r\n\r\n";
+            return "HTTP/1.1 301 Moved Permanently\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Location: ws://redirect.to/new/target\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();
@@ -97,7 +103,13 @@ class FollowRedirectTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 301 Moved Permanently\r\nLocation: ws://redirect.to/new/target\r\n\r\n";
+            return "HTTP/1.1 301 Moved Permanently\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "Location: ws://redirect.to/new/target\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();
@@ -122,7 +134,10 @@ class FollowRedirectTest extends TestCase
         $connection->addMiddleware($middleware);
 
         $this->expectSocketStreamReadLine()->setReturn(function () {
-            return "HTTP/1.1 301 Moved Permanently\r\n\r\n";
+            return "HTTP/1.1 301 Moved Permanently\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function () {
+            return "\r\n";
         });
         $response = $connection->pullHttp();
         $this->expectSocketStreamIsConnected();

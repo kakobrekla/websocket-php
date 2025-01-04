@@ -7,7 +7,7 @@
 
 namespace WebSocket\Exception;
 
-use WebSocket\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * WebSocket\Exception\HandshakeException class.
@@ -15,15 +15,15 @@ use WebSocket\Http\Response;
  */
 class HandshakeException extends Exception implements ConnectionLevelInterface
 {
-    private Response $response;
+    private ResponseInterface $response;
 
-    public function __construct(string $message, Response $response)
+    public function __construct(string $message, ResponseInterface $response)
     {
         parent::__construct($message);
         $this->response = $response;
     }
 
-    public function getResponse(): Response
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }

@@ -289,7 +289,9 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Send message (broadcast to all connected clients).
-     * @param Message $message Message to send
+     * @template T of Message
+     * @param T $message
+     * @return T
      */
     public function send(Message $message): Message
     {
@@ -339,7 +341,7 @@ class Server implements LoggerAwareInterface, Stringable
                     try {
                         $connection = null;
                         // Accept new client connection
-                        if ($key == '@server') {
+                        if ($readable instanceof SocketServer) {
                             $this->acceptSocket($readable);
                             continue;
                         }

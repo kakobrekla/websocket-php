@@ -8,6 +8,11 @@
 namespace WebSocket;
 
 use Phrity\Net\SocketStream;
+use Psr\Http\Message\{
+    MessageInterface,
+    RequestInterface,
+    ResponseInterface,
+};
 use Psr\Log\{
     LoggerAwareInterface,
     LoggerInterface,
@@ -16,12 +21,7 @@ use Psr\Log\{
 use Stringable;
 use Throwable;
 use WebSocket\Frame\FrameHandler;
-use WebSocket\Http\{
-    HttpHandler,
-    Message as HttpMessage,
-    Request,
-    Response
-};
+use WebSocket\Http\HttpHandler;
 use WebSocket\Exception\{
     ConnectionClosedException,
     ConnectionFailureException,
@@ -60,8 +60,8 @@ class Connection implements LoggerAwareInterface, Stringable
     private int $timeout = 60;
     private string $localName;
     private string $remoteName;
-    private Request|null $handshakeRequest = null;
-    private Response|null $handshakeResponse = null;
+    private RequestInterface|null $handshakeRequest = null;
+    private ResponseInterface|null $handshakeResponse = null;
     private array $meta = [];
     private bool $closed = false;
 
@@ -277,6 +277,12 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /* ---------- WebSocket Message methods ------------------------------------------------------------------------ */
 
+    /**
+     * Send message.
+     * @template T of Message
+     * @param T $message
+     * @return T
+     */
     public function send(Message $message): Message
     {
         return $this->pushMessage($message);
@@ -305,7 +311,7 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /* ---------- HTTP Message methods ----------------------------------------------------------------------------- */
 
-    public function pushHttp(HttpMessage $message): HttpMessage
+    public function pushHttp(MessageInterface $message): MessageInterface
     {
         try {
             return $this->middlewareHandler->processHttpOutgoing($this, $message);
@@ -314,7 +320,7 @@ class Connection implements LoggerAwareInterface, Stringable
         }
     }
 
-    public function pullHttp(): HttpMessage
+    public function pullHttp(): MessageInterface
     {
         try {
             return $this->middlewareHandler->processHttpIncoming($this);
@@ -323,24 +329,24 @@ class Connection implements LoggerAwareInterface, Stringable
         }
     }
 
-    public function setHandshakeRequest(Request $request): self
+    public function setHandshakeRequest(RequestInterface $request): self
     {
         $this->handshakeRequest = $request;
         return $this;
     }
 
-    public function getHandshakeRequest(): Request|null
+    public function getHandshakeRequest(): RequestInterface|null
     {
         return $this->handshakeRequest;
     }
 
-    public function setHandshakeResponse(Response $response): self
+    public function setHandshakeResponse(ResponseInterface $response): self
     {
         $this->handshakeResponse = $response;
         return $this;
     }
 
-    public function getHandshakeResponse(): Response|null
+    public function getHandshakeResponse(): ResponseInterface|null
     {
         return $this->handshakeResponse;
     }

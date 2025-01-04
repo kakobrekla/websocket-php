@@ -8,13 +8,13 @@
 namespace WebSocket\Middleware;
 
 use Closure;
+use Psr\Http\Message\MessageInterface;
 use Psr\Log\{
     LoggerAwareInterface,
     LoggerAwareTrait
 };
 use Stringable;
 use WebSocket\Connection;
-use WebSocket\Http\Message as HttpMessage;
 use WebSocket\Message\Message;
 use WebSocket\Trait\StringableTrait;
 
@@ -70,7 +70,7 @@ class Callback implements
         return $stack->handleOutgoing($message);
     }
 
-    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): HttpMessage
+    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): MessageInterface
     {
         if (is_callable($this->httpIncoming)) {
             return call_user_func($this->httpIncoming, $stack, $connection);
@@ -81,8 +81,8 @@ class Callback implements
     public function processHttpOutgoing(
         ProcessHttpStack $stack,
         Connection $connection,
-        HttpMessage $message
-    ): HttpMessage {
+        MessageInterface $message
+    ): MessageInterface {
         if (is_callable($this->httpOutgoing)) {
             return call_user_func($this->httpOutgoing, $stack, $connection, $message);
         }

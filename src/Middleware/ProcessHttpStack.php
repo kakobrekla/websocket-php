@@ -7,12 +7,10 @@
 
 namespace WebSocket\Middleware;
 
+use Psr\Http\Message\MessageInterface;
 use Stringable;
 use WebSocket\Connection;
-use WebSocket\Http\{
-    HttpHandler,
-    Message
-};
+use WebSocket\Http\HttpHandler;
 use WebSocket\Trait\StringableTrait;
 
 /**
@@ -42,9 +40,9 @@ class ProcessHttpStack implements Stringable
 
     /**
      * Process middleware for incoming http message.
-     * @return Message
+     * @return MessageInterface
      */
-    public function handleHttpIncoming(): Message
+    public function handleHttpIncoming(): MessageInterface
     {
         $processor = array_shift($this->processors);
         if ($processor) {
@@ -55,10 +53,10 @@ class ProcessHttpStack implements Stringable
 
     /**
      * Process middleware for outgoing http message.
-     * @param Message $message
-     * @return Message
+     * @param MessageInterface $message
+     * @return MessageInterface
      */
-    public function handleHttpOutgoing(Message $message): Message
+    public function handleHttpOutgoing(MessageInterface $message): MessageInterface
     {
         $processor = array_shift($this->processors);
         if ($processor) {

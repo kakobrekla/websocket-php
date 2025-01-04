@@ -7,6 +7,7 @@
 
 namespace WebSocket\Http;
 
+use InvalidArgumentException;
 use Phrity\Net\Uri;
 use Psr\Http\Message\{
     RequestInterface,
@@ -20,6 +21,8 @@ use RuntimeException;
  */
 class Request extends Message implements RequestInterface
 {
+    private static array $methods = ['GET', 'HEAD', 'OPTIONS', 'TRACE', 'PUT', 'DELETE', 'POST', 'PATCH', 'CONNECT'];
+
     private string $target = '';
     private string $method;
     private Uri $uri;
@@ -69,10 +72,13 @@ class Request extends Message implements RequestInterface
      * Return an instance with the provided HTTP method.
      * @param string $method Case-sensitive method.
      * @return static
-     * @throws \InvalidArgumentException for invalid HTTP methods.
+     * @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod(string $method): self
     {
+        if (!in_array($method, self::$methods)) {
+            throw new InvalidArgumentException("Invalid method '{$method}' provided.");
+        }
         $new = clone $this;
         $new->method = $method;
         return $new;
@@ -119,7 +125,7 @@ class Request extends Message implements RequestInterface
         ], parent::getAsArray());
     }
 
-    private function formatHostHeader(Uri $uri): string
+    private function formatHostHeader(UriInterface $uri): string
     {
         $host = $uri->getHost();
         $port = $uri->getPort();

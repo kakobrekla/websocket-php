@@ -10,19 +10,19 @@
 namespace WebSocket\Middleware;
 
 use Phrity\Net\Uri;
+use Psr\Http\Message\{
+    MessageInterface,
+    ResponseInterface,
+};
 use Psr\Log\{
     LoggerAwareInterface,
-    LoggerAwareTrait
+    LoggerAwareTrait,
 };
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Exception\{
     HandshakeException,
-    ReconnectException
-};
-use WebSocket\Http\{
-    Message,
-    Response
+    ReconnectException,
 };
 use WebSocket\Trait\StringableTrait;
 
@@ -43,11 +43,11 @@ class FollowRedirect implements LoggerAwareInterface, ProcessHttpIncomingInterfa
         $this->limit = $limit;
     }
 
-    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): Message
+    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): MessageInterface
     {
         $message = $stack->handleHttpIncoming();
         if (
-            $message instanceof Response
+            $message instanceof ResponseInterface
             && $message->getStatusCode() >= 300
             && $message->getStatusCode() < 400
             && $locationHeader = $message->getHeaderLine('Location')

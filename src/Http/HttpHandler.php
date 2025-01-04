@@ -61,7 +61,7 @@ class HttpHandler implements LoggerAwareInterface, Stringable
         // Pulling response
         preg_match('!^HTTP/(?P<version>[0-9/.]+) (?P<code>[0-9]*) (?P<reason>.*)!', $status, $matches);
         if (!empty($matches)) {
-            $message = new Response($matches['code'], $matches['reason']);
+            $message = new Response((int)$matches['code'], $matches['reason']);
             $version = $matches['version'];
         }
 
@@ -91,10 +91,14 @@ class HttpHandler implements LoggerAwareInterface, Stringable
     }
 
     /**
-     * @param Message $message
+     * @param MessageInterface $message
+     * @return MessageInterface
      */
     public function push(MessageInterface $message): MessageInterface
     {
+        if (!$message instanceof Message) {
+            throw new RuntimeException('Generic MessageInterface currently not supported.');
+        }
         $data = implode("\r\n", $message->getAsArray()) . "\r\n\r\n";
         $this->stream->write($data);
         return $message;

@@ -13,7 +13,11 @@ use Phrity\Net\{
     StreamFactory,
     Uri
 };
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\{
+    RequestInterface,
+    ResponseInterface,
+    UriInterface,
+};
 use Psr\Log\{
     LoggerAwareInterface,
     LoggerInterface,
@@ -223,8 +227,9 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Send message.
-     * @param Message $message Message to send.
-     * @return Message Sent message
+     * @template T of Message
+     * @param T $message
+     * @return T
      */
     public function send(Message $message): Message
     {
@@ -276,9 +281,8 @@ class Client implements LoggerAwareInterface, Stringable
                 foreach ($readables as $key => $readable) {
                     try {
                         // Read from connection
-                        if ($message = $this->connection->pullMessage()) {
-                            $this->dispatch($message->getOpcode(), [$this, $this->connection, $message]);
-                        }
+                        $message = $this->connection->pullMessage();
+                        $this->dispatch($message->getOpcode(), [$this, $this->connection, $message]);
                     } catch (MessageLevelInterface $e) {
                         // Error, but keep connection open
                         $this->logger->error("[client] {$e->getMessage()}");
@@ -477,9 +481,9 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Get Response for handshake procedure.
-     * @return Response|null Handshake.
+     * @return ResponseInterface|null Handshake.
      */
-    public function getHandshakeResponse(): Response|null
+    public function getHandshakeResponse(): ResponseInterface|null
     {
         return $this->connection ? $this->connection->getHandshakeResponse() : null;
     }
@@ -491,7 +495,7 @@ class Client implements LoggerAwareInterface, Stringable
      * Perform upgrade handshake on new connections.
      * @throws HandshakeException On failed handshake
      */
-    protected function performHandshake(Uri $uri): Response
+    protected function performHandshake(Uri $uri): ResponseInterface
     {
         // Generate the WebSocket key.
         $key = $this->generateKey();
@@ -516,9 +520,9 @@ class Client implements LoggerAwareInterface, Stringable
         }
 
         try {
-            /** @var Request */
+            /** @var RequestInterface */
             $request = $this->connection->pushHttp($request);
-            /** @var Response */
+            /** @var ResponseInterface */
             $response = $this->connection->pullHttp();
 
             if ($response->getStatusCode() != 101) {

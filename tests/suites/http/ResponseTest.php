@@ -98,6 +98,23 @@ class ResponseTest extends TestCase
         ], $response_clone->getAsArray());
     }
 
+    public function testConstructStatusError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage("Invalid status code '99' provided.");
+        $response = new Response(99);
+    }
+
+    public function testWithStatusError(): void
+    {
+        $response = new Response();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage("Invalid status code '99' provided.");
+        $response->withStatus(99);
+    }
+
     public function testGetBodyError(): void
     {
         $response = new Response();

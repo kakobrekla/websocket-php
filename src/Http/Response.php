@@ -90,6 +90,9 @@ class Response extends Message implements ResponseInterface
 
     public function __construct(int $code = 200, string $reasonPhrase = '')
     {
+        if ($code < 100 || $code > 599) {
+            throw new InvalidArgumentException("Invalid status code '{$code}' provided.");
+        }
         $this->code = $code;
         $this->reason = $reasonPhrase;
     }

@@ -216,6 +216,23 @@ class RequestTest extends TestCase
         $request->withBody($factory->createStream());
     }
 
+    public function testConstructMethodError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage("Invalid method 'INVALID' provided");
+        $request = new Request('INVALID');
+    }
+
+    public function testWithMethodError(): void
+    {
+        $request = new Request();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage("Invalid method 'INVALID' provided");
+        $request->withMethod('INVALID');
+    }
+
     public function testHeaderNameError(): void
     {
         $request = new Request();

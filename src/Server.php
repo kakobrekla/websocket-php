@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Phrity\Net\{
     SocketServer,
     StreamCollection,
+    StreamException,
     StreamFactory,
     Uri
 };
@@ -23,6 +24,7 @@ use Stringable;
 use Throwable;
 use WebSocket\Exception\{
     CloseException,
+    ConnectionFailureException,
     ConnectionLevelInterface,
     Exception,
     HandshakeException,
@@ -510,12 +512,11 @@ class Server implements LoggerAwareInterface, Stringable
                 $connection->getHandshakeResponse(),
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
-        } catch (Exception $e) {
+        } catch (Exception|StreamException $e) {
             if (isset($connection)) {
                 $connection->disconnect();
             }
-            $error = "Server failed to accept: {$e->getMessage()}";
-            throw $e;
+            throw new ConnectionFailureException("Server failed to accept: {$e->getMessage()}");
         }
     }
 

@@ -13,8 +13,8 @@ namespace WebSocket\Exception;
  */
 class ConnectionFailureException extends Exception implements ConnectionLevelInterface
 {
-    public function __construct()
+    public function __construct(string|null $message = null)
     {
-        parent::__construct('Connection error');
+        parent::__construct($message ?? 'Connection error');
     }
 }

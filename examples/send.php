@@ -10,7 +10,7 @@
  * Run in console: php examples/send.php <options> <message>
  *
  * Console options:
- *  --uri <uri> : The URI to connect to, default ws://localhost:8000
+ *  --uri <uri> : The URI to connect to, default ws://localhost:80
  *  --opcode <string> : Opcode to send, default 'text'
  *  --debug : Output log data (if logger is available)
  */
@@ -20,7 +20,6 @@ namespace WebSocket;
 require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(-1);
-
 
 echo "# Send client! [phrity/websocket]\n";
 

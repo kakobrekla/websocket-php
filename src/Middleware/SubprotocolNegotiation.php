@@ -9,19 +9,19 @@
 
 namespace WebSocket\Middleware;
 
+use Psr\Http\Message\{
+    MessageInterface,
+    RequestInterface,
+    ResponseInterface,
+    ServerRequestInterface,
+};
 use Psr\Log\{
     LoggerAwareInterface,
-    LoggerAwareTrait
+    LoggerAwareTrait,
 };
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Exception\HandshakeException;
-use WebSocket\Http\{
-    Message,
-    Request,
-    Response,
-    ServerRequest,
-};
 use WebSocket\Trait\StringableTrait;
 
 /**
@@ -46,9 +46,12 @@ class SubprotocolNegotiation implements
         $this->require = $require;
     }
 
-    public function processHttpOutgoing(ProcessHttpStack $stack, Connection $connection, Message $message): Message
-    {
-        if ($message instanceof Request) {
+    public function processHttpOutgoing(
+        ProcessHttpStack $stack,
+        Connection $connection,
+        MessageInterface $message
+    ): MessageInterface {
+        if ($message instanceof RequestInterface) {
             // Outgoing requests on Client
             foreach ($this->subprotocols as $subprotocol) {
                 $message = $message->withAddedHeader('Sec-WebSocket-Protocol', $subprotocol);
@@ -56,7 +59,7 @@ class SubprotocolNegotiation implements
             if ($supported = implode(', ', $this->subprotocols)) {
                 $this->logger->debug("[subprotocol-negotiation] Requested subprotocols: {$supported}");
             }
-        } elseif ($message instanceof Response) {
+        } elseif ($message instanceof ResponseInterface) {
             // Outgoing Response on Server
             if ($selected = $connection->getMeta('subprotocolNegotiation.selected')) {
                 $message = $message->withHeader('Sec-WebSocket-Protocol', $selected);
@@ -69,12 +72,12 @@ class SubprotocolNegotiation implements
         return $stack->handleHttpOutgoing($message);
     }
 
-    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): Message
+    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): MessageInterface
     {
         $connection->setMeta('subprotocolNegotiation.selected', null);
         $message = $stack->handleHttpIncoming();
 
-        if ($message instanceof ServerRequest) {
+        if ($message instanceof ServerRequestInterface) {
             // Incoming requests on Server
             if ($requested = $message->getHeaderLine('Sec-WebSocket-Protocol')) {
                 $this->logger->debug("[subprotocol-negotiation] Requested subprotocols: {$requested}");
@@ -88,7 +91,7 @@ class SubprotocolNegotiation implements
                     return $message;
                 }
             }
-        } elseif ($message instanceof Response) {
+        } elseif ($message instanceof ResponseInterface) {
             // Incoming Response on Client
             if ($selected = $message->getHeaderLine('Sec-WebSocket-Protocol')) {
                 $connection->setMeta('subprotocolNegotiation.selected', $selected);

@@ -7,6 +7,7 @@
 
 namespace WebSocket\Http;
 
+use InvalidArgumentException;
 use Phrity\Net\Uri;
 use Psr\Http\Message\{
     ResponseInterface,
@@ -89,6 +90,9 @@ class Response extends Message implements ResponseInterface
 
     public function __construct(int $code = 200, string $reasonPhrase = '')
     {
+        if ($code < 100 || $code > 599) {
+            throw new InvalidArgumentException("Invalid status code '{$code}' provided.");
+        }
         $this->code = $code;
         $this->reason = $reasonPhrase;
     }
@@ -107,10 +111,13 @@ class Response extends Message implements ResponseInterface
      * @param int $code The 3-digit integer result code to set.
      * @param string $reasonPhrase The reason phrase to use.
      * @return static
-     * @throws \InvalidArgumentException For invalid status code arguments.
+     * @throws InvalidArgumentException For invalid status code arguments.
      */
     public function withStatus(int $code, string $reasonPhrase = ''): self
     {
+        if ($code < 100 || $code > 599) {
+            throw new InvalidArgumentException("Invalid status code '{$code}' provided.");
+        }
         $new = clone $this;
         $new->code = $code;
         $new->reason = $reasonPhrase;

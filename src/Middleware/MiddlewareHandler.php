@@ -8,6 +8,7 @@
 namespace WebSocket\Middleware;
 
 use Closure;
+use Psr\Http\Message\MessageInterface;
 use Psr\Log\{
     LoggerInterface,
     LoggerAwareInterface,
@@ -15,10 +16,7 @@ use Psr\Log\{
 };
 use Stringable;
 use WebSocket\Connection;
-use WebSocket\Http\{
-    HttpHandler,
-    Message as HttpMessage
-};
+use WebSocket\Http\HttpHandler;
 use WebSocket\Message\{
     Message,
     MessageHandler
@@ -149,9 +147,9 @@ class MiddlewareHandler implements LoggerAwareInterface, Stringable
     /**
      * Process middlewares for http requests.
      * @param Connection $connection
-     * @return HttpMessage
+     * @return MessageInterface
      */
-    public function processHttpIncoming(Connection $connection): HttpMessage
+    public function processHttpIncoming(Connection $connection): MessageInterface
     {
         $this->logger->info("[middleware-handler] Processing http incoming");
         $stack = new ProcessHttpStack($connection, $this->httpHandler, $this->httpIncoming);
@@ -161,10 +159,10 @@ class MiddlewareHandler implements LoggerAwareInterface, Stringable
     /**
      * Process middlewares for http requests.
      * @param Connection $connection
-     * @param HttpMessage $message
-     * @return HttpMessage
+     * @param MessageInterface $message
+     * @return MessageInterface
      */
-    public function processHttpOutgoing(Connection $connection, HttpMessage $message): HttpMessage
+    public function processHttpOutgoing(Connection $connection, MessageInterface $message): MessageInterface
     {
         $this->logger->info("[middleware-handler] Processing http outgoing");
         $stack = new ProcessHttpStack($connection, $this->httpHandler, $this->httpOutgoing);

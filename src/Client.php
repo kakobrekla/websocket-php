@@ -13,7 +13,11 @@ use Phrity\Net\{
     StreamFactory,
     Uri
 };
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\{
+    RequestInterface,
+    ResponseInterface,
+    UriInterface,
+};
 use Psr\Log\{
     LoggerAwareInterface,
     LoggerInterface,
@@ -72,7 +76,7 @@ class Client implements LoggerAwareInterface, Stringable
     /* ---------- Magic methods ------------------------------------------------------------------------------------ */
 
     /**
-     * @param Psr\Http\Message\UriInterface|string $uri A ws/wss-URI
+     * @param UriInterface|string $uri A ws/wss-URI
      */
     public function __construct(UriInterface|string $uri)
     {
@@ -95,7 +99,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set stream factory to use.
-     * @param Phrity\Net\StreamFactory $streamFactory
+     * @param StreamFactory $streamFactory
      * @return self
      */
     public function setStreamFactory(StreamFactory $streamFactory): self
@@ -106,7 +110,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set logger.
-     * @param Psr\Log\LoggerInterface $logger Logger implementation
+     * @param LoggerInterface $logger Logger implementation
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -173,7 +177,7 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Set connection persistence.
      * @param bool $persistent True for persistent connection.
-     * @return self.
+     * @return self
      */
     public function setPersistent(bool $persistent): self
     {
@@ -206,7 +210,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Add a middleware.
-     * @param WebSocket\Middleware\MiddlewareInterface $middleware
+     * @param MiddlewareInterface $middleware
      * @return self
      */
     public function addMiddleware(MiddlewareInterface $middleware): self
@@ -223,8 +227,9 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Send message.
-     * @param Message $message Message to send.
-     * @return Message Sent message
+     * @template T of Message
+     * @param T $message
+     * @return T
      */
     public function send(Message $message): Message
     {
@@ -276,9 +281,8 @@ class Client implements LoggerAwareInterface, Stringable
                 foreach ($readables as $key => $readable) {
                     try {
                         // Read from connection
-                        if ($message = $this->connection->pullMessage()) {
-                            $this->dispatch($message->getOpcode(), [$this, $this->connection, $message]);
-                        }
+                        $message = $this->connection->pullMessage();
+                        $this->dispatch($message->getOpcode(), [$this, $this->connection, $message]);
                     } catch (MessageLevelInterface $e) {
                         // Error, but keep connection open
                         $this->logger->error("[client] {$e->getMessage()}");
@@ -429,7 +433,7 @@ class Client implements LoggerAwareInterface, Stringable
             $this->connection->getHandshakeRequest(),
             $this->connection->getHandshakeResponse(),
         ]);
-        $this->dispatch('connect', [$this, $this->connection, $response]);
+        $this->dispatch('connect', [$this, $this->connection, $this->connection->getHandshakeResponse()]);
     }
 
     /**
@@ -477,9 +481,9 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Get Response for handshake procedure.
-     * @return Response|null Handshake.
+     * @return ResponseInterface|null Handshake.
      */
-    public function getHandshakeResponse(): Response|null
+    public function getHandshakeResponse(): ResponseInterface|null
     {
         return $this->connection ? $this->connection->getHandshakeResponse() : null;
     }
@@ -491,7 +495,7 @@ class Client implements LoggerAwareInterface, Stringable
      * Perform upgrade handshake on new connections.
      * @throws HandshakeException On failed handshake
      */
-    protected function performHandshake(Uri $uri): Response
+    protected function performHandshake(Uri $uri): ResponseInterface
     {
         // Generate the WebSocket key.
         $key = $this->generateKey();
@@ -516,7 +520,9 @@ class Client implements LoggerAwareInterface, Stringable
         }
 
         try {
+            /** @var RequestInterface */
             $request = $this->connection->pushHttp($request);
+            /** @var ResponseInterface */
             $response = $this->connection->pullHttp();
 
             if ($response->getStatusCode() != 101) {

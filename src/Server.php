@@ -75,7 +75,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * @param int $port Socket port to listen to
-     * @param string $scheme Scheme (tcp or ssl)
+     * @param bool $ssl If SSL should be used
      * @throws InvalidArgumentException If invalid port provided
      */
     public function __construct(int $port = 80, bool $ssl = false)
@@ -103,7 +103,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Set stream factory to use.
-     * @param Phrity\Net\StreamFactory $streamFactory
+     * @param StreamFactory $streamFactory
      * @return self
      */
     public function setStreamFactory(StreamFactory $streamFactory): self
@@ -114,7 +114,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Set logger.
-     * @param Psr\Log\LoggerInterface $logger Logger implementation
+     * @param LoggerInterface $logger Logger implementation
      */
     public function setLogger(LoggerInterface $logger): void
     {
@@ -198,7 +198,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Get connection scheme.
-     * @return string scheme
+     * @return bool SSL mode
      */
     public function isSsl(): bool
     {
@@ -258,7 +258,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Add a middleware.
-     * @param WebSocket\Middleware\MiddlewareInterface $middleware
+     * @param MiddlewareInterface $middleware
      * @return self
      */
     public function addMiddleware(MiddlewareInterface $middleware): self
@@ -289,7 +289,9 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Send message (broadcast to all connected clients).
-     * @param WebSocket\Message\Message $message Message to send
+     * @template T of Message
+     * @param T $message
+     * @return T
      */
     public function send(Message $message): Message
     {
@@ -339,7 +341,7 @@ class Server implements LoggerAwareInterface, Stringable
                     try {
                         $connection = null;
                         // Accept new client connection
-                        if ($key == '@server') {
+                        if ($readable instanceof SocketServer) {
                             $this->acceptSocket($readable);
                             continue;
                         }
@@ -509,7 +511,7 @@ class Server implements LoggerAwareInterface, Stringable
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
         } catch (Exception $e) {
-            if ($connection) {
+            if (isset($connection)) {
                 $connection->disconnect();
             }
             $error = "Server failed to accept: {$e->getMessage()}";
@@ -537,6 +539,7 @@ class Server implements LoggerAwareInterface, Stringable
         $exception = null;
 
         // Read handshake request
+        /** @var ServerRequest */
         $request = $connection->pullHttp();
 
         // Verify handshake request
@@ -594,6 +597,7 @@ class Server implements LoggerAwareInterface, Stringable
         }
 
         // Respond to handshake
+        /** @var Response */
         $response = $connection->pushHttp($response);
         if ($response->getStatusCode() != 101) {
             $exception = new HandshakeException("Invalid status code {$response->getStatusCode()}", $response);

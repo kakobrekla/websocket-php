@@ -8,7 +8,7 @@
 namespace WebSocket\Middleware;
 
 use WebSocket\Connection;
-use WebSocket\Http\Message;
+use Psr\Http\Message\MessageInterface;
 
 /**
  * WebSocket\Middleware\ProcessHttpIncomingInterface interface.
@@ -16,5 +16,5 @@ use WebSocket\Http\Message;
  */
 interface ProcessHttpIncomingInterface extends MiddlewareInterface
 {
-    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): Message;
+    public function processHttpIncoming(ProcessHttpStack $stack, Connection $connection): MessageInterface;
 }

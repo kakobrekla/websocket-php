@@ -64,7 +64,7 @@ make update
 This project uses [PSR-1](https://www.php-fig.org/psr/psr-1/) and [PSR-12](https://www.php-fig.org/psr/psr-12/) code standards.
 ```
 # Check code standard adherence
-make cs-check
+make cs
 ```
 
 ## Unit testing
@@ -76,6 +76,14 @@ make test
 
 # Create coverage
 make coverage
+```
+
+## Static analysis
+
+This project uses [PHPStan](https://phpstan.org/) for static analysis.
+```
+# Run static analysis
+make stan
 ```
 
 ## Contributors

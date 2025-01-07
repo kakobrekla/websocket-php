@@ -80,7 +80,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Create a new instance with the specified uploaded files.
      * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
      * @return static
-     * @throws \InvalidArgumentException if an invalid structure is provided.
      */
     public function withUploadedFiles(array $uploadedFiles): self
     {
@@ -100,7 +99,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance with the specified body parameters.
      * @param null|array|object $data The deserialized body data.
      * @return static
-     * @throws \InvalidArgumentException if an unsupported argument type is provided.
      */
     public function withParsedBody($data): self
     {

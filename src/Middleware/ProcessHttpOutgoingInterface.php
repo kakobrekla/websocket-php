@@ -8,7 +8,7 @@
 namespace WebSocket\Middleware;
 
 use WebSocket\Connection;
-use WebSocket\Http\Message;
+use Psr\Http\Message\MessageInterface;
 
 /**
  * WebSocket\Middleware\ProcessHttpOutgoingInterface interface.
@@ -16,5 +16,9 @@ use WebSocket\Http\Message;
  */
 interface ProcessHttpOutgoingInterface extends MiddlewareInterface
 {
-    public function processHttpOutgoing(ProcessHttpStack $stack, Connection $connection, Message $message): Message;
+    public function processHttpOutgoing(
+        ProcessHttpStack $stack,
+        Connection $connection,
+        MessageInterface $message
+    ): MessageInterface;
 }

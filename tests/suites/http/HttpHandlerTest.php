@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WebSocket\Test\Http;
 
 use BadMethodCallException;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
 use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
@@ -264,6 +265,24 @@ class HttpHandlerTest extends TestCase
         $this->expectExceptionMessage("Could not read Http request.");
 
         $handler->pull();
+
+        fclose($temp);
+    }
+
+    public function testPushUnsupported(): void
+    {
+        $temp = tmpfile();
+
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $stream = new SocketStream($temp);
+        $handler = new HttpHandler($stream);
+        $this->assertInstanceOf(HttpHandler::class, $handler);
+
+        $request = new GuzzleRequest('GET', 'ws://test.com:123/a/path?a=b');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Generic MessageInterface currently not supported.");
+        $handler->push($request);
 
         fclose($temp);
     }

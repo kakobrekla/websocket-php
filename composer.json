@@ -34,6 +34,7 @@
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.0 | ^11.0",
         "phrity/net-mock": "^2.1",
         "phrity/util-errorhandler": "^1.1",

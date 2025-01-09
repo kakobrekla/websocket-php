@@ -113,7 +113,7 @@ class HttpHandler implements LoggerAwareInterface, Stringable
                 throw new RuntimeException('Could not read Http request.');
             }
             $data .= $buffer;
-        } while (!str_ends_with($data, "\r\n"));
+        } while (!str_ends_with($data, "\n"));
         return trim($data);
     }
 }

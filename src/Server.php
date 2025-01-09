@@ -485,6 +485,7 @@ class Server implements LoggerAwareInterface, Stringable
     // Accept connection on socket server
     protected function acceptSocket(SocketServer $socket): void
     {
+        $connection = null;
         try {
             if (!is_null($this->maxConnections) && $this->getConnectionCount() >= $this->maxConnections) {
                 $this->logger->warning("[server] Denied connection, reached max {$this->maxConnections}");
@@ -512,7 +513,8 @@ class Server implements LoggerAwareInterface, Stringable
                 $connection->getHandshakeResponse(),
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
-        } catch (Exception|StreamException $e) {
+        } catch (Exception | StreamException $e) {
+            /** @var Connection|null $connection */
             if (isset($connection)) {
                 $connection->disconnect();
             }

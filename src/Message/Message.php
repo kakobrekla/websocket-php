@@ -75,7 +75,10 @@ abstract class Message implements Stringable
     public function getFrames(int $frameSize = 4096): array
     {
         $frames = [];
-        $split = str_split($this->getPayload(), $frameSize) ?: [''];
+        $split = str_split($this->getPayload(), $frameSize);
+        if (empty($split)) {
+            $split = [''];
+        }
         foreach ($split as $i => $payload) {
             $frames[] = new Frame(
                 $i === 0 ? $this->opcode : 'continuation',

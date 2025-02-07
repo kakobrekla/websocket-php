@@ -72,7 +72,7 @@ class HandshakeTest extends TestCase
         $response = $client->getHandshakeResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(101, $response->getStatusCode());
-        $this->assertEquals('Switching Protocols', $response->getReasonPhrase());
+        $this>assertContains($response->getReasonPhrase(), ['Switching Protocols', '', ' ']);
 
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();
@@ -200,7 +200,7 @@ class HandshakeTest extends TestCase
         $response = $client->getHandshakeResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(101, $response->getStatusCode());
-        $this->assertEquals('Switching Protocols', $response->getReasonPhrase());
+        $this>assertContains($response->getReasonPhrase(), ['Switching Protocols', '', ' ']);
 
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();

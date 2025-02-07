@@ -59,7 +59,7 @@ class HttpHandler implements LoggerAwareInterface, Stringable
         }
 
         // Pulling response
-        preg_match('!^HTTP/(?P<version>[0-9/.]+) (?P<code>[0-9]*) (?P<reason>.*)!', $status, $matches);
+        preg_match('!^HTTP\/(?P<version>[0-9\/.]+) (?P<code>[0-9]*)(?P<reason>.*)!', $status, $matches);
         if (!empty($matches)) {
             $message = new Response((int)$matches['code'], $matches['reason']);
             $version = $matches['version'];

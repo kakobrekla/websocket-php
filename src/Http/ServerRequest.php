@@ -49,7 +49,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Retrieves the deserialized query string arguments, if any.
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     public function getQueryParams(): array
     {

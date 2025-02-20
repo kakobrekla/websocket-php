@@ -138,9 +138,10 @@ class MiddlewareHandler implements LoggerAwareInterface, Stringable
 
     /**
      * Process middlewares for outgoing messages.
+     * @template T of Message
      * @param Connection $connection
-     * @param Message $message
-     * @return Message
+     * @param T $message
+     * @return T
      */
     public function processOutgoing(Connection $connection, Message $message): Message
     {

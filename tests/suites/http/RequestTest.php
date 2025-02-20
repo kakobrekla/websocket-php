@@ -258,6 +258,7 @@ class RequestTest extends TestCase
         yield [[[0]]];
     }
 
+    /** @param array<mixed> $expected */
     #[DataProvider('provideValidHeaderValues')]
     public function testHeaderValueValidVariants(mixed $value, array $expected): void
     {

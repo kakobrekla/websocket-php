@@ -53,7 +53,7 @@ class FrameHandler implements LoggerAwareInterface, Stringable
     {
         // Read the frame "header" first, two bytes.
         $data = $this->read(2);
-        list ($byte_1, $byte_2) = array_values(unpack('C*', $data));
+        list ($byte_1, $byte_2) = array_values($this->unpack('C*', $data));
         $final = (bool)($byte_1 & 0b10000000); // Final fragment marker.
         $rsv1 = (bool)($byte_1 & 0b01000000);
         $rsv2 = (bool)($byte_1 & 0b00100000);
@@ -75,10 +75,10 @@ class FrameHandler implements LoggerAwareInterface, Stringable
         if ($payload_length > 125) {
             if ($payload_length === 126) {
                 $data = $this->read(2); // 126: Payload length is a 16-bit unsigned int
-                $payload_length = current(unpack('n', $data));
+                $payload_length = current($this->unpack('n', $data));
             } else {
                 $data = $this->read(8); // 127: Payload length is a 64-bit unsigned int
-                $payload_length = current(unpack('J', $data));
+                $payload_length = current($this->unpack('J', $data));
             }
         }
 
@@ -196,5 +196,15 @@ class FrameHandler implements LoggerAwareInterface, Stringable
             throw new RuntimeException("Could only write {$written} out of {$length} bytes.");
         }
         return $written;
+    }
+
+    /** @return array<int> */
+    private function unpack(string $format, string $string): array
+    {
+        $result = unpack($format, $string);
+        if ($result === false) {
+            throw new RuntimeException('Could not parse message header');
+        }
+        return $result;
     }
 }

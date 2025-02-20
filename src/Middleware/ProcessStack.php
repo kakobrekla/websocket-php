@@ -47,6 +47,7 @@ class ProcessStack implements Stringable
      */
     public function handleIncoming(): Message
     {
+        /** @var ProcessIncomingInterface|null $processor */
         $processor = array_shift($this->processors);
         if ($processor) {
             return $processor->processIncoming($this, $this->connection);
@@ -56,11 +57,13 @@ class ProcessStack implements Stringable
 
     /**
      * Process middleware for outgoing message.
-     * @param Message $message
-     * @return Message
+     * @template T of Message
+     * @param T $message
+     * @return T
      */
     public function handleOutgoing(Message $message): Message
     {
+        /** @var ProcessOutgoingInterface|null $processor */
         $processor = array_shift($this->processors);
         if ($processor) {
             return $processor->processOutgoing($this, $this->connection, $message);

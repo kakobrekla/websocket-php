@@ -7,20 +7,31 @@
 
 namespace WebSocket\Test;
 
+use Phrity\Net\Mock\Stack\{
+    ExpectSocketClientTrait,
+    ExpectSocketServerTrait,
+    StackItem
+};
 use Phrity\Net\Mock\StreamCollection;
-use Phrity\Net\Mock\Stack\StackItem;
 
 /**
  * This trait is used by phpunit tests to mock and track various socket/stream calls.
  */
 trait MockStreamTrait
 {
+    use ExpectSocketClientTrait;
+    use ExpectSocketServerTrait;
+
+    /** @var array<StackItem> $stack */
     private array $stack = [];
     private string $last_ws_key = '';
 
 
     /* ---------- WebSocket Client combinded asserts --------------------------------------------------------------- */
 
+    /**
+     * @param array<mixed> $context
+     */
     private function expectWsClientConnect(
         string $scheme = 'tcp',
         string $host = 'localhost',
@@ -83,7 +94,7 @@ trait MockStreamTrait
         $this->expectSocketStreamWrite()->addAssert(
             function (string $method, array $params) use ($host, $path, $headers): void {
                 preg_match('/Sec-WebSocket-Key: ([\S]*)\r\n/', $params[0], $m);
-                $this->last_ws_key = $m[1];
+                $this->last_ws_key = $m[1] ?? '';
                 $this->assertEquals(
                     "GET {$path} HTTP/1.1\r\nHost: {$host}\r\nUser-Agent: websocket-client-php\r\nConnection: Upgrade"
                     . "\r\nUpgrade: websocket\r\nSec-WebSocket-Key: {$this->last_ws_key}\r\nSec-WebSocket-Version: 13"
@@ -123,6 +134,9 @@ trait MockStreamTrait
 
     /* ---------- WebSocket Server combinded asserts --------------------------------------------------------------- */
 
+    /**
+     * @param array<mixed> $context
+     */
     private function expectWsServerSetup(string $scheme = 'tcp', int $port = 8000, array $context = []): void
     {
         $this->expectStreamFactoryCreateSocketServer()->addAssert(function ($method, $params) use ($scheme, $port) {
@@ -145,6 +159,9 @@ trait MockStreamTrait
         });
     }
 
+    /**
+     * @param array<mixed> $keys
+     */
     private function expectWsSelectConnections(array $keys = []): StackItem
     {
         $this->expectStreamCollectionWaitRead()->setReturn(function ($params, $default, $collection) use ($keys) {
@@ -164,6 +181,9 @@ trait MockStreamTrait
         return $last;
     }
 
+    /**
+     * @param array<mixed> $headers
+     */
     private function expectWsServerPerformHandshake(
         string $host = 'localhost:8000',
         string $path = '/my/mock/path',

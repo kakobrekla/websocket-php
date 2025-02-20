@@ -73,6 +73,7 @@ abstract class Message implements Stringable
 
     /**
      * Split messages into frames
+     * @param int<1, max> $frameSize
      * @return array<Frame>
      */
     public function getFrames(int $frameSize = 4096): array

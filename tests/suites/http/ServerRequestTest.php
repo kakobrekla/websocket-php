@@ -134,7 +134,7 @@ class ServerRequestTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage('Not implemented.');
-        $request->getParsedBody([]);
+        $request->getParsedBody();
     }
 
     public function testWithParsedBodyError(): void

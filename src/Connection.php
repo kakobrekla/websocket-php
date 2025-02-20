@@ -143,11 +143,11 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Get frame size.
-     * @return int Frame size in bytes
+     * @return int<1, max> Frame size in bytes
      */
     public function getFrameSize(): int
     {
-        return $this->frameSize;
+        return max(1, $this->frameSize);
     }
 
     /**
@@ -289,7 +289,12 @@ class Connection implements LoggerAwareInterface, Stringable
         return $this->pushMessage($message);
     }
 
-    // Push a message to stream
+    /**
+     * Push a message to stream.
+     * @template T of Message
+     * @param T $message
+     * @return T
+     */
     public function pushMessage(Message $message): Message
     {
         try {

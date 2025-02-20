@@ -29,8 +29,8 @@ class MessageHandler implements LoggerAwareInterface, Stringable
 
     private FrameHandler $frameHandler;
     private LoggerInterface $logger;
-    /** @var array{opcode: string, payload: string, frames: int}|null $readBuffer */
-    private array|null $readBuffer = null;
+    /** @var object{opcode: string, payload: string, frames: int}|null $readBuffer */
+    private object|null $readBuffer = null;
 
     public function __construct(FrameHandler $frameHandler)
     {
@@ -44,7 +44,13 @@ class MessageHandler implements LoggerAwareInterface, Stringable
         $this->frameHandler->setLogger($logger);
     }
 
-    // Push message
+    /**
+     * Push message
+     * @template T of Message
+     * @param T $message
+     * @param int<1, max> $size
+     * @return T
+     */
     public function push(Message $message, int $size = self::DEFAULT_SIZE): Message
     {
         $frames = $message->getFrames($size);
@@ -70,26 +76,26 @@ class MessageHandler implements LoggerAwareInterface, Stringable
             $payload = $frame->getPayload();
 
             // Continuation and factual opcode
-            $payload_opcode = $continuation ? $this->readBuffer['opcode'] : $opcode;
+            $payload_opcode = $continuation ? $this->readBuffer->opcode : $opcode;
 
             // First continuation frame, create buffer
             if (!$final && !$continuation) {
-                $this->readBuffer = ['opcode' => $opcode, 'payload' => $payload, 'frames' => 1];
+                $this->readBuffer = (object)['opcode' => $opcode, 'payload' => $payload, 'frames' => 1];
                 continue; // Continue reading
             }
 
             // Subsequent continuation frames, add to buffer
             if ($continuation) {
-                $this->readBuffer['payload'] .= $payload;
-                $this->readBuffer['frames']++;
+                $this->readBuffer->payload .= $payload;
+                $this->readBuffer->frames++;
             }
         } while (!$final);
 
         // Final, return payload
         $frames = 1;
         if ($continuation) {
-            $payload = $this->readBuffer['payload'];
-            $frames = $this->readBuffer['frames'];
+            $payload = $this->readBuffer->payload;
+            $frames = $this->readBuffer->frames;
             $this->readBuffer = null;
         }
 

@@ -26,7 +26,8 @@ class EchoLog implements LoggerInterface
         echo str_pad($level, 8) . " | {$message} {$context_string}\n";
     }
 
-    public function interpolate($message, array $context = [])
+    /** @param array<string, mixed> $context */
+    public function interpolate(string $message, array $context = []): string
     {
         // Build a replacement array with braces around the context keys
         $replace = [];

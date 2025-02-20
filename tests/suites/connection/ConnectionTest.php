@@ -80,7 +80,7 @@ class ConnectionTest extends TestCase
         $this->assertSame($connection, $connection->setTimeout(10));
         $this->assertEquals(10, $connection->getTimeout());
 
-        $this->assertEmpty($connection->setLogger(new NullLogger()));
+        $connection->setLogger(new NullLogger());
         $this->assertSame($connection, $connection->setFrameSize(64));
         $this->assertEquals(64, $connection->getFrameSize());
         $this->assertSame($connection, $connection->addMiddleware(new Callback()));

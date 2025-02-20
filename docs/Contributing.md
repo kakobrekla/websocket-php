@@ -116,3 +116,4 @@ make stan
 * axklim
 * Dejan Levec
 * Pieter Oliver
+* Sebastian Hagens

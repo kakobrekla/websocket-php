@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -52,6 +52,7 @@ use WebSocket\Trait\{
  */
 class Client implements LoggerAwareInterface, Stringable
 {
+    /** @use ListenerTrait<Client> */
     use ListenerTrait;
     use SendMethodsTrait;
     use StringableTrait;
@@ -61,13 +62,16 @@ class Client implements LoggerAwareInterface, Stringable
     private int $timeout = 60;
     private int $frameSize = 4096;
     private bool $persistent = false;
+    /** @var array<string, mixed> $context */
     private array $context = [];
+    /** @var array<string, mixed> $headers */
     private array $headers = [];
 
     // Internal resources
     private StreamFactory $streamFactory;
     private Uri $socketUri;
     private Connection|null $connection = null;
+    /** @var array<MiddlewareInterface> $middlewares */
     private array $middlewares = [];
     private StreamCollection|null $streams = null;
     private bool $running = false;
@@ -187,7 +191,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set connection context.
-     * @param array $context Context as array, see https://www.php.net/manual/en/context.php
+     * @param array<string, mixed> $context Context as array, see https://www.php.net/manual/en/context.php
      * @return self
      */
     public function setContext(array $context): self

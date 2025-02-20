@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -20,12 +20,13 @@ class ProcessTickStack implements Stringable
     use StringableTrait;
 
     private Connection $connection;
+    /** @var array<ProcessTickInterface> $processors */
     private array $processors;
 
     /**
      * Create ProcessStack.
      * @param Connection $connection
-     * @param array $processors
+     * @param array<ProcessTickInterface> $processors
      */
     public function __construct(Connection $connection, array $processors)
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -21,6 +21,7 @@ use RuntimeException;
  */
 class Response extends Message implements ResponseInterface
 {
+    /** @var array<int, string> $codes */
     private static array $codes = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -139,6 +140,7 @@ class Response extends Message implements ResponseInterface
         return $this->stringable('%s', $this->getStatusCode());
     }
 
+    /** @return array<string> */
     public function getAsArray(): array
     {
         return array_merge([

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -21,7 +21,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 {
     /**
      * Retrieve server parameters.
-     * @return array
+     * @return array<mixed>
      */
     public function getServerParams(): array
     {
@@ -30,7 +30,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Retrieves cookies sent by the client to the server.
-     * @return array
+     * @return array<string, mixed>
      */
     public function getCookieParams(): array
     {
@@ -39,7 +39,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance with the specified cookies.
-     * @param array $cookies Array of key/value pairs representing cookies.
+     * @param array<string, mixed> $cookies Array of key/value pairs representing cookies.
      * @return static
      */
     public function withCookieParams(array $cookies): self
@@ -49,7 +49,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Retrieves the deserialized query string arguments, if any.
-     * @return array
+     * @return array<string, mixed>
      */
     public function getQueryParams(): array
     {
@@ -59,7 +59,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance with the specified query string arguments.
-     * @param array $query Array of query string arguments
+     * @param array<string, mixed> $query Array of query string arguments
      * @return static
      */
     public function withQueryParams(array $query): self
@@ -69,7 +69,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Retrieve normalized file upload data.
-     * @return array An array tree of UploadedFileInterface instances.
+     * @return array<mixed> An array tree of UploadedFileInterface instances.
      */
     public function getUploadedFiles(): array
     {
@@ -78,7 +78,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Create a new instance with the specified uploaded files.
-     * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
+     * @param array<mixed> $uploadedFiles An array tree of UploadedFileInterface instances.
      * @return static
      */
     public function withUploadedFiles(array $uploadedFiles): self
@@ -88,7 +88,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Retrieve any parameters provided in the request body.
-     * @return null|array|object The deserialized body parameters, if any.
+     * @return null|array<mixed>|object The deserialized body parameters, if any.
      */
     public function getParsedBody()
     {
@@ -97,7 +97,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance with the specified body parameters.
-     * @param null|array|object $data The deserialized body data.
+     * @param null|array<mixed>|object $data The deserialized body data.
      * @return static
      */
     public function withParsedBody($data): self

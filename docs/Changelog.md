@@ -6,6 +6,12 @@
 
  > PHP version `^8.1`
 
+### `3.2.3`
+
+ * Allow empty reason phrase in HTTP request (@Sebastix)
+ * Improved phpdoc and phpstan definitions (@sirn-se)
+ * Support phpunit v12 (@sirn-se)
+
 ### `3.2.2`
 
  * Adding `phpstan` for static analysis (@sirn-se)

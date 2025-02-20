@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -32,10 +32,15 @@ class MiddlewareHandler implements LoggerAwareInterface, Stringable
     use StringableTrait;
 
     // Processor collections
+    /** @var array<ProcessIncomingInterface> */
     private array $incoming = [];
+    /** @var array<ProcessOutgoingInterface> */
     private array $outgoing = [];
+    /** @var array<ProcessHttpIncomingInterface> */
     private array $httpIncoming = [];
+    /** @var array<ProcessHttpOutgoingInterface> */
     private array $httpOutgoing = [];
+    /** @var array<ProcessTickInterface> */
     private array $tick = [];
 
     // Handlers

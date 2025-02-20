@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -25,13 +25,14 @@ class ProcessStack implements Stringable
 
     private Connection $connection;
     private MessageHandler $messageHandler;
+    /** @var array<ProcessIncomingInterface|ProcessOutgoingInterface> $processors */
     private array $processors;
 
     /**
      * Create ProcessStack.
      * @param Connection $connection
      * @param MessageHandler $messageHandler
-     * @param array $processors
+     * @param array<ProcessIncomingInterface|ProcessOutgoingInterface> $processors
      */
     public function __construct(Connection $connection, MessageHandler $messageHandler, array $processors)
     {

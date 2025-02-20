@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -25,6 +25,7 @@ abstract class Message implements MessageInterface, Stringable
     use StringableTrait;
 
     protected string $version = '1.1';
+    /** @var array<string, array<mixed>> $headers */
     protected array $headers = [];
 
     /**
@@ -151,6 +152,7 @@ abstract class Message implements MessageInterface, Stringable
         throw new BadMethodCallException("Not implemented.");
     }
 
+    /** @return array<string> */
     public function getAsArray(): array
     {
         $lines = [];

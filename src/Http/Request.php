@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -21,6 +21,7 @@ use RuntimeException;
  */
 class Request extends Message implements RequestInterface
 {
+    /** @var array<string> $methods */
     private static array $methods = ['GET', 'HEAD', 'OPTIONS', 'TRACE', 'PUT', 'DELETE', 'POST', 'PATCH', 'CONNECT'];
 
     private string $target = '';
@@ -121,6 +122,7 @@ class Request extends Message implements RequestInterface
         return $this->stringable('%s %s', $this->getMethod(), $this->getUri());
     }
 
+    /** @return array<string> */
     public function getAsArray(): array
     {
         return array_merge([

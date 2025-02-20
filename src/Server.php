@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -49,6 +49,7 @@ use WebSocket\Trait\{
  */
 class Server implements LoggerAwareInterface, Stringable
 {
+    /** @use ListenerTrait<Server> */
     use ListenerTrait;
     use SendMethodsTrait;
     use StringableTrait;
@@ -61,6 +62,7 @@ class Server implements LoggerAwareInterface, Stringable
     private LoggerInterface $logger;
     private int $timeout = 60;
     private int $frameSize = 4096;
+    /** @var array<string, mixed> $context */
     private array $context = [];
 
     // Internal resources
@@ -68,7 +70,9 @@ class Server implements LoggerAwareInterface, Stringable
     private SocketServer|null $server = null;
     private StreamCollection|null $streams = null;
     private bool $running = false;
+    /** @var array<Connection> $connections */
     private array $connections = [];
+    /** @var array<MiddlewareInterface> $middlewares */
     private array $middlewares = [];
     private int|null $maxConnections = null;
 
@@ -218,7 +222,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Get currently connected clients.
-     * @return array Connections
+     * @return array<Connection> Connections
      */
     public function getConnections(): array
     {
@@ -227,7 +231,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Get currently readable clients.
-     * @return array Connections
+     * @return array<Connection> Connections
      */
     public function getReadableConnections(): array
     {
@@ -238,7 +242,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Get currently writable clients.
-     * @return array Connections
+     * @return array<Connection> Connections
      */
     public function getWritableConnections(): array
     {
@@ -249,7 +253,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Set connection context.
-     * @param array $context Context as array, see https://www.php.net/manual/en/context.php
+     * @param array<string, mixed> $context Context as array, see https://www.php.net/manual/en/context.php
      * @return self
      */
     public function setContext(array $context): self
@@ -349,9 +353,8 @@ class Server implements LoggerAwareInterface, Stringable
                         }
                         // Read from connection
                         $connection = $this->connections[$key];
-                        if ($message = $connection->pullMessage()) {
-                            $this->dispatch($message->getOpcode(), [$this, $connection, $message]);
-                        }
+                        $message = $connection->pullMessage();
+                        $this->dispatch($message->getOpcode(), [$this, $connection, $message]);
                     } catch (MessageLevelInterface $e) {
                         // Error, but keep connection open
                         $this->logger->error("[server] {$e->getMessage()}");

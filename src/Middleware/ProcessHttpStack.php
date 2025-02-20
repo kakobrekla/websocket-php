@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -23,13 +23,14 @@ class ProcessHttpStack implements Stringable
 
     private Connection $connection;
     private HttpHandler $httpHandler;
+    /** @var array<ProcessHttpIncomingInterface|ProcessHttpOutgoingInterface> $processors */
     private array $processors;
 
     /**
      * Create ProcessStack.
      * @param Connection $connection
      * @param HttpHandler $httpHandler
-     * @param array $processors
+     * @param array<ProcessHttpIncomingInterface|ProcessHttpOutgoingInterface> $processors
      */
     public function __construct(Connection $connection, HttpHandler $httpHandler, array $processors)
     {

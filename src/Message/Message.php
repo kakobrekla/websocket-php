@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -71,7 +71,10 @@ abstract class Message implements Stringable
         $this->content = $payload;
     }
 
-    // Split messages into frames
+    /**
+     * Split messages into frames
+     * @return array<Frame>
+     */
     public function getFrames(int $frameSize = 4096): array
     {
         $frames = [];

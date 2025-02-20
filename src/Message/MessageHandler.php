@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2014-2024 Textalk and contributors.
+ * Copyright (C) 2014-2025 Textalk and contributors.
  * This file is part of Websocket PHP and is free software under the ISC License.
  */
 
@@ -29,6 +29,7 @@ class MessageHandler implements LoggerAwareInterface, Stringable
 
     private FrameHandler $frameHandler;
     private LoggerInterface $logger;
+    /** @var array{opcode: string, payload: string, frames: int}|null $readBuffer */
     private array|null $readBuffer = null;
 
     public function __construct(FrameHandler $frameHandler)

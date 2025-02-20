@@ -201,10 +201,8 @@ class FrameHandler implements LoggerAwareInterface, Stringable
     /** @return array<int> */
     private function unpack(string $format, string $string): array
     {
+        /** @var array<int> $result */
         $result = unpack($format, $string);
-        if ($result === false) {
-            throw new RuntimeException('Could not parse message header');
-        }
         return $result;
     }
 }

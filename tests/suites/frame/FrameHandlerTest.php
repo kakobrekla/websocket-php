@@ -55,7 +55,7 @@ class FrameHandlerTest extends TestCase
             $this->assertEquals(base64_decode('gQxUZXh0IG1lc3NhZ2U='), $params[0]);
             $this->assertEquals('Text message', substr($params[0], 2));
         });
-        $written = $handler->push($frame, false);
+        $written = $handler->push($frame);
         $this->assertEquals(14, $written);
         $this->assertEquals('WebSocket\Frame\FrameHandler', "{$handler}");
 
@@ -103,7 +103,7 @@ class FrameHandlerTest extends TestCase
         $this->expectSocketStreamWrite()->addAssert(function ($method, $params) {
             $this->assertEquals(18, strlen($params[0]));
         });
-        $written = $handler->push($frame, true);
+        $written = $handler->push($frame);
         $this->assertEquals(18, $written);
 
         fclose($temp);
@@ -144,6 +144,7 @@ class FrameHandlerTest extends TestCase
     public function testPushPayload128(): void
     {
         $temp = tmpfile();
+        /** @var string $payload */
         $payload = file_get_contents(__DIR__ . '/../../mock/payload.128.txt');
 
         $this->expectSocketStream();
@@ -159,7 +160,7 @@ class FrameHandlerTest extends TestCase
             $this->assertEquals(base64_decode('AIA='), substr($params[0], 2, 2));
             $this->assertEquals($payload, substr($params[0], 4));
         });
-        $written = $handler->push($frame, false);
+        $written = $handler->push($frame);
         $this->assertEquals(132, $written);
 
         fclose($temp);
@@ -202,6 +203,7 @@ class FrameHandlerTest extends TestCase
     public function testPushPayload65536(): void
     {
         $temp = tmpfile();
+        /** @var string $payload */
         $payload = file_get_contents(__DIR__ . '/../../mock/payload.65536.txt');
 
         $this->expectSocketStream();
@@ -217,7 +219,7 @@ class FrameHandlerTest extends TestCase
             $this->assertEquals(base64_decode('AAAAAAABAAA='), substr($params[0], 2, 8));
             $this->assertEquals($payload, substr($params[0], 10));
         });
-        $written = $handler->push($frame, false);
+        $written = $handler->push($frame);
         $this->assertEquals(65546, $written);
 
         fclose($temp);
@@ -274,7 +276,7 @@ class FrameHandlerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Could only write 0 out of 16 bytes.");
-        $handler->push($frame, false);
+        $handler->push($frame);
 
         fclose($temp);
     }

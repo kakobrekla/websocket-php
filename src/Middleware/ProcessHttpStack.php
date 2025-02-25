@@ -45,6 +45,7 @@ class ProcessHttpStack implements Stringable
      */
     public function handleHttpIncoming(): MessageInterface
     {
+        /** @var ProcessHttpIncomingInterface|null $processor */
         $processor = array_shift($this->processors);
         if ($processor) {
             return $processor->processHttpIncoming($this, $this->connection);
@@ -59,6 +60,7 @@ class ProcessHttpStack implements Stringable
      */
     public function handleHttpOutgoing(MessageInterface $message): MessageInterface
     {
+        /** @var ProcessHttpOutgoingInterface|null $processor */
         $processor = array_shift($this->processors);
         if ($processor) {
             return $processor->processHttpOutgoing($this, $this->connection, $message);

@@ -15,7 +15,10 @@ use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
 use Psr\Log\NullLogger;
 use Stringable;
 use WebSocket\Connection;
-use WebSocket\Http\Response;
+use WebSocket\Http\{
+    Request,
+    Response,
+};
 use WebSocket\Message\Text;
 use WebSocket\Middleware\Callback;
 
@@ -128,6 +131,7 @@ class CallbackTest extends TestCase
         $this->expectSocketStreamReadLine()->setReturn(function () {
             return "\r\n";
         });
+        /** @var Request $message */
         $message = $connection->pullHttp();
         $this->assertEquals('POST', $message->getMethod());
 
@@ -155,6 +159,7 @@ class CallbackTest extends TestCase
             return $message;
         }));
         $this->expectSocketStreamWrite();
+        /** @var Response $message */
         $message = $connection->pushHttp(new Response(200));
         $this->assertEquals(400, $message->getStatusCode());
 

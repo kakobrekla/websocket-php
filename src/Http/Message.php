@@ -174,8 +174,7 @@ abstract class Message implements MessageInterface, Stringable
             if (!is_string($content) && !is_numeric($content)) {
                 throw new InvalidArgumentException("Invalid header value(s) provided.");
             }
-            $content = trim($content);
-            $this->headers[strtolower($name)][$name][] = $content;
+            $this->headers[strtolower($name)][$name][] = trim((string)$content);
         }
     }
 }

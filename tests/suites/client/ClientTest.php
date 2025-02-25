@@ -159,6 +159,7 @@ class ClientTest extends TestCase
         $this->expectWsClientPerformHandshake();
         $client->connect();
 
+        /** @var string $payload */
         $payload = file_get_contents(__DIR__ . '/../../mock/payload.128.txt');
 
         // Sending message
@@ -205,6 +206,7 @@ class ClientTest extends TestCase
         $this->expectWsClientPerformHandshake();
         $client->connect();
 
+        /** @var string $payload */
         $payload = file_get_contents(__DIR__ . '/../../mock/payload.65536.txt');
 
         // Sending message
@@ -986,7 +988,7 @@ class ClientTest extends TestCase
         $client->start();
 
         $this->expectSocketStreamClose();
-        unset($server);
+        unset($client);
     }
 
     public function testRunConnectionClosedException(): void
@@ -1007,7 +1009,7 @@ class ClientTest extends TestCase
         $this->expectWsSelectConnections(['localhost:8000']);
         $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
             $this->assertEquals(2, $params[0]);
-        })->setReturn(function () use ($client) {
+        })->setReturn(function () {
             throw new ConnectionClosedException();
         });
         $this->expectSocketStreamIsConnected();
@@ -1036,7 +1038,7 @@ class ClientTest extends TestCase
         $this->expectWsSelectConnections(['localhost:8000']);
         $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
             $this->assertEquals(2, $params[0]);
-        })->setReturn(function () use ($client) {
+        })->setReturn(function () {
             throw new ClientException();
         });
         $this->expectSocketStreamIsConnected();

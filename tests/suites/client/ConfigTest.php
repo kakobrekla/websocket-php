@@ -132,10 +132,10 @@ class ConfigTest extends TestCase
         unset($client);
     }
 
+    /** @return array<mixed> */
     public static function uriStringAuthorizationDataProvider(): array
     {
         $encoded = urlencode('7{v^pF8;uPK.6VWu');
-
         return [
             [
                 'usename:password',

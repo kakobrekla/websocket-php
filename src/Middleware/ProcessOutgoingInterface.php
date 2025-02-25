@@ -16,5 +16,10 @@ use WebSocket\Message\Message;
  */
 interface ProcessOutgoingInterface extends MiddlewareInterface
 {
+    /**
+     * @template T of Message
+     * @param T $message
+     * @return T
+     */
     public function processOutgoing(ProcessStack $stack, Connection $connection, Message $message): Message;
 }

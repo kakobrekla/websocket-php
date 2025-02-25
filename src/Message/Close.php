@@ -37,7 +37,7 @@ class Close extends Message
         $status_binstr = sprintf('%016b', $this->status);
         $status_str = '';
         foreach (str_split($status_binstr, 8) as $binstr) {
-            $status_str .= chr(bindec($binstr));
+            $status_str .= chr((int)bindec($binstr));
         }
         return $status_str . $this->content;
     }
@@ -47,7 +47,7 @@ class Close extends Message
         $this->status = 0;
         $this->content = '';
         if (strlen($payload) > 0) {
-            $this->status = current(unpack('n', $payload));
+            $this->status = current(unpack('n', $payload) ?: []);
         }
         if (strlen($payload) > 2) {
             $this->content = substr($payload, 2);

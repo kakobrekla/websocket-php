@@ -2,6 +2,16 @@
 
 # Websocket: Changelog
 
+## `v3.3`
+
+ > PHP version `^8.1`
+
+### `3.3.0`
+
+ * Improved phpdoc and phpstan definitions (@sirn-se)
+ * Improved logging (@sirn-se)
+
+
 ## `v3.2`
 
  > PHP version `^8.1`

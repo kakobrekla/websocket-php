@@ -357,7 +357,7 @@ class Server implements LoggerAwareInterface, Stringable
                         $this->dispatch($message->getOpcode(), [$this, $connection, $message]);
                     } catch (MessageLevelInterface $e) {
                         // Error, but keep connection open
-                        $this->logger->error("[server] {$e->getMessage()}");
+                        $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                         $this->dispatch('error', [$this, $connection, $e]);
                     } catch (ConnectionLevelInterface $e) {
                         // Error, disconnect connection
@@ -366,14 +366,14 @@ class Server implements LoggerAwareInterface, Stringable
                             unset($this->connections[$key]);
                             $connection->disconnect();
                         }
-                        $this->logger->error("[server] {$e->getMessage()}");
+                        $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                         $this->dispatch('error', [$this, $connection, $e]);
                     } catch (CloseException $e) {
                         // Should close
                         if ($connection) {
                             $connection->close($e->getCloseStatus(), $e->getMessage());
                         }
-                        $this->logger->error("[server] {$e->getMessage()}");
+                        $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                         $this->dispatch('error', [$this, $connection, $e]);
                     }
                 }
@@ -383,11 +383,11 @@ class Server implements LoggerAwareInterface, Stringable
                 $this->dispatch('tick', [$this]);
             } catch (Exception $e) {
                 // Low-level error
-                $this->logger->error("[server] {$e->getMessage()}");
+                $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                 $this->dispatch('error', [$this, null, $e]);
             } catch (Throwable $e) {
                 // Crash it
-                $this->logger->error("[server] {$e->getMessage()}");
+                $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                 $this->dispatch('error', [$this, null, $e]);
                 $this->disconnect();
                 throw $e;
@@ -597,7 +597,7 @@ class Server implements LoggerAwareInterface, Stringable
                 ->withHeader('Connection', 'Upgrade')
                 ->withHeader('Sec-WebSocket-Accept', $responseKey);
         } catch (HandshakeException $e) {
-            $this->logger->warning("[server] {$e->getMessage()}");
+            $this->logger->warning("[server] {$e->getMessage()}", ['exception' => $e]);
             $response = $e->getResponse();
             $exception = $e;
         }

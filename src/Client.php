@@ -289,12 +289,12 @@ class Client implements LoggerAwareInterface, Stringable
                         $this->dispatch($message->getOpcode(), [$this, $this->connection, $message]);
                     } catch (MessageLevelInterface $e) {
                         // Error, but keep connection open
-                        $this->logger->error("[client] {$e->getMessage()}");
+                        $this->logger->error("[client] {$e->getMessage()}", ['exception' => $e]);
                         $this->dispatch('error', [$this, $this->connection, $e]);
                     } catch (ConnectionLevelInterface $e) {
                         // Error, disconnect connection
                         $this->disconnect();
-                        $this->logger->error("[client] {$e->getMessage()}");
+                        $this->logger->error("[client] {$e->getMessage()}", ['exception' => $e]);
                         $this->dispatch('error', [$this, $this->connection, $e]);
                     }
                 }
@@ -308,14 +308,14 @@ class Client implements LoggerAwareInterface, Stringable
                 $this->running = false;
 
                 // Low-level error
-                $this->logger->error("[client] {$e->getMessage()}");
+                $this->logger->error("[client] {$e->getMessage()}", ['exception' => $e]);
                 $this->dispatch('error', [$this, null, $e]);
             } catch (Throwable $e) {
                 $this->disconnect();
                 $this->running = false;
 
                 // Crash it
-                $this->logger->error("[client] {$e->getMessage()}");
+                $this->logger->error("[client] {$e->getMessage()}", ['exception' => $e]);
                 $this->dispatch('error', [$this, null, $e]);
                 throw $e;
             }
@@ -400,7 +400,7 @@ class Client implements LoggerAwareInterface, Stringable
             $stream = $client->connect();
         } catch (Throwable $e) {
             $error = "Could not open socket to \"{$host_uri}\": {$e->getMessage()}";
-            $this->logger->error("[client] {$error}", []);
+            $this->logger->error("[client] {$error}", ['exception' => $e]);
             throw new ClientException($error);
         }
         $name = $stream->getRemoteName();
@@ -423,7 +423,7 @@ class Client implements LoggerAwareInterface, Stringable
                 $response = $this->performHandshake($this->socketUri);
             }
         } catch (ReconnectException $e) {
-            $this->logger->info("[client] {$e->getMessage()}");
+            $this->logger->info("[client] {$e->getMessage()}", ['exception' => $e]);
             if ($uri = $e->getUri()) {
                 $this->socketUri = $uri;
             }
@@ -549,7 +549,7 @@ class Client implements LoggerAwareInterface, Stringable
                 throw new HandshakeException("Server sent bad upgrade response.", $response);
             }
         } catch (HandshakeException $e) {
-            $this->logger->error("[client] {$e->getMessage()}");
+            $this->logger->error("[client] {$e->getMessage()}", ['exception' => $e]);
             throw $e;
         }
 

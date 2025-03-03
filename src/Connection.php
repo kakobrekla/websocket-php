@@ -364,29 +364,27 @@ class Connection implements LoggerAwareInterface, Stringable
     {
         // Internal exceptions are handled and re-thrown
         if ($e instanceof ReconnectException) {
-            $this->logger->info("[connection] {$e->getMessage()}");
+            $this->logger->info("[connection] {$e->getMessage()}", ['exception' => $e]);
             throw $e;
         }
         if ($e instanceof Exception) {
-            $this->logger->error("[connection] {$e->getMessage()}");
+            $this->logger->error("[connection] {$e->getMessage()}", ['exception' => $e]);
             throw $e;
         }
         // External exceptions are converted to internal
-        $exception = get_class($e);
-        $json = '';
         if ($this->isConnected()) {
             $meta = $this->stream->getMetadata();
             $json = json_encode($meta);
             if (!empty($meta['timed_out'])) {
-                $this->logger->error("[connection] {$e->getMessage()} original: {$exception} {$json}");
+                $this->logger->error("[connection] {$e->getMessage()}", ['exception' => $e, 'meta' => $meta]);
                 throw new ConnectionTimeoutException();
             }
             if (!empty($meta['eof'])) {
-                $this->logger->error("[connection] {$e->getMessage()} original: {$exception} {$json}");
+                $this->logger->error("[connection] {$e->getMessage()}", ['exception' => $e, 'meta' => $meta]);
                 throw new ConnectionClosedException();
             }
         }
-        $this->logger->error("[connection] {$e->getMessage()} original: {$exception} {$json}");
+        $this->logger->error("[connection] {$e->getMessage()}", ['exception' => $e]);
         throw new ConnectionFailureException();
     }
 }

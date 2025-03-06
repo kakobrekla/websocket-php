@@ -498,6 +498,7 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Perform upgrade handshake on new connections.
      * @throws HandshakeException On failed handshake
+     * @throws ReconnectException On reconnect/redirect requirement
      */
     protected function performHandshake(Uri $uri): ResponseInterface
     {

@@ -11,7 +11,10 @@ namespace WebSocket\Test\Message;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use Stringable;
 use WebSocket\Exception\BadOpcodeException;
 use WebSocket\Frame\{
@@ -33,6 +36,7 @@ use WebSocket\Message\{
  */
 class MessageHandlerTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -52,6 +56,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
         $this->assertInstanceOf(Stringable::class, $handler);
@@ -74,6 +79,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -100,6 +106,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), true, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -118,6 +125,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, true));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -149,6 +157,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -176,6 +185,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -222,6 +232,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 
@@ -274,6 +285,7 @@ class MessageHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $handler = new MessageHandler(new FrameHandler(new SocketStream($temp), false, false));
         $this->assertInstanceOf(MessageHandler::class, $handler);
 

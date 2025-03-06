@@ -8,6 +8,7 @@
 namespace WebSocket\Test;
 
 use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
     ExpectSocketClientTrait,
     ExpectSocketServerTrait,
     StackItem
@@ -19,6 +20,7 @@ use Phrity\Net\Mock\StreamCollection;
  */
 trait MockStreamTrait
 {
+    use ExpectContextTrait;
     use ExpectSocketClientTrait;
     use ExpectSocketServerTrait;
 
@@ -53,6 +55,9 @@ trait MockStreamTrait
             $this->assertInstanceOf('Phrity\Net\Uri', $params[0]);
             $this->assertEquals("{$scheme}://{$host}:{$port}", "{$params[0]}");
         });
+        $this->expectContext()->addAssert(function ($method, $params) {
+            $this->assertEmpty($params);
+        });
         $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) use ($persistent) {
             $this->assertEquals($persistent, $params[0]);
         });
@@ -62,9 +67,27 @@ trait MockStreamTrait
         $this->expectSocketClientSetContext()->addAssert(function ($method, $params) use ($context) {
             $this->assertEquals($context, $params[0]);
         });
+        $this->expectContextSetOptions()->addAssert(function ($method, $params) use ($context) {
+            $this->assertEquals($context, $params[0]);
+        });
+        foreach ($context as $wrapper => $option) {
+            foreach ($option as $key => $value) {
+                $this->expectContextSetOption()->addAssert(function ($method, $params) use ($wrapper, $key, $value) {
+                    $this->assertEquals($wrapper, $params[0]);
+                    $this->assertEquals($key, $params[1]);
+                    $this->assertEquals($value, $params[2]);
+                });
+            }
+        }
+        $this->expectContextSetParams()->addAssert(function ($method, $params) {
+            $this->assertEquals([[]], $params);
+        });
         $this->expectSocketClientConnect();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext()->addAssert(function ($method, $params) {
+            $this->assertIsResource($params[0]);
+        });
         $this->expectSocketStreamGetRemoteName()->setReturn(function () use ($host, $port) {
             return "{$host}:{$port}";
         });
@@ -147,10 +170,29 @@ trait MockStreamTrait
             $this->assertInstanceOf('Phrity\Net\Uri', $params[0]);
             $this->assertEquals("{$scheme}://0.0.0.0:{$port}", "{$params[0]}");
         });
+        $this->expectContext()->addAssert(function ($method, $params) {
+            $this->assertEmpty($params);
+        });
         $this->expectSocketServerGetTransports();
+        $this->expectContextGetResource();
         $this->expectSocketServerGetMetadata();
         $this->expectSocketServerSetContext()->addAssert(function ($method, $params) use ($context) {
             $this->assertEquals($context, $params[0]);
+        });
+        $this->expectContextSetOptions()->addAssert(function ($method, $params) use ($context) {
+            $this->assertEquals($context, $params[0]);
+        });
+        foreach ($context as $wrapper => $option) {
+            foreach ($option as $key => $value) {
+                $this->expectContextSetOption()->addAssert(function ($method, $params) use ($wrapper, $key, $value) {
+                    $this->assertEquals($wrapper, $params[0]);
+                    $this->assertEquals($key, $params[1]);
+                    $this->assertEquals($value, $params[2]);
+                });
+            }
+        }
+        $this->expectContextSetParams()->addAssert(function ($method, $params) {
+            $this->assertEquals([[]], $params);
         });
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();

@@ -15,6 +15,7 @@ use Phrity\Net\Mock\SocketStream;
 use Phrity\Net\Mock\StreamCollection;
 use Phrity\Net\Mock\StreamFactory;
 use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
     ExpectSocketServerTrait,
     ExpectSocketStreamTrait,
     ExpectStreamCollectionTrait,
@@ -35,6 +36,7 @@ use WebSocket\Test\{
  */
 class HandshakeTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketServerTrait;
     use ExpectSocketStreamTrait;
     use ExpectStreamCollectionTrait;
@@ -63,6 +65,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -92,6 +95,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -123,6 +127,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -173,6 +178,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -223,6 +229,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -273,6 +280,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -323,6 +331,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -370,6 +379,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });
@@ -420,6 +430,7 @@ class HandshakeTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return "fake-connection";
         });

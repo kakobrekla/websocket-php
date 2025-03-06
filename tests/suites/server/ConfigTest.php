@@ -93,6 +93,7 @@ class ConfigTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });

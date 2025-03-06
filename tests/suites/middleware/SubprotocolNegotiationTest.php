@@ -11,7 +11,10 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use Stringable;
 use WebSocket\Http\{
     Request,
@@ -26,6 +29,7 @@ use WebSocket\Middleware\SubprotocolNegotiation;
  */
 class SubprotocolNegotiationTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -49,6 +53,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -100,6 +105,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -148,6 +154,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -195,6 +202,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -252,6 +260,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -310,6 +319,7 @@ class SubprotocolNegotiationTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();

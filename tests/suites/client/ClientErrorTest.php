@@ -70,6 +70,7 @@ class ClientErrorTest extends TestCase
             $this->assertInstanceOf(Uri::class, $params[0]);
             $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
         });
+        $this->expectContext();
         $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) {
             $this->assertFalse($params[0]);
         });
@@ -77,6 +78,8 @@ class ClientErrorTest extends TestCase
             $this->assertEquals(60, $params[0]);
         });
         $this->expectSocketClientSetContext();
+        $this->expectContextSetOptions();
+        $this->expectContextSetParams();
         $this->expectSocketClientConnect()->setReturn(function () {
             throw new StreamException(StreamException::CLIENT_CONNECT_ERR, ['uri' => 'tcp://localhost:8000']);
         });
@@ -98,12 +101,16 @@ class ClientErrorTest extends TestCase
         $this->expectStreamCollection();
         $this->expectStreamFactoryCreateSocketClient();
         $this->expectSocketClient();
+        $this->expectContext();
         $this->expectSocketClientSetPersistent();
         $this->expectSocketClientSetTimeout();
         $this->expectSocketClientSetContext();
+        $this->expectContextSetOptions();
+        $this->expectContextSetParams();
         $this->expectSocketClientConnect();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName();
         $this->expectStreamCollectionAttach();
         $this->expectSocketStreamGetLocalName();

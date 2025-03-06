@@ -13,7 +13,10 @@ use BadMethodCallException;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use Phrity\Net\StreamFactory;
 use Phrity\Net\Uri;
 use Psr\Http\Message\{
@@ -35,6 +38,7 @@ use WebSocket\Http\{
  */
 class HttpHandlerTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -54,6 +58,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -78,6 +83,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -100,6 +106,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -145,6 +152,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -168,6 +176,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -196,6 +205,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -233,6 +243,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -254,6 +265,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);
@@ -275,6 +287,7 @@ class HttpHandlerTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $handler = new HttpHandler($stream);
         $this->assertInstanceOf(HttpHandler::class, $handler);

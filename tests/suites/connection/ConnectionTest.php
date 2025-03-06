@@ -11,7 +11,10 @@ namespace WebSocket\Test\Connection;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use Psr\Log\NullLogger;
 use Stringable;
 use WebSocket\Connection;
@@ -37,6 +40,7 @@ use WebSocket\Middleware\Callback;
  */
 class ConnectionTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -56,6 +60,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -114,6 +119,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -135,6 +141,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -176,6 +183,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -210,6 +218,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -234,6 +243,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -258,6 +268,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -282,6 +293,7 @@ class ConnectionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();

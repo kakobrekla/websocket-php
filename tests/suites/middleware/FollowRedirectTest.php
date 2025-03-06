@@ -15,6 +15,7 @@ use Phrity\Net\Mock\{
     StreamFactory,
 };
 use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
     ExpectSocketClientTrait,
     ExpectSocketStreamTrait,
     ExpectStreamCollectionTrait,
@@ -37,6 +38,7 @@ use WebSocket\Test\MockStreamTrait;
  */
 class FollowRedirectTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketClientTrait;
     use ExpectSocketStreamTrait;
     use ExpectStreamCollectionTrait;
@@ -64,6 +66,7 @@ class FollowRedirectTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -95,6 +98,7 @@ class FollowRedirectTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();
@@ -126,6 +130,7 @@ class FollowRedirectTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();

@@ -853,7 +853,10 @@ class ServerTest extends TestCase
         $server->setStreamFactory(new StreamFactory());
 
         $server->onTick(function ($server) {
-            // Trigger unresolvable error
+            /**
+             * Trigger unresolvable error
+             * @phpstan-ignore class.notFound
+             */
             $fail = new UnexistingClass();
         });
 
@@ -863,6 +866,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });

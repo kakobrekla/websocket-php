@@ -1056,8 +1056,11 @@ class ClientTest extends TestCase
         $client->setStreamFactory(new StreamFactory());
 
         $client->onTick(function ($client) {
-            // Trigger unresolvable error
-            $fail = new UnexistingClass();
+            /**
+             * Trigger unresolvable error
+             * @phpstan-ignore class.notFound
+             */
+             $fail = new UnexistingClass();
         });
 
         $this->expectWsClientConnect();

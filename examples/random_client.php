@@ -18,6 +18,13 @@
 
 namespace WebSocket;
 
+use Throwable;
+use WebSocket\Middleware\{
+    CloseHandler,
+    PingResponder,
+};
+use WebSocket\Test\EchoLog;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(-1);
@@ -45,13 +52,13 @@ while (true) {
     try {
         $client = new Client($options['uri']);
         $client
-            ->addMiddleware(new \WebSocket\Middleware\CloseHandler())
-            ->addMiddleware(new \WebSocket\Middleware\PingResponder())
+            ->addMiddleware(new CloseHandler())
+            ->addMiddleware(new PingResponder())
             ;
 
         // If debug mode and logger is available
         if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
-            $client->setLogger(new \WebSocket\Test\EchoLog());
+            $client->setLogger(new EchoLog());
             echo "# Using logger\n";
         }
         if (isset($options['timeout'])) {

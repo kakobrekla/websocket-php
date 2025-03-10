@@ -9,6 +9,7 @@ namespace WebSocket;
 
 use InvalidArgumentException;
 use Phrity\Net\{
+    Context,
     StreamCollection,
     StreamFactory,
     Uri
@@ -62,8 +63,7 @@ class Client implements LoggerAwareInterface, Stringable
     private int $timeout = 60;
     private int $frameSize = 4096;
     private bool $persistent = false;
-    /** @var array<string, mixed> $context */
-    private array $context = [];
+    private Context $context;
     /** @var array<string, mixed> $headers */
     private array $headers = [];
 
@@ -86,6 +86,7 @@ class Client implements LoggerAwareInterface, Stringable
     {
         $this->socketUri = $this->parseUri($uri);
         $this->logger = new NullLogger();
+        $this->context = new Context();
         $this->setStreamFactory(new StreamFactory());
     }
 
@@ -190,14 +191,28 @@ class Client implements LoggerAwareInterface, Stringable
     }
 
     /**
-     * Set connection context.
-     * @param array<string, mixed> $context Context as array, see https://www.php.net/manual/en/context.php
+     * Set stream context.
+     * @param Context|array<string, mixed> $context Context or options as array
+     * @see https://www.php.net/manual/en/context.php
      * @return self
      */
-    public function setContext(array $context): self
+    public function setContext(Context|array $context): self
     {
-        $this->context = $context;
+        if ($context instanceof Context) {
+            $this->context = $context;
+        } else {
+            $this->context->setOptions($context);
+        }
         return $this;
+    }
+
+    /**
+     * Get current stream context.
+     * @return Context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     /**
@@ -393,10 +408,9 @@ class Client implements LoggerAwareInterface, Stringable
         $stream = null;
 
         try {
-            $client = $this->streamFactory->createSocketClient($host_uri);
+            $client = $this->streamFactory->createSocketClient($host_uri, $this->context);
             $client->setPersistent($this->persistent);
             $client->setTimeout($this->timeout);
-            $client->setContext($this->context);
             $stream = $client->connect();
         } catch (Throwable $e) {
             $error = "Could not open socket to \"{$host_uri}\": {$e->getMessage()}";
@@ -498,6 +512,7 @@ class Client implements LoggerAwareInterface, Stringable
     /**
      * Perform upgrade handshake on new connections.
      * @throws HandshakeException On failed handshake
+     * @throws ReconnectException On reconnect/redirect requirement
      */
     protected function performHandshake(Uri $uri): ResponseInterface
     {

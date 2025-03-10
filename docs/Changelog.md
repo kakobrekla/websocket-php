@@ -8,9 +8,9 @@
 
 ### `3.3.0`
 
+ * Incorporating Phrity/Net/Context in Client, Server and Connection (@sirn-se)
  * Improved phpdoc and phpstan definitions (@sirn-se)
- * Improved logging (@sirn-se)
-
+ * Improved logging: exceptions exposed in context (@sirn-se)
 
 ## `v3.2`
 

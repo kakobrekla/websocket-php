@@ -60,29 +60,12 @@ class ClientErrorTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
 
-        $this->expectStreamFactoryCreateStreamCollection();
-        $this->expectStreamCollection();
-        $this->expectStreamFactoryCreateSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) {
-            $this->assertFalse($params[0]);
-        });
-        $this->expectSocketClientSetTimeout()->addAssert(function ($method, $params) {
-            $this->assertEquals(60, $params[0]);
-        });
-        $this->expectSocketClientSetContext();
+        $this->expectWsClientSetup();
         $this->expectSocketClientConnect()->setReturn(function () {
             throw new StreamException(StreamException::CLIENT_CONNECT_ERR, ['uri' => 'tcp://localhost:8000']);
         });
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage('Could not open socket to "tcp://localhost:8000": Client could not connect');
-
         $client->connect();
 
         unset($client);
@@ -94,16 +77,11 @@ class ClientErrorTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
 
-        $this->expectStreamFactoryCreateStreamCollection();
-        $this->expectStreamCollection();
-        $this->expectStreamFactoryCreateSocketClient();
-        $this->expectSocketClient();
-        $this->expectSocketClientSetPersistent();
-        $this->expectSocketClientSetTimeout();
-        $this->expectSocketClientSetContext();
+        $this->expectWsClientSetup();
         $this->expectSocketClientConnect();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName();
         $this->expectStreamCollectionAttach();
         $this->expectSocketStreamGetLocalName();

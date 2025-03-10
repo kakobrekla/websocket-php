@@ -17,6 +17,13 @@
 
 namespace WebSocket;
 
+use Throwable;
+use WebSocket\Middleware\{
+    CloseHandler,
+    PingResponder,
+};
+use WebSocket\Test\EchoLog;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(-1);
@@ -35,8 +42,8 @@ $message = array_pop($argv);
 try {
     $client = new Client($options['uri']);
     $client
-        ->addMiddleware(new \WebSocket\Middleware\CloseHandler())
-        ->addMiddleware(new \WebSocket\Middleware\PingResponder())
+        ->addMiddleware(new CloseHandler())
+        ->addMiddleware(new PingResponder())
         ->onText(function ($client, $connection, $message) {
             echo "> Received '{$message->getContent()}' [opcode: {$message->getOpcode()}]\n";
             echo "< Closing client\n";
@@ -64,7 +71,7 @@ try {
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
-        $client->setLogger(new \WebSocket\Test\EchoLog());
+        $client->setLogger(new EchoLog());
         echo "# Using logger\n";
     }
     if (isset($options['timeout'])) {
@@ -81,6 +88,6 @@ try {
     echo "< Sent '{$message->getContent()}' [opcode: {$message->getOpcode()}]\n";
 
     $client->start(); // Wait for close confirmation
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     echo "# ERROR: {$e->getMessage()} [{$e->getCode()}]\n";
 }

@@ -11,7 +11,10 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Message\Ping;
@@ -22,6 +25,7 @@ use WebSocket\Middleware\PingResponder;
  */
 class PingResponderTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -41,6 +45,7 @@ class PingResponderTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
 
         $this->expectSocketStreamGetLocalName();

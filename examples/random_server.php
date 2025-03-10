@@ -20,6 +20,13 @@
 
 namespace WebSocket;
 
+use Throwable;
+use WebSocket\Middleware\{
+    CloseHandler,
+    PingResponder,
+};
+use WebSocket\Test\EchoLog;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(-1);
@@ -46,14 +53,14 @@ $options = array_merge([
 try {
     $server = new Server($options['port'], isset($options['ssl']));
     $server
-        ->addMiddleware(new \WebSocket\Middleware\CloseHandler())
-        ->addMiddleware(new \WebSocket\Middleware\PingResponder())
+        ->addMiddleware(new CloseHandler())
+        ->addMiddleware(new PingResponder())
         ;
     $server->setMaxConnections(1);
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
-        $server->setLogger(new \WebSocket\Test\EchoLog());
+        $server->setLogger(new EchoLog());
         echo "# Using logger\n";
     }
     if (isset($options['timeout'])) {
@@ -112,6 +119,6 @@ try {
                 break;
         }
     })->start();
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     echo "> ERROR: {$e->getMessage()}\n";
 }

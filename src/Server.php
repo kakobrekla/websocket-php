@@ -9,6 +9,7 @@ namespace WebSocket;
 
 use InvalidArgumentException;
 use Phrity\Net\{
+    Context,
     SocketServer,
     StreamCollection,
     StreamException,
@@ -62,8 +63,7 @@ class Server implements LoggerAwareInterface, Stringable
     private LoggerInterface $logger;
     private int $timeout = 60;
     private int $frameSize = 4096;
-    /** @var array<string, mixed> $context */
-    private array $context = [];
+    private Context $context;
 
     // Internal resources
     private StreamFactory $streamFactory;
@@ -92,6 +92,7 @@ class Server implements LoggerAwareInterface, Stringable
         $this->port = $port;
         $this->scheme = $ssl ? 'ssl' : 'tcp';
         $this->logger = new NullLogger();
+        $this->context = new Context();
         $this->setStreamFactory(new StreamFactory());
     }
 
@@ -252,14 +253,28 @@ class Server implements LoggerAwareInterface, Stringable
     }
 
     /**
-     * Set connection context.
-     * @param array<string, mixed> $context Context as array, see https://www.php.net/manual/en/context.php
+     * Set stream context.
+     * @param Context|array<string, mixed> $context Context or options as array
+     * @see https://www.php.net/manual/en/context.php
      * @return self
      */
-    public function setContext(array $context): self
+    public function setContext(Context|array $context): self
     {
-        $this->context = $context;
+        if ($context instanceof Context) {
+            $this->context = $context;
+        } else {
+            $this->context->setOptions($context);
+        }
         return $this;
+    }
+
+    /**
+     * Get current stream context.
+     * @return Context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
     }
 
     /**
@@ -474,8 +489,7 @@ class Server implements LoggerAwareInterface, Stringable
     {
         try {
             $uri = new Uri("{$this->scheme}://0.0.0.0:{$this->port}");
-            $this->server = $this->streamFactory->createSocketServer($uri);
-            $this->server->setContext($this->context);
+            $this->server = $this->streamFactory->createSocketServer($uri, $this->context);
             $this->streams = $this->streamFactory->createStreamCollection();
             $this->streams->attach($this->server, '@server');
             $this->logger->info("[server] Starting server on {$uri}.");

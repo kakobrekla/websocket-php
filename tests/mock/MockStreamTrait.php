@@ -8,17 +8,20 @@
 namespace WebSocket\Test;
 
 use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
     ExpectSocketClientTrait,
     ExpectSocketServerTrait,
     StackItem
 };
 use Phrity\Net\Mock\StreamCollection;
+use Phrity\Net\Context;
 
 /**
  * This trait is used by phpunit tests to mock and track various socket/stream calls.
  */
 trait MockStreamTrait
 {
+    use ExpectContextTrait;
     use ExpectSocketClientTrait;
     use ExpectSocketServerTrait;
 
@@ -32,14 +35,13 @@ trait MockStreamTrait
     /**
      * @param array<mixed> $context
      */
-    private function expectWsClientConnect(
+    private function expectWsClientSetup(
         string $scheme = 'tcp',
         string $host = 'localhost',
         int $port = 8000,
         int $timeout = 60,
         array $context = [],
         bool $persistent = false,
-        string $local = '127.0.0.1:12345',
     ): void {
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();
@@ -59,12 +61,28 @@ trait MockStreamTrait
         $this->expectSocketClientSetTimeout()->addAssert(function ($method, $params) use ($timeout) {
             $this->assertEquals($timeout, $params[0]);
         });
-        $this->expectSocketClientSetContext()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
+    }
+
+    /**
+     * @param array<mixed> $context
+     */
+    private function expectWsClientConnect(
+        string $scheme = 'tcp',
+        string $host = 'localhost',
+        int $port = 8000,
+        int $timeout = 60,
+        array $context = [],
+        bool $persistent = false,
+        string $local = '127.0.0.1:12345',
+    ): void {
+        $this->expectWsClientSetup($scheme, $host, $port, $timeout, $context, $persistent);
+
         $this->expectSocketClientConnect();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext()->addAssert(function ($method, $params) {
+            $this->assertIsResource($params[0]);
+        });
         $this->expectSocketStreamGetRemoteName()->setReturn(function () use ($host, $port) {
             return "{$host}:{$port}";
         });
@@ -148,10 +166,12 @@ trait MockStreamTrait
             $this->assertEquals("{$scheme}://0.0.0.0:{$port}", "{$params[0]}");
         });
         $this->expectSocketServerGetTransports();
+
+        if (!empty($context)) {
+            $this->expectContextGetResource();
+        }
+
         $this->expectSocketServerGetMetadata();
-        $this->expectSocketServerSetContext()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();
         $this->expectStreamCollectionAttach()->addAssert(function ($method, $params) {

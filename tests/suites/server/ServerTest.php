@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\StreamCollection;
 use Phrity\Net\Mock\StreamFactory;
 use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
     ExpectSocketServerTrait,
     ExpectSocketStreamTrait,
     ExpectStreamCollectionTrait,
@@ -57,6 +58,7 @@ use WebSocket\Test\{
  */
 class ServerTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketServerTrait;
     use ExpectSocketStreamTrait;
     use ExpectStreamCollectionTrait;
@@ -152,6 +154,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -269,6 +272,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -303,6 +307,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -365,6 +370,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -385,6 +391,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -421,6 +428,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -438,6 +446,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-2';
         });
@@ -542,6 +551,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -586,6 +596,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -633,6 +644,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -679,6 +691,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -726,6 +739,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -768,6 +782,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });
@@ -806,6 +821,7 @@ class ServerTest extends TestCase
         $this->expectSocketServerAccept();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $this->expectSocketStreamGetRemoteName()->setReturn(function () {
             return 'fake-connection-1';
         });

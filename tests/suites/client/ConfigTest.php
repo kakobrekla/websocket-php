@@ -11,7 +11,10 @@ namespace WebSocket\Test\Client;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Phrity\Net\Mock\StreamFactory;
+use Phrity\Net\Mock\{
+    Context,
+    StreamFactory,
+};
 use Phrity\Net\Mock\Stack\{
     ExpectSocketClientTrait,
     ExpectSocketStreamTrait,
@@ -20,7 +23,10 @@ use Phrity\Net\Mock\Stack\{
 };
 use Phrity\Net\Uri;
 use Psr\Log\NullLogger;
-use WebSocket\Client;
+use WebSocket\{
+    Client,
+    Connection,
+};
 use WebSocket\Test\{
     MockStreamTrait,
     MockUri
@@ -209,6 +215,39 @@ class ConfigTest extends TestCase
         $this->expectWsClientConnect(context: ['ssl' => ['verify_peer' => false]]);
         $this->expectWsClientPerformHandshake('localhost:8000', '/my/mock/path');
         $client->connect();
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+        unset($client);
+    }
+
+    public function testContextClass(): void
+    {
+        $this->expectContext();
+        $context = new Context();
+        $this->expectContextSetOptions();
+        $this->expectContextSetOption();
+        $context->setOptions(['ssl' => ['verify_peer' => false]]);
+
+        $this->expectStreamFactory();
+        $client = new Client('ws://localhost:8000/my/mock/path');
+        $client->setStreamFactory(new StreamFactory());
+        $client->onHandshake(function (Client $client, Connection $connection) {
+            $this->expectSocketStreamGetContext();
+            $connectionContext = $connection->getContext();
+            // $connectionContext not populated in mock
+            $this->expectContextGetOptions();
+            $this->assertEmpty($connectionContext->getOptions());
+        });
+
+        $client->setContext($context);
+        $this->assertSame($context, $client->getContext());
+
+        $this->expectWsClientConnect(context: ['ssl' => ['verify_peer' => false]]);
+        $this->expectWsClientPerformHandshake('localhost:8000', '/my/mock/path');
+        $client->connect();
+
+        $this->assertSame($context, $client->getContext());
 
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();

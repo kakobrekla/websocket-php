@@ -11,7 +11,10 @@ namespace WebSocket\Test\Connection;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\ExpectSocketStreamTrait;
+use Phrity\Net\Mock\Stack\{
+    ExpectContextTrait,
+    ExpectSocketStreamTrait,
+};
 use RuntimeException;
 use WebSocket\Connection;
 use WebSocket\Exception\{
@@ -28,6 +31,7 @@ use WebSocket\Message\Text;
  */
 class ExceptionTest extends TestCase
 {
+    use ExpectContextTrait;
     use ExpectSocketStreamTrait;
 
     public function setUp(): void
@@ -47,6 +51,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -71,6 +76,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -94,6 +100,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -117,6 +124,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -140,6 +148,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -163,6 +172,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -190,6 +200,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -217,6 +228,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();
@@ -243,6 +255,7 @@ class ExceptionTest extends TestCase
 
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
         $stream = new SocketStream($temp);
         $this->expectSocketStreamGetLocalName();
         $this->expectSocketStreamGetRemoteName();

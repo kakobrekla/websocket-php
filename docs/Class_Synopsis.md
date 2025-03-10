@@ -23,7 +23,8 @@ class WebSocket\Client implements Psr\Log\LoggerAwareInterface, Stringable
     public function setFrameSize(int $frameSize): self;
     public function getFrameSize(): int;
     public function setPersistent(bool $persistent): self;
-    public function setContext(array $context): self;
+    public function getContext(): Phrity\Net\Context;
+    public function setContext(Phrity\Net\Context|array $context): self;
     public function addHeader(string $name, string $content): self;
     public function addMiddleware(WebSocket\Middleware\MiddlewareInterface $middleware): self;
 
@@ -87,7 +88,8 @@ class WebSocket\Server implements Psr\Log\LoggerAwareInterface, Stringable
     public function getPort(): int;
     public function getScheme(): string;
     public function isSsl(): bool;
-    public function setContext(array $context): self;
+    public function getContext(): Phrity\Net\Context;
+    public function setContext(Phrity\Net\Context|array $context): self;
     public function getConnectionCount(): int;
     public function getConnections(): array;
     public function getReadableConnections(): array;
@@ -142,6 +144,7 @@ class WebSocket\Connection implements Psr\Log\LoggerAwareInterface, Stringable
     public function getTimeout(): int;
     public function setFrameSize(int $frameSize): self;
     public function getFrameSize(): int;
+    public function getContext(): Phrity\Net\Context;
     public function addMiddleware(WebSocket\Middleware\MiddlewareInterface $middleware): self;
 
     // Connection management

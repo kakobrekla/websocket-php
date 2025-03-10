@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace WebSocket\Test\Client;
 
 use PHPUnit\Framework\TestCase;
-use Phrity\Net\Mock\StreamCollection;
-use Phrity\Net\Mock\StreamFactory;
+use Phrity\Net\Mock\{
+    StreamCollection,
+    StreamFactory,
+};
 use Phrity\Net\Mock\Stack\{
     ExpectSocketClientTrait,
     ExpectSocketStreamTrait,
@@ -19,8 +21,10 @@ use Phrity\Net\Mock\Stack\{
     ExpectStreamFactoryTrait,
     StackItem
 };
-use Phrity\Net\StreamException;
-use Phrity\Net\Uri;
+use Phrity\Net\{
+    StreamException,
+    Uri,
+};
 use Phrity\Util\ErrorHandler;
 use Stringable;
 use WebSocket\{
@@ -43,6 +47,10 @@ use WebSocket\Message\{
     Ping,
     Pong,
     Text
+};
+use WebSocket\Middleware\{
+    CloseHandler,
+    PingResponder,
 };
 
 class ClientTest extends TestCase
@@ -368,7 +376,7 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
-        $client->addMiddleware(new \WebSocket\Middleware\PingResponder());
+        $client->addMiddleware(new PingResponder());
 
         $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
@@ -475,7 +483,7 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
-        $client->addMiddleware(new \WebSocket\Middleware\CloseHandler());
+        $client->addMiddleware(new CloseHandler());
 
         $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
@@ -517,7 +525,7 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
-        $client->addMiddleware(new \WebSocket\Middleware\CloseHandler());
+        $client->addMiddleware(new CloseHandler());
 
         $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
@@ -553,35 +561,8 @@ class ClientTest extends TestCase
 
         // Implicit reconnect and handshake, receive message
         $this->expectSocketStreamIsConnected();
-        $this->expectStreamFactoryCreateStreamCollection();
-        $this->expectStreamCollection();
-        $this->expectStreamFactoryCreateSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) {
-            $this->assertFalse($params[0]);
-        });
-        $this->expectSocketClientSetTimeout()->addAssert(function ($method, $params) {
-            $this->assertEquals(60, $params[0]);
-        });
-        $this->expectSocketClientSetContext();
-        $this->expectSocketClientConnect();
-        $this->expectSocketStream();
-        $this->expectSocketStreamGetMetadata();
-        $this->expectSocketStreamGetRemoteName();
-        $this->expectStreamCollectionAttach();
-        $this->expectSocketStreamGetLocalName();
-        $this->expectSocketStreamGetRemoteName();
-        $this->expectSocketStreamSetTimeout()->addAssert(function ($method, $params) {
-            $this->assertEquals(60, $params[0]);
-            $this->assertEquals(0, $params[1]);
-        });
-        $this->expectSocketStreamIsConnected();
+
+        $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
         $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
             $this->assertEquals(2, $params[0]);
@@ -613,8 +594,8 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
-        $client->addMiddleware(new \WebSocket\Middleware\CloseHandler());
-        $client->addMiddleware(new \WebSocket\Middleware\PingResponder());
+        $client->addMiddleware(new CloseHandler());
+        $client->addMiddleware(new PingResponder());
 
         $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
@@ -732,8 +713,8 @@ class ClientTest extends TestCase
         $this->expectStreamFactory();
         $client = new Client('ws://localhost:8000/my/mock/path');
         $client->setStreamFactory(new StreamFactory());
-        $client->addMiddleware(new \WebSocket\Middleware\CloseHandler());
-        $client->addMiddleware(new \WebSocket\Middleware\PingResponder());
+        $client->addMiddleware(new CloseHandler());
+        $client->addMiddleware(new PingResponder());
 
         $this->assertNull($client->getName());
         $this->assertNull($client->getRemoteName());

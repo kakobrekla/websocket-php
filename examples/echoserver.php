@@ -20,6 +20,18 @@
 
 namespace WebSocket;
 
+use Throwable;
+use WebSocket\Message\{
+    Close,
+    Ping,
+    Text,
+};
+use WebSocket\Middleware\{
+    CloseHandler,
+    PingResponder,
+};
+use WebSocket\Test\EchoLog;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(-1);
@@ -35,13 +47,13 @@ $options = array_merge([
 try {
     $server = new Server($options['port'], isset($options['ssl']));
     $server
-        ->addMiddleware(new \WebSocket\Middleware\CloseHandler())
-        ->addMiddleware(new \WebSocket\Middleware\PingResponder())
+        ->addMiddleware(new CloseHandler())
+        ->addMiddleware(new PingResponder())
         ;
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
-        $server->setLogger(new \WebSocket\Test\EchoLog());
+        $server->setLogger(new EchoLog());
         echo "# Using logger\n";
     }
     if (isset($options['timeout'])) {
@@ -68,11 +80,11 @@ try {
             // Connection commands
             case '@close':
                 echo "< [{$connection->getRemoteName()}] Sending Close\n";
-                $connection->send(new \WebSocket\Message\Close());
+                $connection->send(new Close());
                 break;
             case '@ping':
                 echo "< [{$connection->getRemoteName()}] Sending Ping\n";
-                $connection->send(new \WebSocket\Message\Ping());
+                $connection->send(new Ping());
                 break;
             case '@disconnect':
                 echo "< [{$connection->getRemoteName()}] Disconnecting\n";
@@ -90,7 +102,7 @@ try {
                 $msg .= "  - Timeout:     {$connection->getTimeout()}s\n";
                 $msg .= "  - Frame size:  {$connection->getFrameSize()}b\n";
                 echo "< [{$connection->getRemoteName()}] {$msg}";
-                $server->send(new \WebSocket\Message\Text($msg));
+                $server->send(new Text($msg));
                 break;
 
             // Server commands
@@ -104,11 +116,11 @@ try {
                 break;
             case '@server-close':
                 echo "< [{$connection->getRemoteName()}] Broadcast Close\n";
-                $server->send(new \WebSocket\Message\Close());
+                $server->send(new Close());
                 break;
             case '@server-ping':
                 echo "< [{$connection->getRemoteName()}] Broadcast Ping\n";
-                $server->send(new \WebSocket\Message\Ping());
+                $server->send(new Ping());
                 break;
             case '@server-disconnect':
                 echo "< [{$connection->getRemoteName()}] Disconnecting server\n";
@@ -123,7 +135,7 @@ try {
                 $msg .= "  - Timeout:     {$server->getTimeout()}s\n";
                 $msg .= "  - Frame size:  {$server->getFrameSize()}b\n";
                 echo "< [{$connection->getRemoteName()}] {$msg}";
-                $server->send(new \WebSocket\Message\Text($msg));
+                $server->send(new Text($msg));
                 break;
 
             // Echo received message
@@ -145,6 +157,6 @@ try {
     })->onError(function ($server, $connection, $exception) {
         echo "> Error: {$exception->getMessage()}\n";
     })->start();
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     echo "# ERROR: {$e->getMessage()}\n";
 }

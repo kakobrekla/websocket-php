@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace WebSocket\Test\Server;
 
 use PHPUnit\Framework\TestCase;
-use Phrity\Net\Mock\StreamFactory;
+use Phrity\Net\Mock\{
+    Context,
+    StreamFactory,
+};
 use Phrity\Net\Mock\Stack\{
     ExpectSocketServerTrait,
     ExpectSocketStreamTrait,
@@ -18,7 +21,10 @@ use Phrity\Net\Mock\Stack\{
     ExpectStreamFactoryTrait
 };
 use Psr\Log\NullLogger;
-use WebSocket\Server;
+use WebSocket\{
+    Connection,
+    Server,
+};
 use WebSocket\Middleware\Callback;
 use WebSocket\Test\{
     MockStreamTrait,
@@ -143,7 +149,7 @@ class ConfigTest extends TestCase
         $this->assertSame($server, $server->setStreamFactory(new StreamFactory()));
         $this->assertSame($server, $server->setContext(['ssl' => ['verify_peer' => false]]));
 
-        $this->expectWsServerSetup(scheme: 'tcp', port: 8000, context: ['ssl' => ['verify_peer' => false]]);
+        $this->expectWsServerSetup();
         $this->expectStreamCollectionWaitRead()->addAssert(function ($method, $params) {
             $this->assertEquals(60, $params[0]);
         });
@@ -156,6 +162,53 @@ class ConfigTest extends TestCase
         $this->assertEquals('WebSocket\Server(tcp://0.0.0.0:8000)', "{$server}");
         $this->assertFalse($server->isRunning());
 
+        unset($server);
+    }
+
+    public function testContextClass(): void
+    {
+        $this->expectContext();
+        $context = new Context();
+        $this->expectContextSetOptions();
+        $this->expectContextSetOption();
+        $context->setOptions(['ssl' => ['verify_peer' => false]]);
+
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+        $server->onHandshake(function (Server $server, Connection $connection) {
+            $this->expectSocketStreamGetContext();
+            $connectionContext = $connection->getContext();
+            // $connectionContext not populated in mock
+            $this->expectContextGetOptions();
+            $this->assertEmpty($connectionContext->getOptions());
+            $server->stop();
+        });
+
+        $server->setContext($context);
+        $this->assertSame($context, $server->getContext());
+
+        $this->expectWsServerSetup(context: ['ssl' => ['verify_peer' => false]]);
+        $this->expectWsSelectConnections(['@server']);
+        // Accept connection
+        $this->expectSocketServerAccept();
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
+        $this->expectSocketStreamGetRemoteName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectStreamCollectionAttach();
+        $this->expectSocketStreamGetLocalName()->setReturn(function () {
+            return 'fake-connection-1';
+        });
+        $this->expectSocketStreamGetRemoteName();
+        $this->expectSocketStreamSetTimeout();
+        $this->expectWsServerPerformHandshake();
+        $server->start();
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
         unset($server);
     }
 }

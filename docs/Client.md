@@ -47,41 +47,6 @@ $client
     ->start();
 ```
 
-## Configuration
-
-The Client takes one argument: uri as a class implementing UriInterface or as string.
-The client support `ws` (`tcp`) and `wss` (`ssl`) schemas, depending on SSL configuration.
-Other options are available runtime by calling configuration methods.
-
-```php
-// Create client
-$client = new WebSocket\Client("wss://echo.websocket.org/");
-// Use a PSR-3 compatible logger
-$client->setLogger(Psr\Log\LoggerInterface $logger);
-$client
-    // Specify timeout in seconds (default 60 seconds)
-    ->setTimeout(300)
-    // Specify frame size in bytes (default 4096 bytes)
-    ->setFrameSize(1024)
-    // If client should attempt persistent connection
-    ->setPersistent(true)
-    // Set context
-    ->setContext([
-        "ssl" => [
-            "verify_peer" => false,
-            "verify_peer_name" => false,
-        ],
-    ])
-    // Add header to handshake request
-    ->addHeader("Sec-WebSocket-Protocol", "soap")
-    ;
-
-// Get current settings
-echo "timeout:      {$client->getTimeout()}s\n";
-echo "frame size:   {$client->getFrameSize()}b\n";
-echo "running:      {$client->isRunning()}\n";
-```
-
 ## Middlewares
 
 Middlewares provide additional functionality when sending or receiving messages.
@@ -123,6 +88,7 @@ $client
     })
     ->start();
     ;
+$client->isRunning(); // => True if currently running
 ```
 
 Read more on [Listeners](Listener.md).
@@ -145,7 +111,7 @@ echo "close status: {$close->getCloseStatus()}\n";
 
 Read more on [Messages](Message.md).
 
-## Sending a message to connected server
+## Sending messages
 
 To send a message to a server, call the send() method with a Message instance.
 Any of the five message types can be sent this way.
@@ -164,6 +130,77 @@ $client->binary($binary);
 $client->ping("My ping");
 $client->pong("My pong");
 $client->close(1000, "Closing now");
+```
+
+## Configuration
+
+The Client takes one argument: uri as a class implementing UriInterface or as string.
+The client support `ws` (`tcp`) and `wss` (`ssl`) schemas, depending on SSL configuration.
+Other options are available runtime by calling configuration methods.
+
+### Logger
+
+Client support adding any [PSR-4 compatible](https://www.php-fig.org/psr/psr-3/) logger.
+
+```php
+$client->setLogger(Psr\Log\LoggerInterface $logger);
+```
+
+### Timeout
+
+Timeout for various operations can be specified in seconds.
+This affects how long Client will wait for connection, read and write operations, and listener scope.
+Default is 60 seconds seconds. Avoid setting very low values as it will cause a read loop to use all
+available processing power even when there's nothing to read.
+
+```php
+$client->setTimeout(300);
+$client->getTimeout(); // => current timeout in seconds
+```
+
+### Frame size
+
+Defines the frame size in bytes.
+Default is 4096 bytes. Do not change unless you have a strong reason to do so.
+
+```php
+$client->setFrameSize(1024);
+$client->getFrameSize(); // => current frame size in bytes
+```
+
+### Persistent connection
+
+If set to true, the underlying connection will be kept open if possible.
+This means that if CLient closes and is then restarted, it may use the same connection.
+Do not change unless you have a strong reason to do so.
+
+```php
+$client->setPersistent(true);
+```
+
+### Context
+
+Client support adding [context options and parameters](https://www.php.net/manual/en/context.php)
+using the [Phrity\Net\Context](https://www.php.net/manual/en/context.php) class.
+
+```php
+$context = new Phrity\Net\Context();
+$context->setOptions([
+    "ssl" => [
+        "verify_peer" => false,
+        "verify_peer_name" => false,
+    ],
+]);
+$client->setContext($context);
+$client->getContext(); // => currently used Phrity\Net\Context
+```
+
+### Handshake headers
+
+Extra HTTP headers can be added, and used during handshake.
+
+```php
+$client->addHeader("Sec-WebSocket-Protocol", "soap");
 ```
 
 ## Connection control

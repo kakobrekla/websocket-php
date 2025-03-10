@@ -7,7 +7,7 @@ It does not support full parallel processing through threads or separate process
 
 ## Basic operation
 
-Below will set up a rudimentary WebSocket server that listens to incoming text messages.
+Below will set up a WebSocket server that listens to incoming text messages.
 The added middlewares provide standard operability according to WebSocket protocol.
 
 ```php
@@ -26,41 +26,13 @@ $server
     ->start();
 ```
 
-## Configuration
-
-The Server takes two arguments; port and ssl.
-By default, ssl is false. If port is not specified, it will use 80 for non-secure and 443 for secure server.
-Other options are available runtime by calling configuration methods.
-
-```php
-// Secure server on port 8080
-$server = new WebSocket\Server(ssl: true, port: 8080);
-// Use a PSR-3 compatible logger
-$server->setLogger(Psr\Log\LoggerInterface $logger)
-$server
-    // Specify timeout in seconds (default 60 seconds)
-    ->setTimeout(300)
-    // Specify frame size in bytes (default 4096 bytes)
-    ->setFrameSize(1024)
-    // Set maximum number of allowed connections (default is unlimited)
-    ->setMaxConnections(10)
-    ;
-
-echo "port:         {$server->getPort()}\n";
-echo "scheme:       {$server->getScheme()}\n";
-echo "timeout:      {$server->getTimeout()}s\n";
-echo "frame size:   {$server->getFrameSize()}b\n";
-echo "running:      {$server->isRunning()}\n";
-echo "ssl:          {$server->isSsl()}\n";
-```
-
 ## Middlewares
 
 Middlewares provide additional functionality when sending or receiving messages.
 This repo comes with two middlewares that provide standard operability according to WebSocket protocol.
 
-* CloseHandler - Automatically acts on incoming and outgoing Close requests, as specified in WebSocket protocol
-* PingResponder - Responds with Pong message when receiving a Ping message, as specified in WebSocket protocol
+* `CloseHandler` - Automatically acts on incoming and outgoing Close requests, as specified in WebSocket protocol
+* `PingResponder` - Responds with Pong message when receiving a Ping message, as specified in WebSocket protocol
 
 If not added, you need to handle close operation and respond to ping requests in your own implementation.
 
@@ -76,7 +48,7 @@ $server
 
 Read more on [Middlewares](Middleware.md).
 
-## Message listeners
+## Listeners
 
 The message listeners are used by specifying a callback function that will be called
 whenever the server receives a method of the same type.
@@ -93,6 +65,7 @@ $server
     ->onBinary(function (WebSocket\Server $server, WebSocket\Connection $connection, WebSocket\Message\Binary $message) {
         // Act on incoming message
     })
+    ->start();
     ;
 ```
 
@@ -116,7 +89,7 @@ echo "close status: {$close->getCloseStatus()}\n";
 
 Read more on [Messages](Message.md).
 
-## Sending a message to connected client
+## Sending messages
 
 The Connection instance represents the client-server channel.
 To send a message to a client, call the send() method on Connection instance with a Message instance.
@@ -138,7 +111,7 @@ $connection->pong("My pong");
 $connection->close(1000, "Closing now");
 ```
 
-## Broadcasting message to all connects clients
+## Broadcasting messages
 
 The same send methods are available at Server instance.
 Using these will send the message to all currently connected clients.
@@ -159,12 +132,87 @@ $server->pong("My pong");
 $server->close(1000, "Closing now");
 ```
 
+## Configuration
+
+The Server takes two arguments; port and ssl.
+By default, ssl is false. If port is not specified, it will use 80 for non-secure and 443 for secure server.
+Other options are available runtime by calling configuration methods.
+
+### Logger
+
+Server support adding any [PSR-4 compatible](https://www.php-fig.org/psr/psr-3/) logger.
+
+```php
+$server->setLogger(Psr\Log\LoggerInterface $logger);
+```
+
+### Timeout
+
+Timeout for various operations can be specified in seconds.
+This affects how long Server will wait for connection, read and write operations, and listener scope.
+Default is 60 seconds seconds. Avoid setting very low values as it will cause a read loop to use all
+available processing power even when there's nothing to read.
+
+```php
+$server->setTimeout(300);
+$server->getTimeout(); // => current timeout in seconds
+```
+
+### Frame size
+
+Defines the frame size in bytes.
+Default is 4096 bytes. Do not change unless you have a strong reason to do so.
+
+```php
+$server->setFrameSize(1024);
+$server->getFrameSize(); // => current frame size in bytes
+```
+
+### Context
+
+Server support adding [context options and parameters](https://www.php.net/manual/en/context.php)
+using the [Phrity\Net\Context](https://www.php.net/manual/en/context.php) class.
+
+```php
+$context = new Phrity\Net\Context();
+$context->setOptions([
+    "ssl" => [
+        "verify_peer" => false,
+        "verify_peer_name" => false,
+    ],
+]);
+$server->setContext($context);
+$server->getContext(); // => currently used Phrity\Net\Context
+```
+
+### Max connections
+
+Limit maximum number of connections served. Any additional connection attempts will fail.
+By default Server support unlimited number of connections.
+
+```php
+$server->setMaxConnections(10);
+```
+
+### Server info
+
+Additional methids that provides information.
+
+```php
+echo "port:   {$server->getPort()}\n";
+echo "scheme: {$server->getScheme()}\n";
+echo "ssl:    {$server->isSsl()}\n";
+```
+
 ## Server control
 
 When started, the server will continue to run until something tells it so stop.
 There are some additional methods that control the server.
 
 ```php
+// If server is currently running
+$server->isRunning()
+
 // Start server - It will continuously listen to incoming messages and apply specified callback functions
 $server->start();
 

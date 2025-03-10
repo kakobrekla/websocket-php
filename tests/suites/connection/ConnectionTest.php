@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WebSocket\Test\Connection;
 
 use PHPUnit\Framework\TestCase;
+use Phrity\Net\Context;
 use Phrity\Net\Mock\SocketStream;
 use Phrity\Net\Mock\Stack\{
     ExpectContextTrait,
@@ -109,6 +110,9 @@ class ConnectionTest extends TestCase
         $this->assertSame($connection, $connection->disconnect());
 
         $this->assertFalse($connection->isConnected());
+
+        $this->expectSocketStreamGetContext();
+        $this->assertInstanceOf(Context::class, $connection->getContext());
 
         unset($connection);
     }

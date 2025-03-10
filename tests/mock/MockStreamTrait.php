@@ -166,6 +166,11 @@ trait MockStreamTrait
             $this->assertEquals("{$scheme}://0.0.0.0:{$port}", "{$params[0]}");
         });
         $this->expectSocketServerGetTransports();
+
+        if (!empty($context)) {
+            $this->expectContextGetResource();
+        }
+
         $this->expectSocketServerGetMetadata();
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();

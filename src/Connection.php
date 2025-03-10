@@ -7,7 +7,10 @@
 
 namespace WebSocket;
 
-use Phrity\Net\SocketStream;
+use Phrity\Net\{
+    Context,
+    SocketStream,
+};
 use Psr\Http\Message\{
     MessageInterface,
     RequestInterface,
@@ -148,6 +151,15 @@ class Connection implements LoggerAwareInterface, Stringable
     public function getFrameSize(): int
     {
         return max(1, $this->frameSize);
+    }
+
+    /**
+     * Get current stream context.
+     * @return Context
+     */
+    public function getContext(): Context
+    {
+        return $this->stream->getContext();
     }
 
     /**

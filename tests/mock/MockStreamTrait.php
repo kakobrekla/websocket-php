@@ -14,6 +14,7 @@ use Phrity\Net\Mock\Stack\{
     StackItem
 };
 use Phrity\Net\Mock\StreamCollection;
+use Phrity\Net\Context;
 
 /**
  * This trait is used by phpunit tests to mock and track various socket/stream calls.
@@ -34,14 +35,13 @@ trait MockStreamTrait
     /**
      * @param array<mixed> $context
      */
-    private function expectWsClientConnect(
+    private function expectWsClientSetup(
         string $scheme = 'tcp',
         string $host = 'localhost',
         int $port = 8000,
         int $timeout = 60,
         array $context = [],
         bool $persistent = false,
-        string $local = '127.0.0.1:12345',
     ): void {
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();
@@ -55,33 +55,28 @@ trait MockStreamTrait
             $this->assertInstanceOf('Phrity\Net\Uri', $params[0]);
             $this->assertEquals("{$scheme}://{$host}:{$port}", "{$params[0]}");
         });
-        $this->expectContext()->addAssert(function ($method, $params) {
-            $this->assertEmpty($params);
-        });
         $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) use ($persistent) {
             $this->assertEquals($persistent, $params[0]);
         });
         $this->expectSocketClientSetTimeout()->addAssert(function ($method, $params) use ($timeout) {
             $this->assertEquals($timeout, $params[0]);
         });
-        $this->expectSocketClientSetContext()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
-        $this->expectContextSetOptions()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
-        foreach ($context as $wrapper => $option) {
-            foreach ($option as $key => $value) {
-                $this->expectContextSetOption()->addAssert(function ($method, $params) use ($wrapper, $key, $value) {
-                    $this->assertEquals($wrapper, $params[0]);
-                    $this->assertEquals($key, $params[1]);
-                    $this->assertEquals($value, $params[2]);
-                });
-            }
-        }
-        $this->expectContextSetParams()->addAssert(function ($method, $params) {
-            $this->assertEquals([[]], $params);
-        });
+    }
+
+    /**
+     * @param array<mixed> $context
+     */
+    private function expectWsClientConnect(
+        string $scheme = 'tcp',
+        string $host = 'localhost',
+        int $port = 8000,
+        int $timeout = 60,
+        array $context = [],
+        bool $persistent = false,
+        string $local = '127.0.0.1:12345',
+    ): void {
+        $this->expectWsClientSetup($scheme, $host, $port, $timeout, $context, $persistent);
+
         $this->expectSocketClientConnect();
         $this->expectSocketStream();
         $this->expectSocketStreamGetMetadata();
@@ -170,30 +165,8 @@ trait MockStreamTrait
             $this->assertInstanceOf('Phrity\Net\Uri', $params[0]);
             $this->assertEquals("{$scheme}://0.0.0.0:{$port}", "{$params[0]}");
         });
-        $this->expectContext()->addAssert(function ($method, $params) {
-            $this->assertEmpty($params);
-        });
         $this->expectSocketServerGetTransports();
-        $this->expectContextGetResource();
         $this->expectSocketServerGetMetadata();
-        $this->expectSocketServerSetContext()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
-        $this->expectContextSetOptions()->addAssert(function ($method, $params) use ($context) {
-            $this->assertEquals($context, $params[0]);
-        });
-        foreach ($context as $wrapper => $option) {
-            foreach ($option as $key => $value) {
-                $this->expectContextSetOption()->addAssert(function ($method, $params) use ($wrapper, $key, $value) {
-                    $this->assertEquals($wrapper, $params[0]);
-                    $this->assertEquals($key, $params[1]);
-                    $this->assertEquals($value, $params[2]);
-                });
-            }
-        }
-        $this->expectContextSetParams()->addAssert(function ($method, $params) {
-            $this->assertEquals([[]], $params);
-        });
         $this->expectStreamFactoryCreateStreamCollection();
         $this->expectStreamCollection();
         $this->expectStreamCollectionAttach()->addAssert(function ($method, $params) {

@@ -561,39 +561,8 @@ class ClientTest extends TestCase
 
         // Implicit reconnect and handshake, receive message
         $this->expectSocketStreamIsConnected();
-        $this->expectStreamFactoryCreateStreamCollection();
-        $this->expectStreamCollection();
-        $this->expectStreamFactoryCreateSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectSocketClient()->addAssert(function ($method, $params) {
-            $this->assertInstanceOf(Uri::class, $params[0]);
-            $this->assertEquals('tcp://localhost:8000', "{$params[0]}");
-        });
-        $this->expectContext();
-        $this->expectSocketClientSetPersistent()->addAssert(function ($method, $params) {
-            $this->assertFalse($params[0]);
-        });
-        $this->expectSocketClientSetTimeout()->addAssert(function ($method, $params) {
-            $this->assertEquals(60, $params[0]);
-        });
-        $this->expectSocketClientSetContext();
-        $this->expectContextSetOptions();
-        $this->expectContextSetParams();
-        $this->expectSocketClientConnect();
-        $this->expectSocketStream();
-        $this->expectSocketStreamGetMetadata();
-        $this->expectContext();
-        $this->expectSocketStreamGetRemoteName();
-        $this->expectStreamCollectionAttach();
-        $this->expectSocketStreamGetLocalName();
-        $this->expectSocketStreamGetRemoteName();
-        $this->expectSocketStreamSetTimeout()->addAssert(function ($method, $params) {
-            $this->assertEquals(60, $params[0]);
-            $this->assertEquals(0, $params[1]);
-        });
-        $this->expectSocketStreamIsConnected();
+
+        $this->expectWsClientConnect();
         $this->expectWsClientPerformHandshake();
         $this->expectSocketStreamRead()->addAssert(function (string $method, array $params) {
             $this->assertEquals(2, $params[0]);

@@ -16,6 +16,19 @@
 
  > PHP version `^8.1`
 
+### `3.2.6`
+
+ * Fix for `3.2.5` (@carvefx)
+
+### `3.2.5`
+
+ * Allow additional content in Connection header during handshake - again (@sirn-se)
+
+### `3.2.4`
+
+ * Introducing ExceptionInterface as root to internal exceptions (@sirn-se)
+ * Unresolvable errors must not trigger onError listener (@sirn-se)
+
 ### `3.2.3`
 
  * Allow empty reason phrase in HTTP request (@Sebastix)
@@ -97,6 +110,10 @@
 ## `v2.1`
 
  > PHP version `^8.0`
+
+### `2.1.3`
+
+ * Allow additional content in Connection header during handshake (@sirn-se)
 
 ### `2.1.2`
 

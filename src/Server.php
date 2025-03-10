@@ -27,7 +27,7 @@ use WebSocket\Exception\{
     CloseException,
     ConnectionFailureException,
     ConnectionLevelInterface,
-    Exception,
+    ExceptionInterface,
     HandshakeException,
     MessageLevelInterface,
     ServerException
@@ -396,14 +396,13 @@ class Server implements LoggerAwareInterface, Stringable
                     $connection->tick();
                 }
                 $this->dispatch('tick', [$this]);
-            } catch (Exception $e) {
+            } catch (ExceptionInterface $e) {
                 // Low-level error
                 $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
                 $this->dispatch('error', [$this, null, $e]);
             } catch (Throwable $e) {
                 // Crash it
                 $this->logger->error("[server] {$e->getMessage()}", ['exception' => $e]);
-                $this->dispatch('error', [$this, null, $e]);
                 $this->disconnect();
                 throw $e;
             }
@@ -530,7 +529,7 @@ class Server implements LoggerAwareInterface, Stringable
                 $connection->getHandshakeResponse(),
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
-        } catch (Exception | StreamException $e) {
+        } catch (ExceptionInterface | StreamException $e) {
             /** @var Connection|null $connection */
             if (isset($connection)) {
                 $connection->disconnect();
@@ -571,7 +570,7 @@ class Server implements LoggerAwareInterface, Stringable
                 );
             }
             $connectionHeader = trim($request->getHeaderLine('Connection'));
-            if (strtolower($connectionHeader) != 'upgrade') {
+            if (!str_contains(strtolower($connectionHeader), 'upgrade')) {
                 throw new HandshakeException(
                     "Handshake request with invalid Connection header: '{$connectionHeader}'",
                     $response->withStatus(426)

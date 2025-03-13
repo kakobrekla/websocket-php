@@ -61,7 +61,9 @@ class Server implements LoggerAwareInterface, Stringable
     private int $port;
     private string $scheme;
     private LoggerInterface $logger;
+    /** @var int<0, max> $timeout */
     private int $timeout = 60;
+    /** @var int<1, max> $frameSize */
     private int $frameSize = 4096;
     private Context $context;
 
@@ -133,7 +135,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Set timeout.
-     * @param int $timeout Timeout in seconds
+     * @param int<0, max> $timeout Timeout in seconds
      * @return self
      * @throws InvalidArgumentException If invalid timeout provided
      */
@@ -160,7 +162,7 @@ class Server implements LoggerAwareInterface, Stringable
 
     /**
      * Set frame size.
-     * @param int $frameSize Frame size in bytes
+     * @param int<1, max> $frameSize Frame size in bytes
      * @return self
      * @throws InvalidArgumentException If invalid frameSize provided
      */
@@ -501,16 +503,19 @@ class Server implements LoggerAwareInterface, Stringable
     // Accept connection on socket server
     protected function acceptSocket(SocketServer $socket): void
     {
-        $connection = null;
+        if (!is_null($this->maxConnections) && $this->getConnectionCount() >= $this->maxConnections) {
+            $this->logger->warning("[server] Denied connection, reached max {$this->maxConnections}");
+            return;
+        }
         try {
-            if (!is_null($this->maxConnections) && $this->getConnectionCount() >= $this->maxConnections) {
-                $this->logger->warning("[server] Denied connection, reached max {$this->maxConnections}");
-                return;
-            }
             $stream = $socket->accept();
             $name = $stream->getRemoteName();
             $this->streams->attach($stream, $name);
             $connection = new Connection($stream, false, true, $this->isSsl());
+        } catch (StreamException $e) {
+            throw new ConnectionFailureException("Server failed to accept: {$e->getMessage()}");
+        }
+        try {
             $connection->setLogger($this->logger);
             $connection
                 ->setFrameSize($this->frameSize)
@@ -529,11 +534,8 @@ class Server implements LoggerAwareInterface, Stringable
                 $connection->getHandshakeResponse(),
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
-        } catch (ExceptionInterface | StreamException $e) {
-            /** @var Connection|null $connection */
-            if (isset($connection)) {
-                $connection->disconnect();
-            }
+        } catch (ExceptionInterface $e) {
+            $connection->disconnect();
             throw new ConnectionFailureException("Server failed to accept: {$e->getMessage()}");
         }
     }

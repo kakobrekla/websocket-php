@@ -7,8 +7,9 @@
 
 ## Resources
 
+* [Connection](Connection.md) - The connection between client and server
 * [Listener](Listener.md) - Listeners allow callbacks when messages are received
-* [Message](Message.md) - The Message represents a WebSocket message being sent or received
+* [Message](Message.md) - Represents a WebSocket message being sent or received
 * [Middleware](Middleware.md) - Middlewares allow implementations to act incoming and outgoing messages
 
 ## Developer resources

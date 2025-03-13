@@ -45,6 +45,7 @@ class ConfigErrorTest extends TestCase
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Invalid timeout '-1' provided");
         $server = new Server();
+        // @phpstan-ignore argument.type
         $server->setTimeout(-1);
     }
 
@@ -54,6 +55,7 @@ class ConfigErrorTest extends TestCase
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Invalid frameSize '0' provided");
         $server = new Server();
+        // @phpstan-ignore argument.type
         $server->setFrameSize(0);
     }
 

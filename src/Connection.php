@@ -7,6 +7,7 @@
 
 namespace WebSocket;
 
+use InvalidArgumentException;
 use Phrity\Net\{
     Context,
     SocketStream,
@@ -59,7 +60,9 @@ class Connection implements LoggerAwareInterface, Stringable
     private MessageHandler $messageHandler;
     private MiddlewareHandler $middlewareHandler;
     private LoggerInterface $logger;
+    /** @var int<1, max> $frameSize */
     private int $frameSize = 4096;
+    /** @var int<0, max> $timeout */
     private int $timeout = 60;
     private string $localName;
     private string $remoteName;
@@ -113,14 +116,17 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Set time out on connection.
-     * @param int $seconds Timeout part in seconds
+     * @param int<0, max> $timeout Timeout part in seconds
      * @return self
      */
-    public function setTimeout(int $seconds): self
+    public function setTimeout(int $timeout): self
     {
-        $this->timeout = $seconds;
-        $this->stream->setTimeout($seconds, 0);
-        $this->logger->debug("[connection] Setting timeout: {$seconds} seconds");
+        if ($timeout < 0) {
+            throw new InvalidArgumentException("Invalid timeout '{$timeout}' provided");
+        }
+        $this->timeout = $timeout;
+        $this->stream->setTimeout($timeout, 0);
+        $this->logger->debug("[connection] Setting timeout: {$timeout} seconds");
         return $this;
     }
 
@@ -135,11 +141,14 @@ class Connection implements LoggerAwareInterface, Stringable
 
     /**
      * Set frame size.
-     * @param int $frameSize Frame size in bytes.
+     * @param int<1, max> $frameSize Frame size in bytes.
      * @return self
      */
     public function setFrameSize(int $frameSize): self
     {
+        if ($frameSize < 1) {
+            throw new InvalidArgumentException("Invalid frameSize '{$frameSize}' provided");
+        }
         $this->frameSize = $frameSize;
         return $this;
     }

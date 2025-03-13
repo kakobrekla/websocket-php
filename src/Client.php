@@ -60,7 +60,9 @@ class Client implements LoggerAwareInterface, Stringable
 
     // Settings
     private LoggerInterface $logger;
+    /** @var int<0, max> $timeout */
     private int $timeout = 60;
+    /** @var int<1, max> $frameSize */
     private int $frameSize = 4096;
     private bool $persistent = false;
     private Context $context;
@@ -127,7 +129,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set timeout.
-     * @param int $timeout Timeout in seconds
+     * @param int<0, max> $timeout Timeout in seconds
      * @return self
      * @throws InvalidArgumentException If invalid timeout provided
      */
@@ -154,7 +156,7 @@ class Client implements LoggerAwareInterface, Stringable
 
     /**
      * Set frame size.
-     * @param int $frameSize Frame size in bytes
+     * @param int<1, max> $frameSize Max frame payload size in bytes
      * @return self
      * @throws InvalidArgumentException If invalid frameSize provided
      */
@@ -595,17 +597,19 @@ class Client implements LoggerAwareInterface, Stringable
      */
     protected function parseUri(UriInterface|string $uri): Uri
     {
-        if ($uri instanceof Uri) {
-            $uri_instance = $uri;
-        } elseif ($uri instanceof UriInterface) {
-            $uri_instance = new Uri("{$uri}");
-        } elseif (is_string($uri)) {
-            try {
+        try {
+            if ($uri instanceof Uri) {
+                $uri_instance = $uri;
+            } elseif ($uri instanceof UriInterface) {
+                $uri_instance = new Uri("{$uri}");
+            } else {
                 $uri_instance = new Uri($uri);
-            } catch (InvalidArgumentException $e) {
-                throw new BadUriException("Invalid URI '{$uri}' provided.");
             }
+        } catch (InvalidArgumentException $e) {
+            throw new BadUriException("Invalid URI '{$uri}' provided.");
         }
+
+
         if (!in_array($uri_instance->getScheme(), ['ws', 'wss'])) {
             throw new BadUriException("Invalid URI scheme, must be 'ws' or 'wss'.");
         }

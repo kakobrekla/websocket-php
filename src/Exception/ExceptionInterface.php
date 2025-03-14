@@ -13,4 +13,5 @@ namespace WebSocket\Exception;
  */
 interface ExceptionInterface
 {
+    public function getMessage(): string;
 }

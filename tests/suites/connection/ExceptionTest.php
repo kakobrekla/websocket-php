@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace WebSocket\Test\Connection;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
 use Phrity\Net\Mock\Stack\{
@@ -273,6 +274,50 @@ class ExceptionTest extends TestCase
         $this->expectSocketStreamIsConnected();
         $this->expectSocketStreamClose();
         $connection->send(new Text('Generic'));
+
+        unset($connection);
+    }
+
+    public function testInvalidTimeout(): void
+    {
+        $temp = tmpfile();
+
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
+        $stream = new SocketStream($temp);
+        $this->expectSocketStreamGetLocalName();
+        $this->expectSocketStreamGetRemoteName();
+        $connection = new Connection($stream, false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid timeout '-1' provided");
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+        // @phpstan-ignore argument.type
+        $connection->setTimeout(-1);
+
+        unset($connection);
+    }
+
+    public function testInvalidFrameSize(): void
+    {
+        $temp = tmpfile();
+
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
+        $stream = new SocketStream($temp);
+        $this->expectSocketStreamGetLocalName();
+        $this->expectSocketStreamGetRemoteName();
+        $connection = new Connection($stream, false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid frameSize '0' provided");
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+        // @phpstan-ignore argument.type
+        $connection->setFrameSize(0);
 
         unset($connection);
     }

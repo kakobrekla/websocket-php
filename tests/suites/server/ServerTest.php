@@ -585,6 +585,23 @@ class ServerTest extends TestCase
         unset($server);
     }
 
+    public function testServerAccessError(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+        $this->expectWsSelectConnections(['@server']);
+        $this->expectSocketServerAccept()->addAssert(function ($method, $params) use ($server) {
+            $server->stop();
+            throw new StreamException(StreamException::SERVER_ACCEPT_ERR, ['uri' => 'test']);
+        });
+        $server->start();
+
+        unset($server);
+    }
+
     public function testRunBadOpcodeException(): void
     {
         $this->expectStreamFactory();

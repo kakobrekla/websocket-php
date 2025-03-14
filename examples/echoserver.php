@@ -6,7 +6,6 @@
  */
 
 /**
- * This file is used for the tests, but can also serve as an example of a WebSocket\Server.
  * Run in console: php examples/echoserver.php
  *
  * Console options:
@@ -21,9 +20,12 @@
 namespace WebSocket;
 
 use Throwable;
+use WebSocket\Exception\ExceptionInterface;
 use WebSocket\Message\{
+    Binary,
     Close,
     Ping,
+    Pong,
     Text,
 };
 use WebSocket\Middleware\{
@@ -39,6 +41,16 @@ error_reporting(-1);
 echo "# Echo server! [phrity/websocket]\n";
 
 // Server options specified or default
+/**
+ * @var array{
+ *     port: int<1, 32768>,
+ *     ssl: bool,
+ *     timeout: int<0, max>,
+ *     framesize: int<1, max>,
+ *     connections: int<0, max>|null,
+ *     debug: bool,
+ * } $options
+ */
 $options = array_merge([
     'port'  => 80,
 ], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'debug']));
@@ -70,11 +82,11 @@ try {
     }
 
     echo "# Listening on port {$server->getPort()}\n";
-    $server->onHandshake(function ($server, $connection, $request, $response) {
+    $server->onHandshake(function (Server $server, Connection $connection, $request, $response) {
         echo "> [{$connection->getRemoteName()}] Client connected {$request->getUri()}\n";
-    })->onDisconnect(function ($server, $connection) {
+    })->onDisconnect(function (Server $server, Connection $connection) {
         echo "> [{$connection->getRemoteName()}] Client disconnected\n";
-    })->onText(function ($server, $connection, $message) {
+    })->onText(function (Server $server, Connection $connection, Text $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}] {$message->getContent()}\n";
         switch ($message->getContent()) {
             // Connection commands
@@ -143,18 +155,18 @@ try {
                 $connection->send($message); // Echo
                 echo "< [{$connection->getRemoteName()}] Sent [{$message->getOpcode()}] {$message->getContent()}\n";
         }
-    })->onBinary(function ($server, $connection, $message) {
+    })->onBinary(function (Server $server, Connection $connection, Binary $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}]\n";
         $connection->send($message); // Echo
         echo "< [{$connection->getRemoteName()}] Sent [{$message->getOpcode()}] {$message->getContent()}\n";
-    })->onPing(function ($server, $connection, $message) {
+    })->onPing(function (Server $server, Connection $connection, Ping $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}] {$message->getContent()}\n";
-    })->onPong(function ($server, $connection, $message) {
+    })->onPong(function (Server $server, Connection $connection, Pong $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}] {$message->getContent()}\n";
-    })->onClose(function ($server, $connection, $message) {
+    })->onClose(function (Server $server, Connection $connection, Close $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}] "
             . "{$message->getCloseStatus()} {$message->getContent()}\n";
-    })->onError(function ($server, $connection, $exception) {
+    })->onError(function (Server $server, Connection|null $connection, ExceptionInterface $exception) {
         echo "> Error: {$exception->getMessage()}\n";
     })->start();
 } catch (Throwable $e) {

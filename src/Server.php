@@ -534,7 +534,7 @@ class Server implements LoggerAwareInterface, Stringable
                 $connection->getHandshakeResponse(),
             ]);
             $this->dispatch('connect', [$this, $connection, $request]);
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface | StreamException $e) {
             $connection->disconnect();
             throw new ConnectionFailureException("Server failed to accept: {$e->getMessage()}");
         }

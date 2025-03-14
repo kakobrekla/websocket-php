@@ -41,30 +41,30 @@ class ConfigErrorTest extends TestCase
 
     public function testInvalidTimeout(): void
     {
+        $server = new Server();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Invalid timeout '-1' provided");
-        $server = new Server();
         // @phpstan-ignore argument.type
         $server->setTimeout(-1);
     }
 
     public function testInvalidFrameSize(): void
     {
+        $server = new Server();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Invalid frameSize '0' provided");
-        $server = new Server();
         // @phpstan-ignore argument.type
         $server->setFrameSize(0);
     }
 
     public function testInvalidMaxConnections(): void
     {
+        $server = new Server();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage("Invalid maxConnections '0' provided");
-        $server = new Server();
         $server->setMaxConnections(0);
     }
 }

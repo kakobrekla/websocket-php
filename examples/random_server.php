@@ -21,6 +21,14 @@
 namespace WebSocket;
 
 use Throwable;
+use WebSocket\Exception\ExceptionInterface;
+use WebSocket\Message\{
+    Binary,
+    Close,
+    Ping,
+    Pong,
+    Text,
+};
 use WebSocket\Middleware\{
     CloseHandler,
     PingResponder,
@@ -43,6 +51,16 @@ $randStr = function (int $maxlength = 4096) {
 echo "# Random server\n";
 
 // Server options specified or default
+/**
+ * @var array{
+ *     port: int<1, 32768>,
+ *     ssl: bool,
+ *     timeout: int<0, max>,
+ *     framesize: int<1, max>,
+ *     connections: int<0, max>|null,
+ *     debug: bool,
+ * } $options
+ */
 $options = array_merge([
     'port'      => 80,
     'timeout'   => rand(1, 60),
@@ -77,24 +95,24 @@ try {
     }
 
     echo "# Listening on port {$server->getPort()}\n";
-    $server->onHandshake(function ($server, $connection, $request, $response) {
+    $server->onHandshake(function (Server $server, Connection $connection, $request, $response) {
         echo "> [{$connection->getRemoteName()}] Client connected {$request->getUri()}\n";
-    })->onDisconnect(function ($server, $connection) {
+    })->onDisconnect(function (Server $server, Connection $connection) {
         echo "> [{$connection->getRemoteName()}] Client disconnected\n";
-    })->onText(function ($server, $connection, $message) {
+    })->onText(function (Server $server, Connection $connection, Text $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}]\n";
-    })->onBinary(function ($server, $connection, $message) {
+    })->onBinary(function (Server $server, Connection $connection, Binary $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}]\n";
-    })->onPing(function ($server, $connection, $message) {
+    })->onPing(function (Server $server, Connection $connection, Ping $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}]\n";
-    })->onPong(function ($server, $connection, $message) {
+    })->onPong(function (Server $server, Connection $connection, Pong $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}]\n";
-    })->onClose(function ($server, $connection, $message) {
+    })->onClose(function (Server $server, Connection $connection, Close $message) {
         echo "> [{$connection->getRemoteName()}] Received [{$message->getOpcode()}] {$message->getCloseStatus()}\n";
-    })->onError(function ($server, $connection, $exception) {
+    })->onError(function (Server $server, Connection|null $connection, ExceptionInterface $exception) {
         $name = $connection ? "[{$connection->getRemoteName()}]" : "[-]";
         echo "> {$name} Error: {$exception->getMessage()}\n";
-    })->onTick(function ($server) use ($randStr) {
+    })->onTick(function (Server $server) use ($randStr) {
         // Random actions
         switch (rand(1, 5)) {
             case 1:

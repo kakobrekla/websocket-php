@@ -144,7 +144,32 @@ The random server will use random options and continuously send/receive random m
 
 Example use:
 ```
-php examples/random_server.php --port 8080 // // Listen on port 8080
+php examples/random_server.php --port 8080 // Listen on port 8080
 php examples/random_server.php --timeout 5 --framesize 16 // Specify settings
 php examples/random_server.php --debug //  Use runtime debugging
+```
+
+## The `delegating` server
+
+Source: [examples/delegating_server.php](../examples/delegating_server.php)
+
+By using context switching, the server will act as a proxy and forward incoming messages to a remote server.
+Please note that switching between lisening context can appear slow.
+If you need better performance, use separate scripts for client and server and some kind of intermediate to connect them.
+
+Example use:
+```
+php examples/delegating_server.php --uri=ws://example-server.com --port 8080 // Listen on port 8080
+php examples/delegating_server.php --uri=ws://example-server.com --timeout 5 --framesize 16 // Specify settings
+php examples/delegating_server.php --uri=ws://example-server.com --debug //  Use runtime debugging
+```
+
+Try it:
+```
+ // Start remote server on 8000
+php examples/echoserver.php --port 8000
+// Start delegating server on port 8001, with above echoserver as remote
+php examples/delegating_server.php --remote=ws://127.0.0.1:8000 --port=8001
+// Send message to delegating server
+php examples/send.php --uri=ws://127.0.0.1:8001 "A message to delegate"
 ```

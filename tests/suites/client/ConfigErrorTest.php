@@ -77,6 +77,7 @@ class ConfigErrorTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid timeout '-10' provided");
+        // @phpstan-ignore argument.type
         $client->setTimeout(-10);
     }
 
@@ -85,6 +86,7 @@ class ConfigErrorTest extends TestCase
         $client = new Client('ws://localhost:8000/my/mock/path');
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid frameSize '-10' provided");
+        // @phpstan-ignore argument.type
         $client->setFrameSize(-10);
     }
 }

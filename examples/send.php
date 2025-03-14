@@ -31,6 +31,15 @@ error_reporting(-1);
 echo "# Send client! [phrity/websocket]\n";
 
 // Client options specified or default
+/**
+ * @var array{
+ *     uri: string,
+ *     opcode: string,
+ *     timeout: int<0, max>,
+ *     framesize: int<1, max>,
+ *     debug: bool,
+ * } $options
+ */
 $options = array_merge([
     'uri'       => 'ws://localhost:80',
     'opcode'    => 'text',

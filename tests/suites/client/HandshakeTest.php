@@ -79,6 +79,51 @@ class HandshakeTest extends TestCase
         unset($client);
     }
 
+    public function testHandshakeResponseVariant(): void
+    {
+        // Creating client
+        $this->expectStreamFactory();
+        $client = new Client('ws://localhost:8000/my/mock/path');
+        $client->setStreamFactory(new StreamFactory());
+
+        $this->assertFalse($client->isConnected());
+        $this->assertEquals(4096, $client->getFrameSize());
+
+        $this->expectWsClientConnect();
+        $this->expectSocketStreamWrite()->addAssert(
+            function (string $method, array $params): void {
+                preg_match('/Sec-WebSocket-Key: ([\S]*)\r\n/', $params[0], $m);
+                $this->last_ws_key = $m[1] ?? '';
+            }
+        );
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "HTTP/1.1 101\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Connection: keep-alive, upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            $ws_key_res = base64_encode(pack('H*', sha1($this->last_ws_key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
+            return "Sec-WebSocket-Accept: {$ws_key_res}\r\n\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "\r\n";
+        });
+        $client->connect();
+
+        $response = $client->getHandshakeResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(101, $response->getStatusCode());
+        $this->assertEquals('Switching Protocols', $response->getReasonPhrase());
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+        unset($client);
+    }
+
     public function testHandshakeConnectionFailure(): void
     {
         $this->expectStreamFactory();

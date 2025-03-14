@@ -15,7 +15,14 @@ use Psr\Http\Message\{
 use Throwable;
 use WebSocket\Connection;
 use WebSocket\Exception\ExceptionInterface;
-use WebSocket\Message\Message;
+use WebSocket\Message\{
+    Binary,
+    Close,
+    Message,
+    Ping,
+    Pong,
+    Text,
+};
 
 /**
  * WebSocket\Trait\ListenerTrait trait.
@@ -51,35 +58,35 @@ trait ListenerTrait
         return $this;
     }
 
-    /** @param Closure(T, Connection, Message): void $closure */
+    /** @param Closure(T, Connection, Text): void $closure */
     public function onText(Closure $closure): self
     {
         $this->listeners['text'] = $closure;
         return $this;
     }
 
-    /** @param Closure(T, Connection, Message): void $closure */
+    /** @param Closure(T, Connection, Binary): void $closure */
     public function onBinary(Closure $closure): self
     {
         $this->listeners['binary'] = $closure;
         return $this;
     }
 
-    /** @param Closure(T, Connection, Message): void $closure */
+    /** @param Closure(T, Connection, Ping): void $closure */
     public function onPing(Closure $closure): self
     {
         $this->listeners['ping'] = $closure;
         return $this;
     }
 
-    /** @param Closure(T, Connection, Message): void $closure */
+    /** @param Closure(T, Connection, Pong): void $closure */
     public function onPong(Closure $closure): self
     {
         $this->listeners['pong'] = $closure;
         return $this;
     }
 
-    /** @param Closure(T, Connection, Message): void $closure */
+    /** @param Closure(T, Connection, Close): void $closure */
     public function onClose(Closure $closure): self
     {
         $this->listeners['close'] = $closure;
@@ -104,7 +111,7 @@ trait ListenerTrait
      * @param array{
      *   0: T,
      *   1?: Connection|null,
-     *   2?: Message|RequestInterface|ResponseInterface|ExceptionInterface|null,
+     *   2?: Message|Text|Binary|Close|Ping|Pong|RequestInterface|ResponseInterface|ExceptionInterface|null,
      *   3?: ResponseInterface|null
      * } $args
      */

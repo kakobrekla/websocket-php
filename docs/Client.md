@@ -134,7 +134,7 @@ $client->close(1000, "Closing now");
 
 ## Configuration
 
-The Client takes one argument: uri as a class implementing UriInterface or as string.
+The Client takes one argument: [URI](http://tools.ietf.org/html/rfc3986) as a class implementing [UriInterface](https://www.php-fig.org/psr/psr-7/#35-psrhttpmessageuriinterface) or as string.
 The client support `ws` (`tcp`) and `wss` (`ssl`) schemas, depending on SSL configuration.
 Other options are available runtime by calling configuration methods.
 
@@ -150,28 +150,30 @@ $client->setLogger(Psr\Log\LoggerInterface $logger);
 
 Timeout for various operations can be specified in seconds.
 This affects how long Client will wait for connection, read and write operations, and listener scope.
-Default is 60 seconds seconds. Avoid setting very low values as it will cause a read loop to use all
+Default is `60` seconds. Minimum is `0` seconds.
+Avoid setting very low values as it will cause a read loop to use all
 available processing power even when there's nothing to read.
 
 ```php
-$client->setTimeout(300);
+$client->setTimeout(300); // set timeout in seconds
 $client->getTimeout(); // => current timeout in seconds
 ```
 
 ### Frame size
 
-Defines the frame size in bytes.
-Default is 4096 bytes. Do not change unless you have a strong reason to do so.
+Defines the maximum payload per frame size in bytes.
+Default is `4096` bytes. Minimum is `1` byte.
+Do not change unless you have a strong reason to do so.
 
 ```php
-$client->setFrameSize(1024);
-$client->getFrameSize(); // => current frame size in bytes
+$client->setFrameSize(1024); // set maximum payload frame size in bytes
+$client->getFrameSize(); // => current maximum payload frame size in bytes
 ```
 
 ### Persistent connection
 
 If set to true, the underlying connection will be kept open if possible.
-This means that if CLient closes and is then restarted, it may use the same connection.
+This means that if Client closes and is then restarted, it may use the same connection.
 Do not change unless you have a strong reason to do so.
 
 ```php
@@ -191,7 +193,7 @@ $context->setOptions([
         "verify_peer_name" => false,
     ],
 ]);
-$client->setContext($context);
+$client->setContext($context); // set context
 $client->getContext(); // => currently used Phrity\Net\Context
 ```
 
@@ -230,3 +232,6 @@ echo "meta:   {$client->getMeta('some-metadata')}\n";
 // Get response on handshake
 $response = $client->getHandshakeResponse();
 ```
+
+Read more on [Connection](Connection.md).
+

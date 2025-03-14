@@ -91,8 +91,8 @@ Read more on [Messages](Message.md).
 
 ## Sending messages
 
-The Connection instance represents the client-server channel.
-To send a message to a client, call the send() method on Connection instance with a Message instance.
+The [Connection](Connection.md) instance represents the client-server connection.
+To send a message to a client, call the `send()` method on Connection instance with a Message instance.
 Any of the five message types can be sent this way.
 
 ```php
@@ -150,22 +150,24 @@ $server->setLogger(Psr\Log\LoggerInterface $logger);
 
 Timeout for various operations can be specified in seconds.
 This affects how long Server will wait for connection, read and write operations, and listener scope.
-Default is 60 seconds seconds. Avoid setting very low values as it will cause a read loop to use all
+Default is `60` seconds. Minimum is `0` seconds.
+Avoid setting very low values as it will cause a read loop to use all
 available processing power even when there's nothing to read.
 
 ```php
-$server->setTimeout(300);
+$server->setTimeout(300); // set timeout in seconds
 $server->getTimeout(); // => current timeout in seconds
 ```
 
 ### Frame size
 
-Defines the frame size in bytes.
-Default is 4096 bytes. Do not change unless you have a strong reason to do so.
+Defines the maximum payload per frame size in bytes.
+Default is `4096` bytes. Minimum is `1` byte.
+Do not change unless you have a strong reason to do so.
 
 ```php
-$server->setFrameSize(1024);
-$server->getFrameSize(); // => current frame size in bytes
+$server->setFrameSize(1024); // set maximum payload frame size in bytes
+$server->getFrameSize(); // => current maximum payload frame size in bytes
 ```
 
 ### Context
@@ -181,7 +183,7 @@ $context->setOptions([
         "verify_peer_name" => false,
     ],
 ]);
-$server->setContext($context);
+$server->setContext($context); // set context
 $server->getContext(); // => currently used Phrity\Net\Context
 ```
 
@@ -226,10 +228,7 @@ $server->shutdown();
 $server->disconnect();
 ```
 
-To shut down server in an orderly fashion, you should first close all connected clients.
-
-
-## Server operations
+## Connection control
 
 ```php
 // Number of connected clients
@@ -245,33 +244,4 @@ $server->getReadableConnections();
 $server->getWritableConnections();
 ```
 
-## Connection control
-
-The Connection instance have some additional functions, besides sending messages to client.
-
-```php
-// Is connection open?
-$connection->isConnected();
-
-// Immediately disconnect client without normal close procedure
-$connection->disconnect();
-
-// Get local name for connection
-$connection->getName();
-
-// Get remote name for connection
-$connection->getRemoteName();
-
-// Get the Request client sent during handshake procedure
-$connection->getHandshakeRequest();
-
-// Get the Response server sent during handshake procedure
-$connection->getHandshakeResponse();
-
-// Trigger a tick event on connection
-$connection->tick();
-
-// Get and set associated meta data on connection
-$connection->setMeta('myMetaData', $anything);
-$connection->getMeta('myMetaData');
-```
+Read more on [Connection](Connection.md).

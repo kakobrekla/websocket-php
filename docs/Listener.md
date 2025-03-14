@@ -9,7 +9,7 @@ If you use the listener method `->start()` this will be the only way to act on i
 ## Message listeners
 
 The message listeners are called whenever the client or server receives a message of the same type.
-All message listeners receive `Client|Server`, `Connection` and `Message` as arguments.
+All message listeners receive Client or Server, [Connection](Connection.md) and [Message](Message.md) as arguments.
 
 ```php
 $client_or_server
@@ -35,6 +35,7 @@ $client_or_server
     })
     ;
 ```
+
 
 ## Connect and Disconnect listeners
 

@@ -84,6 +84,64 @@ class HandshakeTest extends TestCase
         unset($server);
     }
 
+    public function testHandshakeRequestVariant(): void
+    {
+        $this->expectStreamFactory();
+        $server = new Server(8000);
+        $server->setStreamFactory(new StreamFactory());
+
+        $this->expectWsServerSetup(scheme: 'tcp', port: 8000);
+        $this->expectWsSelectConnections(['@server']);
+        $this->expectSocketServerAccept();
+        $this->expectSocketStream();
+        $this->expectSocketStreamGetMetadata();
+        $this->expectContext();
+        $this->expectSocketStreamGetRemoteName()->setReturn(function () {
+            return "fake-connection";
+        });
+        $this->expectStreamCollectionAttach();
+        $this->expectSocketStreamGetLocalName();
+        $this->expectSocketStreamGetRemoteName();
+        $this->expectSocketStreamSetTimeout()->addAssert(function ($method, $params) use ($server) {
+            $server->stop();
+        });
+
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "GET /my/mock/path HTTP/1.1\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Host: localhost:8000\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Connection: keep-alive, upgrade\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Upgrade: websocket\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Sec-WebSocket-Key: cktLWXhUdDQ2OXF0ZCFqOQ==\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "Sec-WebSocket-Version: 13\r\n";
+        });
+        $this->expectSocketStreamReadLine()->setReturn(function (array $params) {
+            return "\r\n";
+        });
+        $this->expectSocketStreamWrite()->addAssert(function (string $method, array $params): void {
+            $expect = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+            . "Sec-WebSocket-Accept: YmysboNHNoWzWVeQpduY7xELjgU=\r\n\r\n";
+            $this->assertEquals($expect, $params[0]);
+        })->setReturn(function () {
+            return 129;
+        });
+        $server->start();
+
+        $this->expectSocketStreamIsConnected();
+        $this->expectSocketStreamClose();
+
+        unset($server);
+    }
+
     public function testHandshakeRequestFailure(): void
     {
         $this->expectStreamFactory();

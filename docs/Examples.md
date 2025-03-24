@@ -91,11 +91,11 @@ Source: [examples/send.php](../examples/send.php)
 A simple, single send/receive client.
 
 Example use:
-```
-php examples/send.php --opcode text "A text message" // Send a text message to localhost
-php examples/send.php --opcode ping "ping it" // Send a ping message to localhost
-php examples/send.php --uri ws://echo.websocket.org "A text message" // Send a text message to echo.websocket.org
-php examples/send.php --opcode text --debug "A text message" // Use runtime debugging
+```bash
+php examples/send.php --opcode text "A text message" # Send a text message to localhost
+php examples/send.php --opcode ping "ping it" # Send a ping message to localhost
+php examples/send.php --uri ws://echo.websocket.org "A text message" # Send a text message to echo.websocket.org
+php examples/send.php --opcode text --debug "A text message" # Use runtime debugging
 ```
 
 ## The `echoserver` server
@@ -105,10 +105,10 @@ Source: [examples/echoserver.php](../examples/echoserver.php)
 A simple server that responds to received commands.
 
 Example use:
-```
-php examples/echoserver.php // Run with default settings
-php examples/echoserver.php --port 8080 // Listen on port 8080
-php examples/echoserver.php --debug //  Use runtime debugging
+```bash
+php examples/echoserver.php # Run with default settings
+php examples/echoserver.php --port 8080 # Listen on port 8080
+php examples/echoserver.php --debug #  Use runtime debugging
 ```
 
 These strings can be sent as message to trigger server to perform actions;
@@ -130,10 +130,10 @@ Source: [examples/random_client.php](../examples/random_client.php)
 The random client will use random options and continuously send/receive random messages.
 
 Example use:
-```
-php examples/random_client.php --uri ws://echo.websocket.org // Connect to echo.websocket.org
-php examples/random_client.php --timeout 5 --framesize 16 // Specify settings
-php examples/random_client.php --debug //  Use runtime debugging
+```bash
+php examples/random_client.php --uri ws://echo.websocket.org # Connect to echo.websocket.org
+php examples/random_client.php --timeout 5 --framesize 16 # Specify settings
+php examples/random_client.php --debug #  Use runtime debugging
 ```
 
 ## The `random` server
@@ -143,10 +143,10 @@ Source: [examples/random_server.php](../examples/random_server.php)
 The random server will use random options and continuously send/receive random messages.
 
 Example use:
-```
-php examples/random_server.php --port 8080 // Listen on port 8080
-php examples/random_server.php --timeout 5 --framesize 16 // Specify settings
-php examples/random_server.php --debug //  Use runtime debugging
+```bash
+php examples/random_server.php --port 8080 # Listen on port 8080
+php examples/random_server.php --timeout 5 --framesize 16 # Specify settings
+php examples/random_server.php --debug #  Use runtime debugging
 ```
 
 ## The `delegating` server
@@ -154,22 +154,22 @@ php examples/random_server.php --debug //  Use runtime debugging
 Source: [examples/delegating_server.php](../examples/delegating_server.php)
 
 By using context switching, the server will act as a proxy and forward incoming messages to a remote server.
-Please note that switching between lisening context can appear slow.
+Please note that switching between listening context can appear slow.
 If you need better performance, use separate scripts for client and server and some kind of intermediate to connect them.
 
 Example use:
-```
-php examples/delegating_server.php --uri=ws://example-server.com --port 8080 // Listen on port 8080
-php examples/delegating_server.php --uri=ws://example-server.com --timeout 5 --framesize 16 // Specify settings
-php examples/delegating_server.php --uri=ws://example-server.com --debug //  Use runtime debugging
+```bash
+php examples/delegating_server.php --uri=ws://example-server.com --port 8080 # Listen on port 8080
+php examples/delegating_server.php --uri=ws://example-server.com --timeout 5 --framesize 16 # Specify settings
+php examples/delegating_server.php --uri=ws://example-server.com --debug # Use runtime debugging
 ```
 
 Try it:
-```
- // Start remote server on 8000
+```bash
+# Start remote server on 8000
 php examples/echoserver.php --port 8000
-// Start delegating server on port 8001, with above echoserver as remote
+# Start delegating server on port 8001, with above echoserver as remote
 php examples/delegating_server.php --remote=ws://127.0.0.1:8000 --port=8001
-// Send message to delegating server
+# Send message to delegating server
 php examples/send.php --uri=ws://127.0.0.1:8001 "A message to delegate"
 ```

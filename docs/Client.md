@@ -183,7 +183,7 @@ $client->setPersistent(true);
 ### Context
 
 Client support adding [context options and parameters](https://www.php.net/manual/en/context.php)
-using the [Phrity\Net\Context](https://www.php.net/manual/en/context.php) class.
+using the [Phrity\Net\Context](https://github.com/sirn-se/phrity-net-stream?tab=readme-ov-file#context-class) class.
 
 ```php
 $context = new Phrity\Net\Context();

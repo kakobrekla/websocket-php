@@ -14,13 +14,6 @@ use Phrity\Net\Mock\{
     SocketStream,
     StreamFactory,
 };
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketClientTrait,
-    ExpectSocketStreamTrait,
-    ExpectStreamCollectionTrait,
-    ExpectStreamFactoryTrait,
-};
 use Stringable;
 use WebSocket\{
     Client,
@@ -38,11 +31,6 @@ use WebSocket\Test\MockStreamTrait;
  */
 class FollowRedirectTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketClientTrait;
-    use ExpectSocketStreamTrait;
-    use ExpectStreamCollectionTrait;
-    use ExpectStreamFactoryTrait;
     use MockStreamTrait;
 
     public function setUp(): void

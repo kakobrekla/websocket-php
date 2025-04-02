@@ -11,10 +11,6 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketStreamTrait,
-};
 use Psr\Log\NullLogger;
 use Stringable;
 use WebSocket\Connection;
@@ -24,14 +20,14 @@ use WebSocket\Http\{
 };
 use WebSocket\Message\Text;
 use WebSocket\Middleware\Callback;
+use WebSocket\Test\MockStreamTrait;
 
 /**
  * Test case for WebSocket\Middleware\Callback
  */
 class CallbackTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketStreamTrait;
+    use MockStreamTrait;
 
     public function setUp(): void
     {

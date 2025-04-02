@@ -10,6 +10,7 @@ namespace WebSocket\Message;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Stringable;
+use WebSocket\Exception\ConnectionFailureException;
 use WebSocket\Frame\Frame;
 use WebSocket\Trait\StringableTrait;
 
@@ -24,6 +25,7 @@ abstract class Message implements Stringable
     protected string $opcode;
     protected string $content;
     protected DateTimeInterface $timestamp;
+    protected bool $compress = false;
 
     public function __construct(string $content = '')
     {
@@ -71,6 +73,18 @@ abstract class Message implements Stringable
         $this->content = $payload;
     }
 
+    public function isCompressed(): bool
+    {
+        return false;
+    }
+
+    public function setCompress(bool $compress): void
+    {
+        if ($compress) {
+            throw new ConnectionFailureException('Must not compress control message.');
+        }
+    }
+
     /**
      * Split messages into frames
      * @param int<1, max> $frameSize
@@ -89,6 +103,9 @@ abstract class Message implements Stringable
                 $payload,
                 $i === array_key_last($split)
             );
+        }
+        if ($this->isCompressed()) {
+            $frames[0]->setRsv1(true);
         }
         return $frames;
     }

@@ -10,7 +10,10 @@ namespace WebSocket\Test;
 use Phrity\Net\Mock\Stack\{
     ExpectContextTrait,
     ExpectSocketClientTrait,
+    ExpectSocketStreamTrait,
     ExpectSocketServerTrait,
+    ExpectStreamCollectionTrait,
+    ExpectStreamFactoryTrait,
     StackItem
 };
 use Phrity\Net\Mock\StreamCollection;
@@ -24,6 +27,9 @@ trait MockStreamTrait
     use ExpectContextTrait;
     use ExpectSocketClientTrait;
     use ExpectSocketServerTrait;
+    use ExpectSocketStreamTrait;
+    use ExpectStreamCollectionTrait;
+    use ExpectStreamFactoryTrait;
 
     /** @var array<StackItem> $stack */
     private array $stack = [];
@@ -263,5 +269,14 @@ trait MockStreamTrait
         })->setReturn(function () {
             return 129;
         });
+    }
+
+    private function expectWsReadMessage(string ...$encodedFrames): void
+    {
+        foreach ($encodedFrames as $encodedFrame) {
+            $this->expectSocketStreamRead()->setReturn(function () use ($encodedFrame) {
+                return base64_decode($encodedFrame);
+            });
+        }
     }
 }

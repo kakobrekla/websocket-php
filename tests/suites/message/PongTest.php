@@ -11,7 +11,7 @@ namespace WebSocket\Test\Message;
 
 use PHPUnit\Framework\TestCase;
 use Stringable;
-use WebSocket\BadOpcodeException;
+use WebSocket\Exception\ConnectionFailureException;
 use WebSocket\Frame\Frame;
 use WebSocket\Message\{
     Pong,
@@ -57,5 +57,14 @@ class PongTest extends TestCase
         $message = new Pong();
         $message->setPayload($payload);
         $this->assertEquals('Some content', $message->getContent());
+    }
+
+    public function testCompress(): void
+    {
+        $message = new Pong('Some content');
+        $this->assertFalse($message->isCompressed());
+        $this->expectException(ConnectionFailureException::class);
+        $this->expectExceptionMessage('Must not compress control message.');
+        $message->setCompress(true);
     }
 }

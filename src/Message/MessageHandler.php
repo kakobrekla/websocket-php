@@ -68,12 +68,14 @@ class MessageHandler implements LoggerAwareInterface, Stringable
     // Pull message
     public function pull(): Message
     {
+        $compressed = false;
         do {
             $frame = $this->frameHandler->pull();
             $final = $frame->isFinal();
             $continuation = $frame->isContinuation();
             $opcode = $frame->getOpcode();
             $payload = $frame->getPayload();
+            $compressed = $compressed || $frame->getRsv1();
 
             // Continuation and factual opcode
             $payload_opcode = $continuation ? $this->readBuffer->opcode : $opcode;
@@ -120,6 +122,7 @@ class MessageHandler implements LoggerAwareInterface, Stringable
                 throw new BadOpcodeException("Invalid opcode '{$payload_opcode}' provided");
         }
         $message->setPayload($payload);
+        $message->setCompress($compressed);
 
         $this->logger->info("[message-handler] Pulled {$message}", [
             'opcode' => $message->getOpcode(),

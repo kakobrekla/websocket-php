@@ -11,7 +11,7 @@ namespace WebSocket\Test\Message;
 
 use PHPUnit\Framework\TestCase;
 use Stringable;
-use WebSocket\BadOpcodeException;
+use WebSocket\Exception\ConnectionFailureException;
 use WebSocket\Frame\Frame;
 use WebSocket\Message\{
     Ping,
@@ -57,5 +57,14 @@ class PingTest extends TestCase
         $message = new Ping();
         $message->setPayload($payload);
         $this->assertEquals('Some content', $message->getContent());
+    }
+
+    public function testCompress(): void
+    {
+        $message = new Ping('Some content');
+        $this->assertFalse($message->isCompressed());
+        $this->expectException(ConnectionFailureException::class);
+        $this->expectExceptionMessage('Must not compress control message.');
+        $message->setCompress(true);
     }
 }

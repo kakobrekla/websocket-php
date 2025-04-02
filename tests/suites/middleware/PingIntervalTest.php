@@ -11,21 +11,17 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketStreamTrait,
-};
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Middleware\PingInterval;
+use WebSocket\Test\MockStreamTrait;
 
 /**
  * Test case for WebSocket\Middleware\PingIntervalTest
  */
 class PingIntervalTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketStreamTrait;
+    use MockStreamTrait;
 
     public function setUp(): void
     {

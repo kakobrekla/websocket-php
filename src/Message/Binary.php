@@ -14,4 +14,14 @@ namespace WebSocket\Message;
 class Binary extends Message
 {
     protected string $opcode = 'binary';
+
+    public function isCompressed(): bool
+    {
+        return $this->compress;
+    }
+
+    public function setCompress(bool $compress): void
+    {
+        $this->compress = $compress;
+    }
 }

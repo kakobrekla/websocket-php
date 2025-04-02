@@ -14,4 +14,14 @@ namespace WebSocket\Message;
 class Text extends Message
 {
     protected string $opcode = 'text';
+
+    public function isCompressed(): bool
+    {
+        return $this->compress;
+    }
+
+    public function setCompress(bool $compress): void
+    {
+        $this->compress = $compress;
+    }
 }

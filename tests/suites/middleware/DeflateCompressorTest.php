@@ -11,6 +11,8 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
+use RangeException;
+use RuntimeException;
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Http\{
@@ -674,6 +676,42 @@ class DeflateCompressorTest extends TestCase
         $this->expectSocketStreamClose();
         unset($connection);
     }
+
+    public function testDeflateCompressorNoExtension(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('DeflateCompressor require fake extension.');
+        new DeflateCompressor(extension: 'fake');
+    }
+
+    public function testDeflateCompressorServerBitsToLow(): void
+    {
+        $this->expectException(RangeException::class);
+        $this->expectExceptionMessage('serverMaxWindowBits must be in range 9-15.');
+        new DeflateCompressor(serverMaxWindowBits: 8);
+    }
+
+    public function testDeflateCompressorServerBitsToHigh(): void
+    {
+        $this->expectException(RangeException::class);
+        $this->expectExceptionMessage('serverMaxWindowBits must be in range 9-15.');
+        new DeflateCompressor(serverMaxWindowBits: 16);
+    }
+
+    public function testDeflateCompressorClientBitsToLow(): void
+    {
+        $this->expectException(RangeException::class);
+        $this->expectExceptionMessage('clientMaxWindowBits must be in range 9-15.');
+        new DeflateCompressor(clientMaxWindowBits: 8);
+    }
+
+    public function testDeflateCompressorClientBitsToHigh(): void
+    {
+        $this->expectException(RangeException::class);
+        $this->expectExceptionMessage('clientMaxWindowBits must be in range 9-15.');
+        new DeflateCompressor(clientMaxWindowBits: 16);
+    }
+
 
     /**
      * PhpStan cannot resolve otherwise

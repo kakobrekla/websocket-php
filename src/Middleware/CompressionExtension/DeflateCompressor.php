@@ -57,9 +57,10 @@ class DeflateCompressor implements CompressorInterface, Stringable
         bool $clientNoContextTakeover = false,
         int $serverMaxWindowBits = self::MAX_WINDOW_SIZE,
         int $clientMaxWindowBits = self::MAX_WINDOW_SIZE,
+        string $extension = 'zlib',
     ) {
-        if (!extension_loaded('zlib')) {
-            throw new RuntimeException("DeflateCompressor require zlib extension.");
+        if (!extension_loaded($extension)) {
+            throw new RuntimeException("DeflateCompressor require {$extension} extension.");
         }
         if ($serverMaxWindowBits < self::MIN_WINDOW_SIZE || $serverMaxWindowBits > self::MAX_WINDOW_SIZE) {
             throw new RangeException("DeflateCompressor serverMaxWindowBits must be in range 9-15.");

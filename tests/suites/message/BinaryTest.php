@@ -11,7 +11,6 @@ namespace WebSocket\Test\Message;
 
 use PHPUnit\Framework\TestCase;
 use Stringable;
-use WebSocket\BadOpcodeException;
 use WebSocket\Frame\Frame;
 use WebSocket\Message\{
     Binary,
@@ -58,5 +57,13 @@ class BinaryTest extends TestCase
         $message = new Binary();
         $message->setPayload($payload);
         $this->assertEquals('Some content', $message->getContent());
+    }
+
+    public function testCompress(): void
+    {
+        $message = new Binary('Some content');
+        $this->assertFalse($message->isCompressed());
+        $message->setCompress(true);
+        $this->assertTrue($message->isCompressed());
     }
 }

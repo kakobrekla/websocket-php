@@ -11,10 +11,6 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketStreamTrait,
-};
 use Stringable;
 use WebSocket\Http\{
     Request,
@@ -23,14 +19,14 @@ use WebSocket\Http\{
 use WebSocket\Connection;
 use WebSocket\Exception\HandshakeException;
 use WebSocket\Middleware\SubprotocolNegotiation;
+use WebSocket\Test\MockStreamTrait;
 
 /**
  * Test case for WebSocket\Middleware\SubprotocolNegotiation
  */
 class SubprotocolNegotiationTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketStreamTrait;
+    use MockStreamTrait;
 
     public function setUp(): void
     {

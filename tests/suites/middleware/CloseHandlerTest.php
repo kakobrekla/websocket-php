@@ -11,22 +11,18 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketStreamTrait,
-};
 use Stringable;
 use WebSocket\Connection;
 use WebSocket\Message\Close;
 use WebSocket\Middleware\CloseHandler;
+use WebSocket\Test\MockStreamTrait;
 
 /**
  * Test case for WebSocket\Middleware\CloseHandler
  */
 class CloseHandlerTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketStreamTrait;
+    use MockStreamTrait;
 
     public function setUp(): void
     {
@@ -65,12 +61,7 @@ class CloseHandlerTest extends TestCase
         $this->expectSocketStreamGetMetadata();
         $connection->send(new Close(1000, 'ttfn'));
 
-        $this->expectSocketStreamRead()->setReturn(function () {
-            return base64_decode('iAY==');
-        });
-        $this->expectSocketStreamRead()->setReturn(function () {
-            return base64_decode('A+h0dGZu');
-        });
+        $this->expectWsReadMessage('iAY==', 'A+h0dGZu');
         $this->expectSocketStreamIsWritable();
         $this->expectSocketStreamClose();
         $message = $connection->pullMessage();
@@ -93,12 +84,7 @@ class CloseHandlerTest extends TestCase
         $connection = new Connection($stream, false, false);
         $connection->addMiddleware(new CloseHandler());
 
-        $this->expectSocketStreamRead()->setReturn(function () {
-            return base64_decode('iAY==');
-        });
-        $this->expectSocketStreamRead()->setReturn(function () {
-            return base64_decode('A+h0dGZu');
-        });
+        $this->expectWsReadMessage('iAY==', 'A+h0dGZu');
         $this->expectSocketStreamIsWritable();
         $this->expectSocketStreamCloseRead();
         $this->expectSocketStreamGetMetadata();

@@ -11,10 +11,6 @@ namespace WebSocket\Test\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Phrity\Net\Mock\SocketStream;
-use Phrity\Net\Mock\Stack\{
-    ExpectContextTrait,
-    ExpectSocketStreamTrait,
-};
 use Psr\Log\NullLogger;
 use WebSocket\Connection;
 use WebSocket\Message\Text;
@@ -23,14 +19,14 @@ use WebSocket\Middleware\{
     CloseHandler,
     PingResponder
 };
+use WebSocket\Test\MockStreamTrait;
 
 /**
  * Test case for WebSocket\Middleware\ stack processing
  */
 class ProcessStackTest extends TestCase
 {
-    use ExpectContextTrait;
-    use ExpectSocketStreamTrait;
+    use MockStreamTrait;
 
     public function setUp(): void
     {

@@ -51,6 +51,11 @@ class Frame implements Stringable
         return $this->rsv1;
     }
 
+    public function setRsv1(bool $rsv1): void
+    {
+        $this->rsv1 = $rsv1;
+    }
+
     public function getRsv2(): bool
     {
         return $this->rsv2;

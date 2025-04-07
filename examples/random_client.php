@@ -12,7 +12,8 @@
  * Console options:
  *  --uri <uri> : The URI to connect to, default ws://localhost:8000
  *  --timeout <int> : Timeout in seconds, random default
- *  --framesize <int> : Frame size as bytes, random default
+ *  --framesize <int> : Frame payload size in bytes, random default
+ *  --deflate : Add support for per-message deflate compression
  *  --debug : Output log data (if logger is available)
  */
 
@@ -29,8 +30,10 @@ use WebSocket\Message\{
 };
 use WebSocket\Middleware\{
     CloseHandler,
+    CompressionExtension,
     PingResponder,
 };
+use WebSocket\Middleware\CompressionExtension\DeflateCompressor;
 use WebSocket\Test\EchoLog;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -57,6 +60,7 @@ while (true) {
      *     uri: string,
      *     timeout: int<0, max>,
      *     framesize: int<1, max>,
+     *     deflate: bool,
      *     debug: bool,
      * } $options
      */
@@ -64,7 +68,7 @@ while (true) {
         'uri'       => 'ws://localhost:80',
         'timeout'   => rand(1, 60),
         'framesize' => rand(1, 4096) * 8,
-    ], getopt('', ['uri:', 'timeout:', 'framesize:', 'debug']));
+    ], getopt('', ['uri:', 'timeout:', 'framesize:', 'deflate', 'debug']));
 
     try {
         $client = new Client($options['uri']);
@@ -72,6 +76,11 @@ while (true) {
             ->addMiddleware(new CloseHandler())
             ->addMiddleware(new PingResponder())
             ;
+
+        if (isset($options['deflate'])) {
+            $client->addMiddleware(new CompressionExtension(new DeflateCompressor()));
+            echo "# Using per-message: deflate compression\n";
+        }
 
         // If debug mode and logger is available
         if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
@@ -135,5 +144,7 @@ while (true) {
         })->start();
     } catch (Throwable $e) {
         echo "> ERROR: {$e->getMessage()}\n";
+        echo ">        Wait {$options['timeout']} seconds for next attempt.\n";
+        sleep($options['timeout']);
     }
 }

@@ -39,5 +39,8 @@
         "phrity/net-mock": "^2.2",
         "phrity/util-errorhandler": "^1.1",
         "squizlabs/php_codesniffer": "^3.5"
+    },
+    "suggests": {
+        "ext-zlib": "Required for per-message deflate compression"
     }
 }

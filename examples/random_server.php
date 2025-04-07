@@ -13,8 +13,9 @@
  *  --port <int> : The port to listen to, default 80
  *  --ssl : Use SSL, default false
  *  --timeout <int> : Timeout in seconds, random default
- *  --framesize <int> : Frame size as bytes, random default
+ *  --framesize <int> : Frame payload size in bytes, random default
  *  --connections <int> : Max number of connections, default unlimited
+ *  --deflate : Add support for per-message deflate compression
  *  --debug : Output log data (if logger is available)
  */
 
@@ -31,8 +32,10 @@ use WebSocket\Message\{
 };
 use WebSocket\Middleware\{
     CloseHandler,
+    CompressionExtension,
     PingResponder,
 };
+use WebSocket\Middleware\CompressionExtension\DeflateCompressor;
 use WebSocket\Test\EchoLog;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -58,6 +61,7 @@ echo "# Random server\n";
  *     timeout: int<0, max>,
  *     framesize: int<1, max>,
  *     connections: int<0, max>|null,
+ *     deflate: bool,
  *     debug: bool,
  * } $options
  */
@@ -65,7 +69,7 @@ $options = array_merge([
     'port'      => 80,
     'timeout'   => rand(1, 60),
     'framesize' => rand(1, 4096) * 8,
-], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'debug']));
+], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'deflate', 'debug']));
 
 // Initiate server.
 try {
@@ -74,7 +78,6 @@ try {
         ->addMiddleware(new CloseHandler())
         ->addMiddleware(new PingResponder())
         ;
-    $server->setMaxConnections(1);
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {
@@ -92,6 +95,10 @@ try {
     if (isset($options['connections'])) {
         $server->setMaxConnections($options['connections']);
         echo "# Set max connections: {$options['connections']}\n";
+    }
+    if (isset($options['deflate'])) {
+        $server->addMiddleware(new CompressionExtension(new DeflateCompressor()));
+        echo "# Using per-message: deflate compression\n";
     }
 
     echo "# Listening on port {$server->getPort()}\n";

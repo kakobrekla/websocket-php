@@ -32,6 +32,7 @@ and should be added unless you write your own implementation of close and ping/p
 These middlewares are included in library and can be added to provide additional functionality.
 
 * [Callback](Middleware/Callback.md) - Apply provided callback function on specified actions
+* [CompressionExtension](Middleware/CompressionExtension.md) - Support message compression (Per-Message Deflate)
 * [FollowRedirect](Middleware/FollowRedirect.md) - Follow redirect during handshake (Client only)
 * [PingInterval](Middleware/PingInterval.md) - Used to automatically send Ping messages at specified interval
 * [SubprotocolNegotiation](Middleware/SubprotocolNegotiation.md) - Helper middleware that negotiate subprotocol

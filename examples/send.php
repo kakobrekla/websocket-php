@@ -12,6 +12,9 @@
  * Console options:
  *  --uri <uri> : The URI to connect to, default ws://localhost:80
  *  --opcode <string> : Opcode to send, default 'text'
+ *  --timeout <int> : Timeout in seconds
+ *  --framesize <int> : Frame payload size in bytes
+ *  --deflate : Add support for per-message deflate compression
  *  --debug : Output log data (if logger is available)
  */
 
@@ -20,8 +23,10 @@ namespace WebSocket;
 use Throwable;
 use WebSocket\Middleware\{
     CloseHandler,
+    CompressionExtension,
     PingResponder,
 };
+use WebSocket\Middleware\CompressionExtension\DeflateCompressor;
 use WebSocket\Test\EchoLog;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -37,13 +42,14 @@ echo "# Send client! [phrity/websocket]\n";
  *     opcode: string,
  *     timeout: int<0, max>,
  *     framesize: int<1, max>,
+ *     deflate: bool,
  *     debug: bool,
  * } $options
  */
 $options = array_merge([
     'uri'       => 'ws://localhost:80',
     'opcode'    => 'text',
-], getopt('', ['uri:', 'opcode:', 'timeout:', 'framesize:', 'debug']));
+], getopt('', ['uri:', 'opcode:', 'timeout:', 'framesize:', 'deflate', 'debug']));
 
 $message = array_pop($argv);
 
@@ -77,6 +83,10 @@ try {
             echo "> Received '{$message->getContent()}' [opcode: {$message->getOpcode()}]\n";
         })
         ;
+    if (isset($options['deflate'])) {
+        $client->addMiddleware(new CompressionExtension(new DeflateCompressor()));
+        echo "# Using per-message: deflate compression\n";
+    }
 
     // If debug mode and logger is available
     if (isset($options['debug']) && class_exists('WebSocket\Test\EchoLog')) {

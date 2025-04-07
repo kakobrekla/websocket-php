@@ -11,9 +11,10 @@
  * Console options:
  *  --port <int> : The port to listen to, default 80
  *  --ssl : Use SSL, default false
- *  --timeout <int> : Timeout in seconds, default 200 seconds
- *  --framesize <int> : Frame size in bytes, default 4096 bytes
+ *  --timeout <int> : Timeout in seconds
+ *  --framesize <int> : Frame payload size in bytes
  *  --connections <int> : Max number of connections, default unlimited
+ *  --deflate : Add support for per-message deflate compression
  *  --debug : Output log data (if logger is available)
  */
 
@@ -30,8 +31,10 @@ use WebSocket\Message\{
 };
 use WebSocket\Middleware\{
     CloseHandler,
+    CompressionExtension,
     PingResponder,
 };
+use WebSocket\Middleware\CompressionExtension\DeflateCompressor;
 use WebSocket\Test\EchoLog;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -48,12 +51,13 @@ echo "# Echo server! [phrity/websocket]\n";
  *     timeout: int<0, max>,
  *     framesize: int<1, max>,
  *     connections: int<0, max>|null,
+ *     deflate: bool,
  *     debug: bool,
  * } $options
  */
 $options = array_merge([
     'port'  => 80,
-], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'debug']));
+], getopt('', ['port:', 'ssl', 'timeout:', 'framesize:', 'connections:', 'deflate', 'debug']));
 
 // Initiate server.
 try {
@@ -79,6 +83,10 @@ try {
     if (isset($options['connections'])) {
         $server->setMaxConnections($options['connections']);
         echo "# Set max connections: {$options['connections']}\n";
+    }
+    if (isset($options['deflate'])) {
+        $server->addMiddleware(new CompressionExtension(new DeflateCompressor()));
+        echo "# Using per-message: deflate compression\n";
     }
 
     echo "# Listening on port {$server->getPort()}\n";

@@ -159,6 +159,47 @@ class Connection implements LoggerAwareInterface
 
     /* ---------- Frame I/O methods -------------------------------------------------- */
 
+    /**
+     * Check if data is available on the socket.
+     * @param int $timeout_ms Timeout in milliseconds.
+     * @return bool True if data is available, false otherwise.
+     * @added by kakobrekla
+     */
+    public function isDataAvailable($timeout_ms = 1): bool
+    {
+        if (!$this->isConnected()) {
+            return false;
+        }
+
+        $read = [$this->stream];
+        $write = null;
+        $except = null;
+        
+        $seconds = floor($timeout_ms / 1000);
+        $microseconds = ($timeout_ms % 1000) * 1000;
+        
+        $result = stream_select($read, $write, $except, $seconds, $microseconds);
+        return $result > 0;
+    }
+
+    /**
+     * Drain all available messages from the WebSocket queue.
+     * @added by kakobrekla
+     */
+    public function drainWebSocketQueue(): void
+    {
+        while ($this->isDataAvailable()) {
+            try {
+                $this->pullMessage();
+            } catch (\WebSocket\ConnectionException $e) {
+                if (strpos($e->getMessage(), 'Client read timeout') !== false) {
+                    break;
+                }
+                throw $e;
+            }
+        }
+    }
+
     // Pull frame from stream
     private function pullFrame(): array
     {

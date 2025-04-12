@@ -122,6 +122,17 @@ class Client implements LoggerAwareInterface
     /* ---------- Connection operations ---------------------------------------------- */
 
     /**
+     * Clear any pending messages from the WebSocket buffer.
+     * @added by kakobrekla
+     */
+    public function clearBuffer(): void
+    {
+        if ($this->isConnected()) {
+            $this->connection->drainWebSocketQueue();
+        }
+    }
+
+    /**
      * Send text message.
      * @param string $payload Content as string.
      */
@@ -232,7 +243,6 @@ class Client implements LoggerAwareInterface
         }
         return $return;
     }
-
 
     /* ---------- Connection functions ----------------------------------------------- */
 

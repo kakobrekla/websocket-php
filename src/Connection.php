@@ -247,6 +247,28 @@ class Connection implements LoggerAwareInterface, Stringable
         return $this;
     }
 
+    /**
+     * Check if there are messages available to read without blocking.
+     * @return bool True if there are messages available to read, false otherwise.
+     */
+    public function hasMessages(): bool
+    {
+        if (!$this->isConnected()) {
+            return false;
+        }
+
+        $resource = $this->stream->getResource();
+        if (!$resource) {
+            return false;
+        }
+
+        $read = [$resource];
+        $write = null;
+        $except = null;
+        
+        return @stream_select($read, $write, $except, 0, 0) > 0;
+    }
+
 
     /* ---------- Connection state --------------------------------------------------------------------------------- */
 

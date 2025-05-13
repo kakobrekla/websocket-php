@@ -507,6 +507,15 @@ class Client implements LoggerAwareInterface, Stringable
         return $this->connection ? $this->connection->getHandshakeResponse() : null;
     }
 
+    /**
+     * Check if there are messages available to read without blocking.
+     * @return bool True if there are messages available to read, false otherwise.
+     */
+    public function hasMessages(): bool
+    {
+        return $this->connection ? $this->connection->hasMessages() : false;
+    }
+
 
     /* ---------- Internal helper methods -------------------------------------------------------------------------- */
 
